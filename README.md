@@ -1,19 +1,18 @@
 # Trabalho de pesquisa — A Questão da Caxemira
 
-Trabalho escolar de Gabriel Ferreira para o professor Fábio Gomes.
+**Clique para baixar:**
 
-- **Tema:** A Questão da Caxemira
-- **Valor:** 3,0 pontos
-- **Entrega:** 28/08/2026
-- **E-mail:** fabio.gomesdf78@gmail.com
-- **Extensão:** 22 páginas (mínimo pedido: 15)
+- [PDF (enviar ao professor)](https://github.com/Gabriel7z/desktop-tutorial/raw/cursor/trabalho-caxemira-0c47/A_Questao_da_Caxemira.pdf)
+- [Word (para editar)](https://github.com/Gabriel7z/desktop-tutorial/raw/cursor/trabalho-caxemira-0c47/A_Questao_da_Caxemira.docx)
+- [ZIP com os dois arquivos](https://github.com/Gabriel7z/desktop-tutorial/raw/cursor/trabalho-caxemira-0c47/TRABALHO_CAXEMIRA.zip)
 
-## Arquivos para entrega
+Se o navegador abrir o PDF em vez de baixar: clique com o botão direito no link e escolha **Salvar link como...**
 
-| Arquivo | Uso |
-| --- | --- |
-| `trabalho/A_Questao_da_Caxemira.pdf` | Enviar por e-mail |
-| `trabalho/A_Questao_da_Caxemira.docx` | Editar capa (escola, turma) se precisar |
-| `trabalho/LEIA-ME.txt` | Instruções rápidas de envio |
+Aluno: Gabriel Ferreira  
+Professor: Fábio Gomes  
+Valor: 3,0 pontos  
+Entrega: 28/08/2026  
+E-mail: fabio.gomesdf78@gmail.com  
+Páginas: 22 (mínimo pedido: 15)
 
-Estrutura: capa, contra-capa, sumário, introdução, desenvolvimento, conclusão e bibliografia (ABNT).
+Estrutura: capa, contra-capa, sumário, introdução, desenvolvimento, conclusão e bibliografia.
