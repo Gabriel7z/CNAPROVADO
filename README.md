@@ -2,11 +2,11 @@
 
 Protótipo de site próprio de hospedagem para o [@chalemirantecabofrio](https://www.instagram.com/chalemirantecabofrio). A ideia da apresentação: o hóspede vê o que está cheio, reserva direto e paga no site — sem Airbnb, Booking ou similar.
 
-## Online
+## Online (temporário)
 
-https://gabriel7z.github.io/desktop-tutorial/
+https://chale-mirante-cabofrio.surge.sh/
 
-Se a página não abrir na primeira vez: no GitHub, **Settings → Pages → Source → GitHub Actions**, e rode o workflow de novo.
+O GitHub Pages não publica neste repositório privado. Enquanto isso o protótipo está neste endereço.
 
 ## O que o protótipo mostra
 
