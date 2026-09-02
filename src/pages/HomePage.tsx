@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { chalets } from '../data/chalets'
+import { asset } from '../lib/assets'
 import { formatBRL } from '../lib/money'
 
 export function HomePage() {
@@ -7,7 +8,7 @@ export function HomePage() {
     <main>
       <section className="grain relative flex min-h-screen items-end">
         <img
-          src="/images/hero-mar.jpg"
+          src={asset('images/hero-mar.jpg')}
           alt="Mar de Cabo Frio visto do alto"
           className="absolute inset-0 h-full w-full object-cover"
         />
@@ -53,8 +54,8 @@ export function HomePage() {
           </p>
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <img src="/images/praia-areia.jpg" alt="Areia e mar" className="h-64 w-full rounded-2xl object-cover" />
-          <img src="/images/dunas.jpg" alt="Dunas" className="mt-8 h-64 w-full rounded-2xl object-cover" />
+          <img src={asset('images/praia-areia.jpg')} alt="Areia e mar" className="h-64 w-full rounded-2xl object-cover" />
+          <img src={asset('images/dunas.jpg')} alt="Dunas" className="mt-8 h-64 w-full rounded-2xl object-cover" />
         </div>
       </section>
 
@@ -120,7 +121,7 @@ export function HomePage() {
       </section>
 
       <section className="relative overflow-hidden">
-        <img src="/images/costa.jpg" alt="Costa" className="h-[420px] w-full object-cover" />
+        <img src={asset('images/costa.jpg')} alt="Costa" className="h-[420px] w-full object-cover" />
         <div className="absolute inset-0 bg-ocean/55" />
         <div className="absolute inset-0 flex items-center">
           <div className="mx-auto max-w-3xl px-5 text-center text-linen">

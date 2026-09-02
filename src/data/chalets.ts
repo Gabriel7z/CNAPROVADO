@@ -1,3 +1,5 @@
+import { asset } from '../lib/assets'
+
 export type Chalet = {
   id: string
   name: string
@@ -28,7 +30,12 @@ export const chalets: Chalet[] = [
     weekendRate: 580,
     cleaningFee: 160,
     minNights: 2,
-    images: ['/images/varanda.jpg', '/images/cama.jpg', '/images/jacuzzi.jpg', '/images/por-do-sol.jpg'],
+    images: [
+      asset('images/varanda.jpg'),
+      asset('images/cama.jpg'),
+      asset('images/jacuzzi.jpg'),
+      asset('images/por-do-sol.jpg'),
+    ],
     amenities: [
       'Cama king',
       'Hidromassagem',
@@ -51,7 +58,12 @@ export const chalets: Chalet[] = [
     weekendRate: 820,
     cleaningFee: 220,
     minNights: 2,
-    images: ['/images/chale-madeira.jpg', '/images/interior.jpg', '/images/suite.jpg', '/images/cafe.jpg'],
+    images: [
+      asset('images/chale-madeira.jpg'),
+      asset('images/interior.jpg'),
+      asset('images/suite.jpg'),
+      asset('images/cafe.jpg'),
+    ],
     amenities: [
       '2 quartos',
       'Cozinha completa',
@@ -74,7 +86,12 @@ export const chalets: Chalet[] = [
     weekendRate: 1180,
     cleaningFee: 280,
     minNights: 3,
-    images: ['/images/villa.jpg', '/images/deck-piscina.jpg', '/images/resort.jpg', '/images/dunas.jpg'],
+    images: [
+      asset('images/villa.jpg'),
+      asset('images/deck-piscina.jpg'),
+      asset('images/resort.jpg'),
+      asset('images/dunas.jpg'),
+    ],
     amenities: [
       '3 suítes',
       'Piscina privativa',
