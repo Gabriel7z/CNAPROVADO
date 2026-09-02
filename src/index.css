@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --color-ink: #1a1612;
+  --color-ink-soft: #4a4036;
+  --color-sand: #f6efe4;
+  --color-sand-deep: #e7d8c0;
+  --color-ocean: #0e4a56;
+  --color-ocean-mid: #176575;
+  --color-lagoon: #2f8f9d;
+  --color-sunset: #c56a3c;
+  --color-gold: #e8b86d;
+  --color-linen: #fbf7f0;
+  --color-occupied: #a07858;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--color-linen);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: #176575;
+  color: #fbf7f0;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.grain {
+  position: relative;
+}
+
+.grain::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0.12;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.day-occupied {
+  background-image: repeating-linear-gradient(
+    -48deg,
+    transparent,
+    transparent 4px,
+    rgb(160 120 88 / 0.22) 4px,
+    rgb(160 120 88 / 0.22) 6px
+  );
+}
