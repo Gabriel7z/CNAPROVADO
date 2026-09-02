@@ -52,11 +52,14 @@ body {
 }
 
 .day-occupied {
+  background-color: #efe4d4;
   background-image: repeating-linear-gradient(
     -48deg,
     transparent,
-    transparent 4px,
-    rgb(160 120 88 / 0.22) 4px,
-    rgb(160 120 88 / 0.22) 6px
+    transparent 3px,
+    rgb(160 120 88 / 0.45) 3px,
+    rgb(160 120 88 / 0.45) 5px
   );
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
 }

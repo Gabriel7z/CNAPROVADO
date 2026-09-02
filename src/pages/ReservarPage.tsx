@@ -158,6 +158,11 @@ export function ReservarPage() {
               </p>
               <p>{nightsBetween(checkIn, checkOut)} noite(s)</p>
             </div>
+          ) : checkIn ? (
+            <p className="mt-5 text-sm text-ink-soft">
+              Chegada em <span className="capitalize text-ink">{formatLong(checkIn)}</span>. Agora clique no dia de
+              saída.
+            </p>
           ) : (
             <p className="mt-5 text-sm text-ink-soft">Clique no dia de chegada e, em seguida, no dia de saída.</p>
           )}

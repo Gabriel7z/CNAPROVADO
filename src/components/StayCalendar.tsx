@@ -33,6 +33,7 @@ function daysInGrid(month: Date): (string | null)[] {
 export function StayCalendar({ chaletId, checkIn, checkOut, onChange }: CalendarProps) {
   const today = todayISO()
   const [anchor, setAnchor] = useState(() => startOfMonth(today))
+  const [hint, setHint] = useState<string | null>(null)
   const occupied = useMemo(() => occupiedNights(chaletId), [chaletId])
   const months = [anchor, addMonths(anchor, 1)]
 
@@ -41,13 +42,28 @@ export function StayCalendar({ chaletId, checkIn, checkOut, onChange }: Calendar
     if (previousChalet.current === chaletId) return
     previousChalet.current = chaletId
     onChange(null, null)
+    setHint(null)
   }, [chaletId, onChange])
+
+  function isValidCheckout(iso: string): boolean {
+    return Boolean(checkIn && !checkOut && iso > checkIn && !rangeHitsOccupied(chaletId, checkIn, iso))
+  }
 
   function handleDay(iso: string) {
     if (iso < today) return
 
+    if (occupied.has(iso) && !isValidCheckout(iso)) {
+      if (!checkIn || checkOut) {
+        setHint('Este dia está cheio. Escolha uma data livre para chegar.')
+      } else {
+        setHint('Esse período cruza noites já reservadas. Ajuste a saída.')
+      }
+      return
+    }
+
+    setHint(null)
+
     if (!checkIn || (checkIn && checkOut)) {
-      if (occupied.has(iso)) return
       onChange(iso, null)
       return
     }
@@ -58,20 +74,18 @@ export function StayCalendar({ chaletId, checkIn, checkOut, onChange }: Calendar
     }
 
     if (isBefore(iso, checkIn)) {
-      if (occupied.has(iso)) return
+      if (occupied.has(iso)) {
+        setHint('Este dia está cheio.')
+        return
+      }
       onChange(iso, null)
-      return
-    }
-
-    if (rangeHitsOccupied(chaletId, checkIn, iso)) {
-      if (!occupied.has(iso)) onChange(iso, null)
       return
     }
 
     onChange(checkIn, iso)
   }
 
-  function inRange(iso: string): boolean {
+  function inStayNight(iso: string): boolean {
     if (!checkIn || !checkOut) return false
     return iso >= checkIn && iso < checkOut
   }
@@ -105,24 +119,24 @@ export function StayCalendar({ chaletId, checkIn, checkOut, onChange }: Calendar
             occupied={occupied}
             checkIn={checkIn}
             checkOut={checkOut}
-            inRange={inRange}
+            inStayNight={inStayNight}
             onDay={handleDay}
             canPress={(iso) => {
               if (iso < today) return false
-              if (!occupied.has(iso)) return true
-              return Boolean(
-                checkIn && !checkOut && iso > checkIn && !rangeHitsOccupied(chaletId, checkIn, iso),
-              )
+              if (occupied.has(iso)) return isValidCheckout(iso)
+              return true
             }}
           />
         ))}
       </div>
 
+      {hint && <p className="mt-4 rounded-xl bg-sunset/10 px-3 py-2 text-sm text-sunset">{hint}</p>}
+
       <div className="mt-5 flex flex-wrap gap-4 text-xs text-ink-soft">
         <Legend swatch="bg-white border border-sand-deep" label="Livre" />
-        <Legend swatch="day-occupied bg-sand-deep/60" label="Ocupado — chalé cheio" />
+        <Legend swatch="day-occupied bg-[#efe4d4]" label="Cheio — não reserva" />
         <Legend swatch="bg-ocean" label="Sua estadia" />
-        <Legend swatch="border-2 border-lagoon bg-white" label="Hoje" />
+        <Legend swatch="border border-dashed border-lagoon bg-white" label="Hoje" />
       </div>
     </div>
   )
@@ -143,7 +157,7 @@ function MonthGrid({
   occupied,
   checkIn,
   checkOut,
-  inRange,
+  inStayNight,
   onDay,
   canPress,
 }: {
@@ -152,7 +166,7 @@ function MonthGrid({
   occupied: Set<string>
   checkIn: string | null
   checkOut: string | null
-  inRange: (iso: string) => boolean
+  inStayNight: (iso: string) => boolean
   onDay: (iso: string) => void
   canPress: (iso: string) => boolean
 }) {
@@ -175,9 +189,8 @@ function MonthGrid({
           const isPast = iso < today
           const isStart = iso === checkIn
           const isEnd = iso === checkOut
-          const selected = isStart || isEnd || inRange(iso)
+          const stayNight = inStayNight(iso)
           const isToday = iso === today
-
           const blocked = !canPress(iso)
 
           return (
@@ -185,22 +198,26 @@ function MonthGrid({
               key={iso}
               type="button"
               disabled={blocked}
-              title={isOccupied ? 'Ocupado' : undefined}
+              aria-disabled={blocked}
+              title={isOccupied ? 'Cheio' : undefined}
               onClick={() => onDay(iso)}
               className={[
                 'relative aspect-square rounded-md text-sm transition',
-                isOccupied && !selected ? 'day-occupied text-occupied/80' : '',
-                blocked ? 'cursor-not-allowed' : '',
+                isOccupied ? 'day-occupied text-occupied' : '',
+                blocked ? 'cursor-not-allowed opacity-80' : '',
                 isPast && !isOccupied ? 'text-sand-deep' : '',
-                !isOccupied && !isPast && !selected ? 'hover:bg-sand text-ink' : '',
-                selected ? 'bg-ocean text-linen' : '',
-                isStart || isEnd ? 'bg-ocean font-semibold text-linen' : '',
-                isToday && !selected ? 'ring-2 ring-lagoon ring-offset-1' : '',
+                !isOccupied && !isPast && !stayNight && !isStart ? 'hover:bg-sand text-ink' : '',
+                stayNight || isStart ? 'bg-ocean text-linen' : '',
+                isEnd && !isOccupied ? 'bg-ocean/70 text-linen' : '',
+                isEnd && isOccupied ? 'ring-2 ring-ocean' : '',
+                isToday && !stayNight && !isStart ? 'border border-dashed border-lagoon' : '',
               ].join(' ')}
             >
               {Number(iso.slice(-2))}
               {isOccupied && (
-                <span className="absolute bottom-0.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-occupied" />
+                <span className="pointer-events-none absolute right-0.5 top-0.5 text-[10px] leading-none text-occupied">
+                  ×
+                </span>
               )}
             </button>
           )
