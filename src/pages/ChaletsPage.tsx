@@ -8,7 +8,7 @@ export function ChaletsPage() {
       <p className="text-xs tracking-[0.3em] text-lagoon uppercase">Os chalés</p>
       <h1 className="mt-2 font-display text-5xl text-ocean">Escolha o seu ritmo</h1>
       <p className="mt-4 max-w-2xl text-ink-soft">
-        Poucas unidades, cada uma com calendário próprio. Se o dia está riscado, o chalé está cheio — simples assim.
+        Poucas unidades na Passagem, cada uma com calendário próprio. A Praia do Forte fica a dez minutos a pé.
       </p>
       <div className="mt-12 space-y-10">
         {chalets.map((chalet, index) => (

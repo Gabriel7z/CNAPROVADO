@@ -8,19 +8,19 @@ export function HomePage() {
     <main>
       <section className="grain relative flex min-h-screen items-end">
         <img
-          src={asset('images/hero-mar.jpg')}
-          alt="Mar de Cabo Frio visto do alto"
+          src={asset('images/regiao/hero-praia-forte.jpg')}
+          alt="Pôr do sol na Praia do Forte, Cabo Frio"
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/25 to-ink/20" />
         <div className="relative z-10 mx-auto w-full max-w-6xl px-5 pb-20 pt-40">
-          <p className="text-xs tracking-[0.35em] text-gold uppercase">Cabo Frio · Rio de Janeiro</p>
+          <p className="text-xs tracking-[0.35em] text-gold uppercase">Passagem · Cabo Frio · RJ</p>
           <h1 className="mt-4 max-w-3xl font-display text-5xl leading-[0.95] text-linen sm:text-7xl">
             A vista é o destino.
           </h1>
           <p className="mt-6 max-w-xl text-lg text-sand">
-            Três chalés no alto de Cabo Frio. Reserva direta, calendário real e pagamento no nosso site — do jeito que a
-            casa merece, sem plataforma no meio.
+            Na Rua do Céu, a dez minutos a pé da Praia do Forte. Reserva direta, calendário real e pagamento no nosso
+            site — sem plataforma no meio.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
@@ -30,10 +30,10 @@ export function HomePage() {
               Ver datas e reservar
             </Link>
             <Link
-              to="/chales"
+              to="/regiao"
               className="rounded-full border border-linen/40 px-6 py-3 text-sm text-linen hover:bg-linen/10"
             >
-              Conhecer os chalés
+              Praias e a região
             </Link>
           </div>
         </div>
@@ -42,20 +42,30 @@ export function HomePage() {
       <section className="mx-auto grid max-w-6xl gap-12 px-5 py-24 md:grid-cols-2 md:items-center">
         <div>
           <p className="text-xs tracking-[0.3em] text-lagoon uppercase">O lugar</p>
-          <h2 className="mt-3 font-display text-4xl text-ocean sm:text-5xl">Mirante, mar e tempo lento.</h2>
+          <h2 className="mt-3 font-display text-4xl text-ocean sm:text-5xl">Passagem, a pé da Praia do Forte.</h2>
           <p className="mt-5 text-ink-soft leading-7">
-            Estamos em Cabo Frio, na Região dos Lagos. Da varanda se vê o azul que só existe aqui: Praia do Forte,
-            canal, dunas, o dia inteiro mudando de cor. Os chalés são poucos de propósito. Quem reserva, reserva a casa
-            — não um anúncio no meio de mil outros.
+            Rua do Céu, 72. O bairro mais antigo de Cabo Frio: casario, polo gastronômico e o canal. Daqui se chega
+            caminhando à orla, ao Forte São Mateus e ao Boulevard. Peró, Conchas e Arraial ficam a um pulo de carro.
           </p>
           <p className="mt-4 text-ink-soft leading-7">
             Instagram continua sendo a vitrine. O site é onde a estadia fecha: datas livres, valor, Pix ou cartão, tudo
             com a gente.
           </p>
+          <Link to="/regiao" className="mt-6 inline-block text-sm text-ocean underline underline-offset-4">
+            Ver praias, passeios e onde comer
+          </Link>
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <img src={asset('images/praia-areia.jpg')} alt="Areia e mar" className="h-64 w-full rounded-2xl object-cover" />
-          <img src={asset('images/dunas.jpg')} alt="Dunas" className="mt-8 h-64 w-full rounded-2xl object-cover" />
+          <img
+            src={asset('images/regiao/praia-forte-orla.jpg')}
+            alt="Praia do Forte, Cabo Frio"
+            className="h-64 w-full rounded-2xl object-cover"
+          />
+          <img
+            src={asset('images/regiao/forte-sao-mateus.jpg')}
+            alt="Forte São Mateus"
+            className="mt-8 h-64 w-full rounded-2xl object-cover"
+          />
         </div>
       </section>
 
@@ -121,7 +131,7 @@ export function HomePage() {
       </section>
 
       <section className="relative overflow-hidden">
-        <img src={asset('images/costa.jpg')} alt="Costa" className="h-[420px] w-full object-cover" />
+        <img src={asset('images/regiao/praia-forte-vista.jpg')} alt="Vista da Praia do Forte" className="h-[420px] w-full object-cover" />
         <div className="absolute inset-0 bg-ocean/55" />
         <div className="absolute inset-0 flex items-center">
           <div className="mx-auto max-w-3xl px-5 text-center text-linen">

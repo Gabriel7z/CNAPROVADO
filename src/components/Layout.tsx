@@ -3,6 +3,7 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom'
 
 const links = [
   { to: '/', label: 'O lugar', end: true },
+  { to: '/regiao', label: 'A região' },
   { to: '/chales', label: 'Chalés' },
   { to: '/reservar', label: 'Reservar' },
 ]
@@ -35,7 +36,7 @@ export function Layout() {
               Cabo Frio
             </span>
           </NavLink>
-          <nav className="flex items-center gap-1 text-sm sm:gap-4">
+          <nav className="flex items-center gap-0.5 text-xs sm:gap-3 sm:text-sm">
             {links.map((link) => (
               <NavLink
                 key={link.to}
@@ -62,13 +63,23 @@ export function Layout() {
         <div className="mx-auto grid max-w-6xl gap-8 px-5 py-12 md:grid-cols-3">
           <div>
             <p className="font-display text-3xl text-linen">Chalé Mirante</p>
-            <p className="mt-2 text-sm text-sand-deep">Cabo Frio · Região dos Lagos · RJ</p>
+            <p className="mt-2 text-sm text-sand-deep">Rua do Céu, 72 — Passagem</p>
+            <p className="text-sm text-sand-deep">Cabo Frio · RJ · 28906-230</p>
           </div>
           <div className="text-sm leading-7">
             <p>Reserva e pagamento no próprio site.</p>
-            <p>Sem intermediário. Sem comissão de plataforma.</p>
+            <p>Praia do Forte a 10 minutos a pé.</p>
             <a
               className="mt-2 inline-block underline decoration-gold/60 underline-offset-4"
+              href="https://www.google.com/maps/search/?api=1&query=Rua+do+C%C3%A9u+72,+Passagem,+Cabo+Frio"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Ver no Google Maps
+            </a>
+            <br />
+            <a
+              className="inline-block underline decoration-gold/60 underline-offset-4"
               href="https://www.instagram.com/chalemirantecabofrio"
               target="_blank"
               rel="noreferrer"

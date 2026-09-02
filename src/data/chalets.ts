@@ -22,7 +22,7 @@ export const chalets: Chalet[] = [
     name: 'Chalé Horizonte',
     tagline: 'Para dois, com a vista inteira',
     description:
-      'O chalé mais alto do terreno. Cama king, hidromassagem e varanda olhando o mar de Cabo Frio. Feito para casal que quer silêncio, luz e tempo lento.',
+      'O chalé mais alto do terreno, na Passagem. Cama king, hidromassagem e varanda. A Praia do Forte fica a dez minutos a pé.',
     guests: 2,
     bedrooms: 1,
     size: '42 m²',
@@ -50,7 +50,7 @@ export const chalets: Chalet[] = [
     name: 'Chalé Maré',
     tagline: 'Família pequena, pé no quintal',
     description:
-      'Dois quartos, cozinha completa e deck de madeira. Ideal para casal com filhos ou dois casais amigos. A brisa chega primeiro aqui.',
+      'Dois quartos, cozinha completa e deck. Ideal para casal com filhos. O polo gastronômico da Passagem está na esquina.',
     guests: 4,
     bedrooms: 2,
     size: '68 m²',
@@ -78,7 +78,7 @@ export const chalets: Chalet[] = [
     name: 'Chalé Duna',
     tagline: 'O maior, para reunir a casa',
     description:
-      'Três suítes, sala ampla e piscina privativa. Reveillon, aniversário, encontro de família — sem vizinho colado, com a Região dos Lagos à frente.',
+      'Três suítes, sala ampla e área gourmet. Reveillon, aniversário, encontro de família — a Região dos Lagos inteira a um pulo.',
     guests: 6,
     bedrooms: 3,
     size: '110 m²',

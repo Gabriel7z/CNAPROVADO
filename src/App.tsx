@@ -4,6 +4,7 @@ import { ChaletDetailPage } from './pages/ChaletDetailPage'
 import { ChaletsPage } from './pages/ChaletsPage'
 import { ConfirmacaoPage } from './pages/ConfirmacaoPage'
 import { HomePage } from './pages/HomePage'
+import { RegiaoPage } from './pages/RegiaoPage'
 import { ReservarPage } from './pages/ReservarPage'
 
 export default function App() {
@@ -12,6 +13,7 @@ export default function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<HomePage />} />
+          <Route path="/regiao" element={<RegiaoPage />} />
           <Route path="/chales" element={<ChaletsPage />} />
           <Route path="/chales/:id" element={<ChaletDetailPage />} />
           <Route path="/reservar" element={<ReservarPage />} />
