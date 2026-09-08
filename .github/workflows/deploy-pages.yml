@@ -1,6 +1,10 @@
 name: Deploy GitHub Pages
 
 on:
+  push:
+    branches:
+      - main
+      - cursor/renomear-cnaprovado-c61a
   workflow_dispatch:
 
 permissions:
@@ -28,6 +32,8 @@ jobs:
           touch _site/.nojekyll
 
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:
