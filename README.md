@@ -1,11 +1,7 @@
 # CNAPROVADO
 
-App web de questões de concurso.
+Questões de concurso no GitHub Pages:
 
-## Tópico 1 — Fontes, Conceito e Objeto do Direito Administrativo
+**https://gabriel7z.github.io/CNAPROVADO/**
 
-50 questões (certo/errado e múltipla escolha) com base na aula do prof. Thállius Moraes:
-
-https://www.youtube.com/watch?v=JvaumlEAPnI&list=PLl6y9CqXvcCIqKM0eBk_YcFp17Ae2k21c
-
-Abra `index.html` no navegador para estudar.
+Tópico 1 — Fontes, Conceito e Objeto do Direito Administrativo (Thállius Moraes). 50 questões.
