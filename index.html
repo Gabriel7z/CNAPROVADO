@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CNAPROVADO · Tópico 1 Direito Administrativo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Fraunces:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="brand">
+        <div class="logo">CNAPROVADO</div>
+        <small>Direito Administrativo · Thállius Moraes</small>
+      </header>
+
+      <main class="card">
+        <section id="hero" class="hero">
+          <p class="kicker">Bateria da aula</p>
+          <h1>Tópico 1 — Fontes, Conceito e Objeto</h1>
+          <p class="lead">
+            50 questões no estilo concurso, só com o que caiu nesta aula.
+            Certo/errado e múltipla escolha, gabarito na hora e revisão dos
+            erros no final.
+          </p>
+          <div class="meta">
+            <div>
+              <b id="qtd">50</b>
+              <span>questões</span>
+            </div>
+            <div>
+              <b>CESPE + ME</b>
+              <span>formatos mistos</span>
+            </div>
+            <div>
+              <b>~35 min</b>
+              <span>da videoaula</span>
+            </div>
+          </div>
+          <p class="lead">
+            Fonte:
+            <a
+              class="aula-link"
+              href="https://www.youtube.com/watch?v=JvaumlEAPnI&list=PLl6y9CqXvcCIqKM0eBk_YcFp17Ae2k21c"
+              target="_blank"
+              rel="noreferrer"
+              >videoaula Tópico 1</a
+            >.
+          </p>
+          <div class="row">
+            <label class="check">
+              <input id="embaralhar" type="checkbox" />
+              Embaralhar ordem
+            </label>
+          </div>
+          <div class="actions">
+            <button id="comecar" class="primary" type="button">
+              Começar as 50
+            </button>
+          </div>
+        </section>
+
+        <section id="quiz" class="quiz hidden">
+          <div class="progress-wrap">
+            <div class="progress-top">
+              <span id="progresso-texto">Questão 1 de 50</span>
+              <span>CNAPROVADO</span>
+            </div>
+            <div class="bar"><span id="barra"></span></div>
+          </div>
+          <span id="tema" class="tema"></span>
+          <p id="enunciado" class="enunciado"></p>
+          <div id="opcoes" class="options"></div>
+          <div id="feedback" class="feedback hidden"></div>
+          <div class="actions">
+            <button id="proxima" class="primary hidden" type="button">
+              Próxima
+            </button>
+          </div>
+        </section>
+
+        <section id="result" class="result hidden">
+          <p class="kicker">Resultado</p>
+          <h2>Sua bateria</h2>
+          <p id="score" class="score"></p>
+          <p id="pct" class="lead"></p>
+          <div class="row">
+            <button id="refazer" class="primary" type="button">Refazer</button>
+            <button id="inicio" class="ghost" type="button">Início</button>
+          </div>
+          <h2 style="margin-top: 28px">Erros para revisar</h2>
+          <div id="review" class="review"></div>
+        </section>
+      </main>
+    </div>
+    <script src="questoes.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
