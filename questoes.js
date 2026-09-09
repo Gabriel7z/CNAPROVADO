@@ -1,9 +1,10 @@
 const AULA = {
-  titulo: "Tópico 1 — Fontes, Conceito e Objeto",
+  titulo: "Tópicos 1 e 2 — Fontes, Estado e Governo",
   professor: "Thállius Moraes",
   materia: "Direito Administrativo",
   fonte:
     "https://www.youtube.com/watch?v=JvaumlEAPnI&list=PLl6y9CqXvcCIqKM0eBk_YcFp17Ae2k21c",
+  fonte2: "https://youtu.be/qATMH3H1Oek",
 };
 
 const QUESTOES = [
@@ -591,6 +592,577 @@ const QUESTOES = [
     explicacao:
       "Pessoa (física ou jurídica) tem as “coisas” da personalidade. Órgão, animal e objeto não. O prédio da prefeitura ou o prefeito não se confundem com o Município, que existe juridicamente.",
   },
+  {
+    id: 51,
+    tipo: "ce",
+    tema: "Conceito de Estado",
+    enunciado:
+      "Quando a aula fala em Estado, está se referindo aos estados-membros da Federação, como Paraná, Bahia ou Ceará.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "O professor alerta: não é o Estado-Paraná. Estado, aqui, é o poder público constituído — a pessoa jurídica territorial soberana, maior do que nós.",
+  },
+  {
+    id: 52,
+    tipo: "ce",
+    tema: "Conceito de Estado",
+    enunciado:
+      "No recorte da aula, o Estado é uma pessoa jurídica territorial soberana.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Três pedaços do conceito: pessoa jurídica (personalidade), territorial (não existe “em Nárnia”) e soberana (poder máximo e supremo).",
+  },
+  {
+    id: 53,
+    tipo: "ce",
+    tema: "Personalidade jurídica",
+    enunciado:
+      "Por ser pessoa jurídica, o Estado tem personalidade jurídica: aptidão para contrair direitos e obrigações e para ter patrimônio.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Personalidade jurídica = aptidão para ser sujeito de direitos e obrigações. O Estado é ente personalizado.",
+  },
+  {
+    id: 54,
+    tipo: "ce",
+    tema: "Território",
+    enunciado:
+      "O Estado pode existir apenas como construção mental, sem circunscrição geográfica.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "É territorial: para o Estado existir precisa de território. A analogia da aula é que não dá para ser só “na cabeça”, em Nárnia.",
+  },
+  {
+    id: 55,
+    tipo: "ce",
+    tema: "Soberania",
+    enunciado:
+      "Soberania é o poder máximo e supremo de um país de decidir os próprios rumos políticos, independentemente de pressões internas ou externas.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Na aula: ninguém manda na gente; o Estado decide o próprio futuro. Essa vontade suprema é a soberania.",
+  },
+  {
+    id: 56,
+    tipo: "ce",
+    tema: "Personalidade jurídica",
+    enunciado:
+      "A personalidade jurídica de direito público do Estado significa que ele está em igualdade com os administrados.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Direito público, aqui, aponta superioridade: o Estado não está no mesmo patamar dos particulares.",
+  },
+  {
+    id: 57,
+    tipo: "ce",
+    tema: "Conceito de Estado",
+    enunciado:
+      "O Estado trava relações internas com o seu povo e relações externas com outros Estados.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Atua no plano interno e no externo. Questão comentada na aula: ente personalizado tanto nas relações internacionais quanto internamente.",
+  },
+  {
+    id: 58,
+    tipo: "me",
+    tema: "Elementos do Estado",
+    enunciado:
+      "São elementos constitutivos do Estado, segundo a aula:",
+    alternativas: [
+      "União, Estados, Distrito Federal e Municípios.",
+      "Poder Legislativo, Poder Executivo e Poder Judiciário.",
+      "Povo, território e governo soberano.",
+      "República, Federação e Presidencialismo.",
+    ],
+    correta: 2,
+    explicacao:
+      "Elementos = povo, território e governo soberano. Entes federados são divisões internas; L, E e J são poderes; República/Federação/Presidencialismo são classificações (forma/sistema).",
+  },
+  {
+    id: 59,
+    tipo: "ce",
+    tema: "Elementos do Estado",
+    enunciado:
+      "Em item de certo ou errado, a formulação “povo, território e governo”, sem o adjetivo soberano, está no padrão cobrado na aula.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "O professor é explícito: o certo é governo soberano. Em C/E isso zera. Em múltipla escolha, se não houver “governo soberano”, vai na melhor resposta (governo).",
+  },
+  {
+    id: 60,
+    tipo: "ce",
+    tema: "Povo",
+    enunciado:
+      "Povo, na aula, são as pessoas com vínculo jurídico de nacionalidade com o Estado (brasileiros natos ou naturalizados), titulares de direitos e obrigações em face dele.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Não é “quem está no Brasil”. É quem tem o vínculo: a nacionalidade. Daí direitos (concurso, saúde) e obrigações (ex.: serviço militar).",
+  },
+  {
+    id: 61,
+    tipo: "ce",
+    tema: "Povo",
+    enunciado:
+      "O Paraguai pode exigir serviço militar obrigatório de brasileiro que complete 18 anos, porque a obrigação militar independe do vínculo de nacionalidade.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Exemplo da aula: o Brasil pode exigir o serviço militar do nacional brasileiro; o Paraguai não, porque o vínculo jurídico é com o Brasil.",
+  },
+  {
+    id: 62,
+    tipo: "ce",
+    tema: "Povo",
+    enunciado:
+      "Qualquer pessoa que esteja fisicamente no território brasileiro integra o povo brasileiro, inclusive o estrangeiro de passagem.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Povo não é “quem está aqui”. É quem tem ligação jurídica de nacionalidade com o Estado.",
+  },
+  {
+    id: 63,
+    tipo: "ce",
+    tema: "Território",
+    enunciado:
+      "Não existe Estado sem território: é preciso uma circunscrição geográfica.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Elemento território. Sem espaço geográfico não há Estado no sentido da aula.",
+  },
+  {
+    id: 64,
+    tipo: "ce",
+    tema: "Forma de Estado",
+    enunciado:
+      "A forma de Estado adotada no Brasil é a republicana.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Pegadinha clássica da aula: republicana é forma de GOVERNO. Forma de Estado = federativa.",
+  },
+  {
+    id: 65,
+    tipo: "ce",
+    tema: "Forma de Estado",
+    enunciado:
+      "A forma de Estado brasileira é a federativa (Federação).",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Forma de Estado: Federação / federativa. Também existem a unitária e a confederação (esta última o professor trata como de pouca incidência).",
+  },
+  {
+    id: 66,
+    tipo: "ce",
+    tema: "Forma de Estado",
+    enunciado:
+      "Na Federação há pluralidade política interna: vários centros de poder, e não um único centro como no Estado unitário (comparação da aula com o Uruguai).",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Federação = vários centros de poder (entes federados). Unitário = um centro (tipo só a União).",
+  },
+  {
+    id: 67,
+    tipo: "ce",
+    tema: "Entes federados",
+    enunciado:
+      "Os entes federados, centros de poder interno, são a União, os Estados, o Distrito Federal e os Municípios.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Quatro entes. União = nacional; Estados = regionais; Municípios = locais. O DF acumula competências de Estado e de Município (tema de Constitucional).",
+  },
+  {
+    id: 68,
+    tipo: "ce",
+    tema: "Entes federados",
+    enunciado:
+      "A União é centro de poder nacional; os Estados, regionais; os Municípios, locais.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Esquema da aula para localizar cada ente no pacto federativo.",
+  },
+  {
+    id: 69,
+    tipo: "ce",
+    tema: "Forma de Estado",
+    enunciado:
+      "A forma federativa de Estado é cláusula pétrea, prevista no art. 60, §4º, da Constituição, e não pode ser abolida.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Cláusula pétrea = escrita na pedra. A forma federativa não pode ser destruída por emenda.",
+  },
+  {
+    id: 70,
+    tipo: "ce",
+    tema: "Forma de Estado",
+    enunciado:
+      "No pacto federativo brasileiro há direito de secessão: um Estado-membro pode deixar a Federação e constituir país próprio.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Não há direito de secessão. “Estamos todos no mesmo barco”: não se divide o país ao meio.",
+  },
+  {
+    id: 71,
+    tipo: "ce",
+    tema: "Autonomia",
+    enunciado:
+      "União, Estados, DF e Municípios são dotados de independência e autonomia: não há hierarquia entre eles; cada um no seu quadrado.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "A União não “manda” no Estado que “manda” no Município. Cada ente tem o seu quinhão de competências.",
+  },
+  {
+    id: 72,
+    tipo: "ce",
+    tema: "Soberania",
+    enunciado:
+      "Cada ente federado é dotado de soberania, isto é, do poder máximo e supremo de decidir os rumos políticos.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Pegadinha da aula: ente tem independência e autonomia, NÃO soberania. Soberania é da República Federativa do Brasil.",
+  },
+  {
+    id: 73,
+    tipo: "ce",
+    tema: "Soberania",
+    enunciado:
+      "Na analogia da aula (Power Rangers), cada ente federado tem poderes próprios, mas o “Megazord” — a República Federativa do Brasil — é quem detém a soberania.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Ranger sozinho é poderoso; o poder máximo (Megazord) só aparece quando todos se juntam. Esse todo é a RFB.",
+  },
+  {
+    id: 74,
+    tipo: "ce",
+    tema: "Conceito de Estado",
+    enunciado:
+      "O nome do nosso Estado é República Federativa do Brasil; “Brasil” funciona como apelido.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Analogia da aula: Antônio / Tonho. O nome jurídico do Estado é República Federativa do Brasil.",
+  },
+  {
+    id: 75,
+    tipo: "ce",
+    tema: "Soberania",
+    enunciado:
+      "Quem nos representa internacionalmente é a União, mas a soberania continua sendo da República Federativa do Brasil.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "União = Ranger vermelho que pilota o Megazord. Representa lá fora, mas o Megazord (RFB) é que tem a soberania.",
+  },
+  {
+    id: 76,
+    tipo: "ce",
+    tema: "Forma de governo",
+    enunciado:
+      "A forma de governo adotada no Brasil é a federativa.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Federativa é forma de ESTADO. Forma de governo = republicana (República).",
+  },
+  {
+    id: 77,
+    tipo: "ce",
+    tema: "Forma de governo",
+    enunciado:
+      "República vem de res publica (coisa do povo): o que é público não é do rei, é nosso.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Contraste da aula com a monarquia, em que “tudo é do rei”.",
+  },
+  {
+    id: 78,
+    tipo: "ce",
+    tema: "Forma de governo",
+    enunciado:
+      "Na monarquia, na comparação da aula, o rei em regra é vitalício, a sucessão é hereditária e ele não responde como o governante republicano.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "O professor usa a monarquia só para contrastar. O que importa gravar é a República.",
+  },
+  {
+    id: 79,
+    tipo: "ce",
+    tema: "Forma de governo",
+    enunciado:
+      "Na República o governante é eleito, o mandato é temporário e ele pode ser responsabilizado pela má gestão.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Três marcas da forma republicana na aula: eleição, temporalidade e responsabilização. “O brinquedo é nosso”.",
+  },
+  {
+    id: 80,
+    tipo: "ce",
+    tema: "Forma de governo",
+    enunciado:
+      "Segundo a aula, a forma republicana é cláusula pétrea implícita: o STF a reconhece, embora não esteja expressa no art. 60, §4º.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "A federativa está expressa no 60, §4º. A republicana, no recorte da aula, é pétrea implícita (STF).",
+  },
+  {
+    id: 81,
+    tipo: "ce",
+    tema: "Forma de governo",
+    enunciado:
+      "O Presidente da República, no recorte da aula, tem mandato de quatro anos, admitida uma reeleição consecutiva (quatro mais quatro), e o cargo não é vitalício.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Mandato temporário. Não é rei para o resto da vida.",
+  },
+  {
+    id: 82,
+    tipo: "ce",
+    tema: "Sistema de governo",
+    enunciado:
+      "O sistema de governo brasileiro é o democrático.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Democrático é o REGIME de governo. Sistema de governo = presidencialista (presidencialismo).",
+  },
+  {
+    id: 83,
+    tipo: "ce",
+    tema: "Sistema de governo",
+    enunciado:
+      "No presidencialismo brasileiro o Presidente é eleito diretamente pelo povo, e não escolhido pelo Parlamento.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Diferença da aula com o parlamentarismo: lá o Parlamento escolhe o governante; aqui nós votamos no Presidente.",
+  },
+  {
+    id: 84,
+    tipo: "ce",
+    tema: "Sistema de governo",
+    enunciado:
+      "No parlamentarismo, na comparação da aula, é o Parlamento quem escolhe o governante.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Serve só de contraste. O que cai para nós é o presidencialismo brasileiro.",
+  },
+  {
+    id: 85,
+    tipo: "ce",
+    tema: "Sistema de governo",
+    enunciado:
+      "No presidencialismo, a mesma pessoa (Presidente da República) acumula as funções de chefe de governo (interno) e de chefe de Estado (externo), visíveis no art. 84 da CF.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Chefe de governo = funções políticas e administrativas internas. Chefe de Estado = representação internacional. As duas no mesmo cargo.",
+  },
+  {
+    id: 86,
+    tipo: "ce",
+    tema: "Regime de governo",
+    enunciado:
+      "O regime de governo brasileiro é o democrático: todo poder emana do povo, que o exerce diretamente ou por representantes eleitos.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Democracia = governo do povo. Todo poder emana do povo.",
+  },
+  {
+    id: 87,
+    tipo: "ce",
+    tema: "Regime de governo",
+    enunciado:
+      "Democracia, na etimologia da aula, é governo do povo.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Não é “governo do demo”. É governo do povo.",
+  },
+  {
+    id: 88,
+    tipo: "ce",
+    tema: "Democracia",
+    enunciado:
+      "O Brasil adota democracia puramente indireta: o povo nunca decide de forma direta, só por representantes.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "É mista: democracia semi-direta ou participativa. Tem mecanismos diretos (plebiscito, referendo, iniciativa popular) e indiretos (eleição de representantes).",
+  },
+  {
+    id: 89,
+    tipo: "ce",
+    tema: "Democracia",
+    enunciado:
+      "A democracia brasileira é semi-direta ou participativa: mistura mecanismos diretos e indiretos.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Das duas juntas. Direta = o povo decide. Indireta = elege alguém para decidir.",
+  },
+  {
+    id: 90,
+    tipo: "ce",
+    tema: "Plebiscito e referendo",
+    enunciado:
+      "Plebiscito, na aula, é consulta prévia: o poder público pergunta antes de editar a lei ou praticar o ato.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Macete da aula: plebiscito = prévio. Consulta anterior.",
+  },
+  {
+    id: 91,
+    tipo: "ce",
+    tema: "Plebiscito e referendo",
+    enunciado:
+      "Referendo é consulta posterior: a lei ou o ato já existe e o povo confirma ou rejeita.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Referendo = depois. Consulta para referendar o que já foi feito.",
+  },
+  {
+    id: 92,
+    tipo: "ce",
+    tema: "Democracia",
+    enunciado:
+      "A iniciativa popular é instrumento pelo qual o povo pode apresentar projeto de lei.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Mecanismo de democracia direta citado na aula (o detalhamento fica para o Constitucional).",
+  },
+  {
+    id: 93,
+    tipo: "ce",
+    tema: "Democracia",
+    enunciado:
+      "Eleger Presidente, Governador, Prefeito, Senador, Deputado e Vereador são exemplos de exercício indireto do poder.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "O povo escolhe pessoas para tomar decisões por ele — democracia indireta, que no Brasil convive com os mecanismos diretos.",
+  },
+  {
+    id: 94,
+    tipo: "me",
+    tema: "Classificações",
+    enunciado:
+      "Assinale a correlação correta, no padrão da aula:",
+    alternativas: [
+      "Forma de Estado: República; forma de governo: Federação; sistema: democracia.",
+      "Forma de Estado: Federação; forma de governo: República; sistema: Presidencialismo; regime: Democracia.",
+      "Forma de Estado: Presidencialismo; forma de governo: Democracia; sistema: Federação.",
+      "Forma de Estado: Monarquia; forma de governo: Unitário; regime: Parlamentarismo.",
+    ],
+    correta: 1,
+    explicacao:
+      "Poeminha: o Estado fede (federativa); a República é fogo (forma de governo); o presidente é sistemático (presidencialismo); o regime é democrático.",
+  },
+  {
+    id: 95,
+    tipo: "ce",
+    tema: "Classificações",
+    enunciado:
+      "O “poeminha” da aula (“o Estado fede; a República é fogo; o presidente é sistemático; o regime é democrático”) serve para não trocar forma de Estado, forma de governo, sistema e regime.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "A banca inverte os rótulos. O poema existe para essa pegadinha besta não levar ponto.",
+  },
+  {
+    id: 96,
+    tipo: "ce",
+    tema: "Soberania",
+    enunciado:
+      "Os Estados-membros, os Municípios e o Distrito Federal são pessoas jurídicas de direito público que integram a estrutura do Estado e são dotados de soberania e de autonomia política, administrativa e financeira.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Questão comentada na aula: PJ de direito público, ok; autonomia, ok; soberania, não. Soberania é da República Federativa do Brasil.",
+  },
+  {
+    id: 97,
+    tipo: "ce",
+    tema: "Elementos do Estado",
+    enunciado:
+      "Povo, território e governo soberano são elementos do Estado.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Questão “presente” da aula. São os três elementos.",
+  },
+  {
+    id: 98,
+    tipo: "ce",
+    tema: "Conceito de Estado",
+    enunciado:
+      "O Estado é um ente personalizado, apresentando-se tanto no plano externo (relações internacionais) quanto no interno como pessoa jurídica de direito público, capaz de adquirir direitos e contrair obrigações.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Item comentado na aula e dado como correto: personalizado, interno e externo, PJ de direito público.",
+  },
+  {
+    id: 99,
+    tipo: "me",
+    tema: "Elementos do Estado",
+    enunciado:
+      "A respeito dos elementos do Estado, assinale a opção correta:",
+    alternativas: [
+      "Povo, território e governo soberano são elementos indissociáveis do Estado.",
+      "O Estado é um ente despersonalizado.",
+      "São elementos do Estado o Poder Legislativo, o Judiciário e o Executivo.",
+      "A União, os Estados, os Municípios e o DF são os elementos do Estado.",
+    ],
+    correta: 0,
+    explicacao:
+      "Questão da tela da aula. A está certa (indissociáveis = sempre presentes). B: é personalizado. C: L/E/J são poderes, não elementos. D: são entes federados, divisões internas. Presidencialismo/parlamentarismo (também errado na aula) é sistema de governo.",
+  },
+  {
+    id: 100,
+    tipo: "me",
+    tema: "Freios e contrapesos",
+    enunciado:
+      "Sobre independência dos poderes e dos entes, no recorte das aulas 1 e 2, assinale a correta:",
+    alternativas: [
+      "Há hierarquia: o Executivo manda no Legislativo e no Judiciário.",
+      "Os poderes são independentes e harmônicos; pelo sistema de freios e contrapesos, cada um controla o outro, sem isso gerar hierarquia entre eles.",
+      "União, Estados e Municípios têm soberania própria, cada um um “Megazord”.",
+      "A forma de governo federativa impede qualquer controle recíproco entre os poderes.",
+    ],
+    correta: 1,
+    explicacao:
+      "Poderes: independentes e harmônicos + freios e contrapesos (aula 1 / título do Tópico 2). Entes: autonomia, não soberania. E federativa é forma de Estado, não de governo.",
+  },
+
 ];
 
 const MATERIAS_BASE = [

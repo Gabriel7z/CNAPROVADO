@@ -128,7 +128,7 @@ function renderQuestoesHome() {
   const cs = cards();
   $("#kicker-materia").textContent = m.nome;
   $("#titulo-materia").textContent =
-    m.id === "dadm" ? "Tópico 1 — Fontes, Conceito e Objeto" : m.nome;
+    m.id === "dadm" ? "Tópicos 1 e 2 — Fontes, Estado e Governo" : m.nome;
   $("#qtd").textContent = String(qs.length);
   $("#meta-cards").textContent = String(cs.length);
   if (!qs.length) {
@@ -137,7 +137,9 @@ function renderQuestoesHome() {
     $("#comecar").classList.add("hidden");
   } else {
     $("#lead-materia").textContent =
-      "Questões no estilo concurso, gabarito na hora e revisão dos erros no final.";
+      m.id === "dadm"
+        ? "Tópico 1 (Q1–50) + Tópico 2 Estado e Governo (Q51–100). Gabarito na hora e revisão dos erros no final."
+        : "Questões no estilo concurso, gabarito na hora e revisão dos erros no final.";
     $("#comecar").classList.remove("hidden");
   }
 }
