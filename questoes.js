@@ -592,3 +592,46 @@ const QUESTOES = [
       "Pessoa (física ou jurídica) tem as “coisas” da personalidade. Órgão, animal e objeto não. O prédio da prefeitura ou o prefeito não se confundem com o Município, que existe juridicamente.",
   },
 ];
+
+const MATERIAS_BASE = [
+  {
+    id: "dadm",
+    nome: "Direito Administrativo",
+    sigla: "D.Adm",
+    cor: "#d4b45a",
+  },
+  {
+    id: "pt",
+    nome: "Português",
+    sigla: "PT",
+    cor: "#6b8fd4",
+  },
+  {
+    id: "dc",
+    nome: "Direito Constitucional",
+    sigla: "D.Const",
+    cor: "#c46b5a",
+  },
+];
+
+function questoesDaMateria(id) {
+  if (id === "dadm") return QUESTOES;
+  return [];
+}
+
+function cardsDaMateria(id) {
+  const qs = questoesDaMateria(id);
+  return qs.map((q) => {
+    const gab =
+      q.tipo === "ce"
+        ? q.alternativas[q.correta]
+        : `${String.fromCharCode(65 + q.correta)}) ${q.alternativas[q.correta]}`;
+    return {
+      id: `${id}-q${q.id}`,
+      materia: id,
+      frente: q.enunciado,
+      verso: `Gabarito: ${gab}\n\n${q.explicacao}`,
+      tema: q.tema,
+    };
+  });
+}

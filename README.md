@@ -1,10 +1,7 @@
 # CNAPROVADO
 
-Quiz de Direito Administrativo no GitHub.
+App de estudo para concursos: https://gabriel7z.github.io/CNAPROVADO/
 
-- `index.html` — página do app
-- `app.js` — lógica do quiz
-- `questoes.js` — 50 questões do Tópico 1 (Thállius Moraes)
-- `styles.css` — visual
-
-Site (GitHub Pages): https://gabriel7z.github.io/CNAPROVADO/
+- Abas de matéria (D.Adm, Português, Constitucional; dá para criar outras)
+- Questões, cards estilo Anki, avatar e gráficos de desempenho
+- D.Adm já tem as 50 questões do Tópico 1 (Thállius Moraes)

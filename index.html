@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>CNAPROVADO · Tópico 1 Direito Administrativo</title>
+    <title>CNAPROVADO</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -13,20 +13,31 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="wrap">
+    <div class="wrap app-shell">
       <header class="brand">
         <div class="logo">CNAPROVADO</div>
-        <small>Direito Administrativo · Thállius Moraes</small>
+        <button id="chip-perfil" class="avatar-chip" type="button" title="Perfil">
+          <span id="chip-face" class="avatar-face">🎯</span>
+          <span id="chip-nome">Concurseiro</span>
+        </button>
       </header>
 
+      <nav class="materias" id="materias-nav" aria-label="Matérias"></nav>
+
+      <nav class="modos" id="modos-nav" aria-label="Modos">
+        <button class="modo ativo" data-modo="questoes" type="button">Questões</button>
+        <button class="modo" data-modo="cards" type="button">Cards</button>
+        <button class="modo" data-modo="desempenho" type="button">Desempenho</button>
+        <button class="modo" data-modo="perfil" type="button">Avatar</button>
+      </nav>
+
       <main class="card">
-        <section id="hero" class="hero">
-          <p class="kicker">Bateria da aula</p>
-          <h1>Tópico 1 — Fontes, Conceito e Objeto</h1>
-          <p class="lead">
-            50 questões no estilo concurso, só com o que caiu nesta aula.
-            Certo/errado e múltipla escolha, gabarito na hora e revisão dos
-            erros no final.
+        <section id="view-questoes-home" class="hero">
+          <p class="kicker" id="kicker-materia">Direito Administrativo</p>
+          <h1 id="titulo-materia">Tópico 1 — Fontes, Conceito e Objeto</h1>
+          <p class="lead" id="lead-materia">
+            50 questões no estilo concurso. Certo/errado e múltipla escolha,
+            gabarito na hora e revisão dos erros no final.
           </p>
           <div class="meta">
             <div>
@@ -34,24 +45,14 @@
               <span>questões</span>
             </div>
             <div>
-              <b>CESPE + ME</b>
+              <b id="meta-formato">CESPE + ME</b>
               <span>formatos mistos</span>
             </div>
             <div>
-              <b>~35 min</b>
-              <span>da videoaula</span>
+              <b id="meta-cards">50</b>
+              <span>cards Anki</span>
             </div>
           </div>
-          <p class="lead">
-            Fonte:
-            <a
-              class="aula-link"
-              href="https://www.youtube.com/watch?v=JvaumlEAPnI&list=PLl6y9CqXvcCIqKM0eBk_YcFp17Ae2k21c"
-              target="_blank"
-              rel="noreferrer"
-              >videoaula Tópico 1</a
-            >.
-          </p>
           <div class="row">
             <label class="check">
               <input id="embaralhar" type="checkbox" />
@@ -59,13 +60,11 @@
             </label>
           </div>
           <div class="actions">
-            <button id="comecar" class="primary" type="button">
-              Começar as 50
-            </button>
+            <button id="comecar" class="primary" type="button">Começar</button>
           </div>
         </section>
 
-        <section id="quiz" class="quiz hidden">
+        <section id="view-quiz" class="quiz hidden">
           <div class="progress-wrap">
             <div class="progress-top">
               <span id="progresso-texto">Questão 1 de 50</span>
@@ -78,23 +77,60 @@
           <div id="opcoes" class="options"></div>
           <div id="feedback" class="feedback hidden"></div>
           <div class="actions">
-            <button id="proxima" class="primary hidden" type="button">
-              Próxima
-            </button>
+            <button id="proxima" class="primary hidden" type="button">Próxima</button>
           </div>
         </section>
 
-        <section id="result" class="result hidden">
+        <section id="view-result" class="result hidden">
           <p class="kicker">Resultado</p>
           <h2>Sua bateria</h2>
           <p id="score" class="score"></p>
           <p id="pct" class="lead"></p>
           <div class="row">
             <button id="refazer" class="primary" type="button">Refazer</button>
-            <button id="inicio" class="ghost" type="button">Início</button>
+            <button id="inicio" class="ghost" type="button">Questões</button>
           </div>
           <h2 style="margin-top: 28px">Erros para revisar</h2>
           <div id="review" class="review"></div>
+        </section>
+
+        <section id="view-cards" class="hero hidden">
+          <p class="kicker">Revisão espaçada</p>
+          <h1>Cards estilo Anki</h1>
+          <p class="lead" id="cards-lead">
+            Frente e verso. Marque de novo, difícil, bom ou fácil para o próximo
+            intervalo.
+          </p>
+          <p id="cards-stats" class="lead"></p>
+          <div id="anki-stage"></div>
+        </section>
+
+        <section id="view-desempenho" class="hero hidden">
+          <p class="kicker">Painel</p>
+          <h1>Desempenho</h1>
+          <p class="lead">Acertos, erros e evolução por matéria. Fica salvo neste aparelho.</p>
+          <div class="stats-grid" id="stats-kpis"></div>
+          <h2 class="chart-title">Geral: acertos × erros</h2>
+          <div id="chart-geral" class="chart-box"></div>
+          <h2 class="chart-title">Por matéria</h2>
+          <div id="chart-materias" class="chart-box"></div>
+          <h2 class="chart-title">Últimas baterias</h2>
+          <div id="historico" class="review"></div>
+        </section>
+
+        <section id="view-perfil" class="hero hidden">
+          <p class="kicker">Identidade</p>
+          <h1>Seu avatar</h1>
+          <p class="lead">Escolha um rosto e um nome. Isso aparece no topo e no painel.</p>
+          <label class="field">
+            Nome
+            <input id="perfil-nome" type="text" maxlength="24" placeholder="Seu nome" />
+          </label>
+          <p class="field-label">Avatar</p>
+          <div id="avatar-grid" class="avatar-grid"></div>
+          <div class="actions">
+            <button id="salvar-perfil" class="primary" type="button">Salvar avatar</button>
+          </div>
         </section>
       </main>
     </div>
