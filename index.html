@@ -10,22 +10,47 @@
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css" />
     <script>
+      window.CNAPROVADO_TOGGLE_THEME = function () {
+        var next =
+          document.documentElement.getAttribute("data-theme") === "dark"
+            ? "light"
+            : "dark";
+        document.documentElement.setAttribute("data-theme", next);
+        try {
+          localStorage.setItem("cnaprovado-theme", next);
+        } catch (e) {}
+        var btn = document.getElementById("theme-btn");
+        if (btn) btn.textContent = next === "dark" ? "Claro" : "Escuro";
+      };
       try {
-        const t = localStorage.getItem("cnaprovado-theme");
-        if (t) document.documentElement.setAttribute("data-theme", t);
-      } catch {}
+        var t = localStorage.getItem("cnaprovado-theme") || "light";
+        document.documentElement.setAttribute("data-theme", t);
+      } catch (e) {}
     </script>
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <div class="wrap app-shell">
       <header class="brand">
         <div class="logo">CNAPROVADO</div>
         <div class="brand-actions">
-          <button id="theme-btn" class="theme-btn" type="button" title="Tema" aria-label="Trocar tema">
-            ☾
+          <button
+            id="theme-btn"
+            class="theme-btn"
+            type="button"
+            title="Claro ou escuro"
+            aria-label="Trocar tema"
+            onclick="CNAPROVADO_TOGGLE_THEME()"
+          >
+            Escuro
           </button>
+          <script>
+            if (document.documentElement.getAttribute("data-theme") === "dark") {
+              var tb = document.getElementById("theme-btn");
+              if (tb) tb.textContent = "Claro";
+            }
+          </script>
           <button id="chip-perfil" class="avatar-chip hidden" type="button" title="Perfil">
           <span id="chip-face" class="avatar-face">🎯</span>
           <span id="chip-nome">Concurseiro</span>

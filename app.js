@@ -103,8 +103,8 @@ function aplicarTema(theme) {
   try {
     localStorage.setItem("cnaprovado-theme", theme);
   } catch {}
-  const btn = $("#theme-btn");
-  if (btn) btn.textContent = theme === "dark" ? "☀" : "☾";
+  const btn = document.getElementById("theme-btn");
+  if (btn) btn.textContent = theme === "dark" ? "Claro" : "Escuro";
 }
 
 function mostrar(id) {
@@ -778,9 +778,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   $("#chip-perfil").addEventListener("click", () => {
     ui.modo = "perfil";
     render();
-  });
-  $("#theme-btn")?.addEventListener("click", () => {
-    aplicarTema(temaAtual() === "dark" ? "light" : "dark");
   });
   aplicarTema(temaAtual());
   $("#comecar").addEventListener("click", iniciar);
