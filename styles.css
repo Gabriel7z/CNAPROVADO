@@ -559,6 +559,23 @@ button,
   color: var(--bad);
 }
 
+.login-card {
+  background: #fff;
+  border: 1.5px solid var(--gold);
+  border-radius: 16px;
+  padding: 16px 16px 8px;
+  margin-bottom: 22px;
+}
+
+.login-card h2 {
+  margin: 0 0 6px;
+  font-size: 1.2rem;
+}
+
+.login-card .lead {
+  margin-top: 0;
+}
+
 .rank-box {
   margin-top: 8px;
 }

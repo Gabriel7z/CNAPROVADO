@@ -46,6 +46,12 @@ const Cloud = {
       return "O e-mail ainda não foi confirmado. No Supabase, desliga Confirm email.";
     }
     if (lower.includes("password")) return "A senha precisa ter pelo menos 6 caracteres.";
+    if (lower.includes("email address") && lower.includes("invalid")) {
+      return "Esse e-mail não foi aceito. Usa um Gmail (ou outro e-mail de verdade).";
+    }
+    if (lower.includes("email not confirmed")) {
+      return "Esse e-mail ainda não foi confirmado. Abre a caixa de entrada e clica no link da Supabase.";
+    }
     if (lower.includes("failed to fetch") || lower.includes("network")) {
       return "Não deu para falar com a nuvem. Confere a URL do projeto.";
     }
@@ -265,6 +271,7 @@ const Cloud = {
       email: email.trim(),
       password: senha,
       options: {
+        emailRedirectTo: "https://gabriel7z.github.io/CNAPROVADO/",
         data: {
           apelido: local.nome || "Concurseiro",
           avatar: local.avatar || "🎯",

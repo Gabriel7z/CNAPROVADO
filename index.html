@@ -29,11 +29,12 @@
         <button class="modo" data-modo="cards" type="button">Cards</button>
         <button class="modo" data-modo="desempenho" type="button">Desempenho</button>
         <button class="modo" data-modo="rank" type="button">Rank</button>
-        <button class="modo" data-modo="perfil" type="button">Avatar</button>
+        <button class="modo" data-modo="perfil" type="button">Conta</button>
       </nav>
 
       <main class="card">
         <section id="view-questoes-home" class="hero">
+          <div id="login-home" class="login-card"></div>
           <p class="kicker" id="kicker-materia">Direito Administrativo</p>
           <h1 id="titulo-materia">Tópicos 1 e 2 — Fontes, Estado e Governo</h1>
           <p class="lead" id="lead-materia">
@@ -134,8 +135,15 @@
         </section>
 
         <section id="view-perfil" class="hero hidden">
-          <p class="kicker">Identidade</p>
-          <h1>Seu avatar</h1>
+          <p class="kicker">Conta</p>
+          <h1>Entrar no CNAPROVADO</h1>
+          <p class="lead" id="conta-lead">
+            Crie a conta para o ranking e para salvar o estudo em qualquer aparelho.
+            As questões continuam neste site; o banco guarda só pessoas e resultados.
+          </p>
+          <div id="conta-box"></div>
+
+          <h2 class="chart-title">Avatar</h2>
           <p class="lead">Escolha um rosto e um nome. Isso aparece no topo, no painel e no rank.</p>
           <label class="field">
             Nome
@@ -146,19 +154,12 @@
           <div class="actions">
             <button id="salvar-perfil" class="primary" type="button">Salvar avatar</button>
           </div>
-
-          <h2 class="chart-title">Conta na nuvem</h2>
-          <p class="lead" id="conta-lead">
-            Login para salvar em qualquer aparelho, estatísticas e ranking. As questões
-            continuam no app; o banco guarda só pessoas e resultados.
-          </p>
-          <div id="conta-box"></div>
         </section>
       </main>
     </div>
     <script src="questoes.js"></script>
     <script src="supabase-config.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js"></script>
     <script src="cloud.js"></script>
     <script src="app.js"></script>
   </body>

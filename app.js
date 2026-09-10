@@ -132,8 +132,9 @@ function renderModos() {
 
 function renderChip() {
   const p = db().perfil;
-  $("#chip-face").textContent = p.avatar;
-  $("#chip-nome").textContent = p.nome || "Concurseiro";
+  const logado = Boolean(cloud()?.logado());
+  $("#chip-face").textContent = logado ? p.avatar : "🔑";
+  $("#chip-nome").textContent = logado ? p.nome || "Concurseiro" : "Entrar";
 }
 
 function renderQuestoesHome() {
@@ -156,6 +157,10 @@ function renderQuestoesHome() {
         : "Questões no estilo concurso, gabarito na hora e revisão dos erros no final.";
     $("#comecar").classList.remove("hidden");
   }
+  renderConta($("#login-home"), {
+    titulo: "Login do ranking",
+    lead: "Entra ou cria a conta aqui. Sem isso o Rank fica vazio para você.",
+  });
 }
 
 function montarFila() {
@@ -480,7 +485,7 @@ function renderPerfil() {
     });
     grid.appendChild(btn);
   });
-  renderConta();
+  renderConta($("#conta-box"));
 }
 
 function salvarPerfil() {
@@ -492,141 +497,119 @@ function salvarPerfil() {
   renderChip();
 }
 
-function setContaMsg(text, tipo) {
-  const el = $("#conta-msg");
+function setContaMsg(box, text, tipo) {
+  const el = box?.querySelector(".conta-msg");
   if (!el) return;
   el.textContent = text || "";
   el.className = `conta-msg${tipo ? ` ${tipo}` : ""}`;
 }
 
-function renderConta() {
-  const box = $("#conta-box");
+function renderConta(box, opts = {}) {
   if (!box) return;
   const sb = cloud();
-  const cfg = sb?.config() || { url: "", anonKey: "" };
+  const titulo = opts.titulo || "";
+  const lead = opts.lead || "";
+  const cabeca = titulo
+    ? `<h2>${esc(titulo)}</h2><p class="lead">${esc(lead)}</p>`
+    : "";
 
   if (!sb || !window.supabase) {
-    box.innerHTML =
-      '<div class="vazio">Não deu para carregar a biblioteca da nuvem. Recarrega a página.</div>';
+    box.innerHTML = `${cabeca}<div class="vazio">Não deu para carregar a biblioteca da nuvem. Recarrega a página.</div>`;
     return;
   }
 
   if (!sb.pronto()) {
-    box.innerHTML = `
+    box.innerHTML = `${cabeca}
       <div class="vazio">
-        Ainda falta ligar o projeto Supabase. Cria o projeto, cola o SQL de
-        <code>supabase.sql</code> no SQL Editor, desliga Confirm email e cola
-        aqui a URL e a chave <b>anon</b> (nunca a service_role).
-      </div>
-      <label class="field">URL do projeto
-        <input id="sb-url" type="url" placeholder="https://xxxx.supabase.co" value="${esc(cfg.url || "")}" />
-      </label>
-      <label class="field">Chave anon
-        <input id="sb-key" type="text" placeholder="eyJ..." value="${esc(cfg.anonKey || "")}" />
-      </label>
-      <div class="actions">
-        <button id="sb-salvar-cfg" class="primary" type="button">Salvar neste aparelho</button>
-      </div>
-      <p id="conta-msg" class="conta-msg"></p>
-      <p class="hint">Isso vale só no seu navegador. Para o site no GitHub Pages funcionar para todo mundo, essas duas chaves precisam ir no arquivo <code>supabase-config.js</code> e ser publicadas.</p>
-    `;
-    $("#sb-salvar-cfg").addEventListener("click", async () => {
-      const url = $("#sb-url").value.trim();
-      const anonKey = $("#sb-key").value.trim();
-      if (!url || !anonKey) {
-        setContaMsg("Cola a URL e a chave anon.", "bad");
-        return;
-      }
-      sb.salvarConfigLocal(url, anonKey);
-      try {
-        await sb.iniciar();
-        setContaMsg("Configuração salva neste aparelho.", "ok");
-        renderConta();
-      } catch (err) {
-        setContaMsg(sb.traduzErro(err), "bad");
-      }
-    });
+        Ainda falta ligar o projeto Supabase.
+      </div>`;
     return;
   }
 
   if (sb.logado()) {
     const email = sb.user.email || "";
     const mostrarRank = db().perfil.mostrarRank !== false;
-    box.innerHTML = `
-      <p class="conta-ok">Entrada feita: <b>${esc(email)}</b>. Estatísticas sobem para a nuvem.</p>
+    box.innerHTML = `${cabeca}
+      <p class="conta-ok">Você está dentro: <b>${esc(email)}</b></p>
       <label class="check">
-        <input id="mostrar-rank" type="checkbox" ${mostrarRank ? "checked" : ""} />
+        <input class="mostrar-rank" type="checkbox" ${mostrarRank ? "checked" : ""} />
         Aparecer no ranking
       </label>
       <div class="actions">
-        <button id="sb-sair" class="ghost" type="button">Sair</button>
+        <button class="sb-sair ghost" type="button">Sair</button>
       </div>
-      <p id="conta-msg" class="conta-msg"></p>
+      <p class="conta-msg"></p>
     `;
-    $("#mostrar-rank").addEventListener("change", async () => {
-      const on = $("#mostrar-rank").checked;
+    box.querySelector(".mostrar-rank")?.addEventListener("change", async (ev) => {
+      const on = ev.target.checked;
       persist((d) => {
         d.perfil.mostrarRank = on;
       });
       try {
         await sb.atualizarPerfil({ mostrarRank: on });
-        setContaMsg(on ? "Você aparece no rank." : "Você ficou fora do rank.", "ok");
+        setContaMsg(box, on ? "Você aparece no rank." : "Você ficou fora do rank.", "ok");
       } catch (err) {
-        setContaMsg(sb.traduzErro(err), "bad");
+        setContaMsg(box, sb.traduzErro(err), "bad");
       }
     });
-    $("#sb-sair").addEventListener("click", async () => {
+    box.querySelector(".sb-sair")?.addEventListener("click", async () => {
       await sb.sair();
       render();
     });
     return;
   }
 
-  box.innerHTML = `
+  box.innerHTML = `${cabeca}
     <label class="field">E-mail
-      <input id="sb-email" type="email" autocomplete="email" placeholder="voce@email.com" />
+      <input class="sb-email" type="email" autocomplete="email" placeholder="seu Gmail" />
     </label>
     <label class="field">Senha
-      <input id="sb-senha" type="password" autocomplete="current-password" placeholder="mínimo 6 caracteres" />
+      <input class="sb-senha" type="password" autocomplete="current-password" placeholder="mínimo 6 caracteres" />
     </label>
     <div class="actions">
-      <button id="sb-entrar" class="primary" type="button">Entrar</button>
-      <button id="sb-criar" class="ghost" type="button">Criar conta</button>
+      <button class="sb-entrar primary" type="button">Entrar</button>
+      <button class="sb-criar ghost" type="button">Criar conta</button>
     </div>
-    <p id="conta-msg" class="conta-msg"></p>
+    <p class="conta-msg"></p>
   `;
   const emailSenha = () => ({
-    email: $("#sb-email").value.trim(),
-    senha: $("#sb-senha").value,
+    email: box.querySelector(".sb-email").value.trim(),
+    senha: box.querySelector(".sb-senha").value,
   });
-  $("#sb-entrar").addEventListener("click", async () => {
+  box.querySelector(".sb-entrar").addEventListener("click", async () => {
     const { email, senha } = emailSenha();
     if (!email || !senha) {
-      setContaMsg("Preenche e-mail e senha.", "bad");
+      setContaMsg(box, "Preenche e-mail e senha.", "bad");
       return;
     }
     try {
+      setContaMsg(box, "Entrando…");
       await sb.entrar(email, senha);
       render();
     } catch (err) {
-      setContaMsg(sb.traduzErro(err), "bad");
+      setContaMsg(box, sb.traduzErro(err), "bad");
     }
   });
-  $("#sb-criar").addEventListener("click", async () => {
+  box.querySelector(".sb-criar").addEventListener("click", async () => {
     const { email, senha } = emailSenha();
     if (!email || !senha) {
-      setContaMsg("Preenche e-mail e senha.", "bad");
+      setContaMsg(box, "Preenche e-mail e senha.", "bad");
       return;
     }
     try {
+      setContaMsg(box, "Criando conta…");
       await sb.criarConta(email, senha);
       if (sb.logado()) {
         render();
         return;
       }
-      setContaMsg("Conta criada. Se pedir confirmação de e-mail, desliga isso no Supabase e entra de novo.", "ok");
+      setContaMsg(
+        box,
+        "Conta criada. Abre o GMAIL agora e clica no link da Supabase. Sem esse clique o login não entra, porque a confirmação de e-mail ainda está ligada no painel.",
+        "ok"
+      );
     } catch (err) {
-      setContaMsg(sb.traduzErro(err), "bad");
+      setContaMsg(box, sb.traduzErro(err), "bad");
     }
   });
 }
@@ -641,7 +624,7 @@ async function renderRank() {
     `Quem mais acerta em ${m.nome}. Só entra quem tem pelo menos ${sb?.minRank || 10} respostas e deixou o nome visível.`;
 
   if (!sb?.pronto()) {
-    status.textContent = "O ranking fica na nuvem. Liga o Supabase na aba Avatar para aparecer gente aqui.";
+    status.textContent = "O ranking fica na nuvem. Entra na conta no topo da página inicial.";
     tabela.innerHTML = `
       <div class="vazio">
         Sem projeto configurado ainda. O estudo local continua normal; rank e conta
@@ -674,7 +657,7 @@ async function renderRank() {
       ? `Você está em ${eu.posicao}º nesta matéria (${eu.percentual}%).`
       : "Você já tem respostas suficientes, mas está oculto no rank ou ainda não sincronizou.";
   } else {
-    status.textContent = "Entra na conta (aba Avatar) para subir suas estatísticas e aparecer aqui.";
+    status.textContent = "Entra na conta (caixa de login no início da página) para subir suas estatísticas e aparecer aqui.";
   }
 
   if (!rows.length) {
