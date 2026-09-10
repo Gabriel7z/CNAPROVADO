@@ -7,19 +7,30 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Fraunces:wght@600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles.css" />
+    <script>
+      try {
+        const t = localStorage.getItem("cnaprovado-theme");
+        if (t) document.documentElement.setAttribute("data-theme", t);
+      } catch {}
+    </script>
   </head>
   <body>
     <div class="wrap app-shell">
       <header class="brand">
         <div class="logo">CNAPROVADO</div>
-        <button id="chip-perfil" class="avatar-chip hidden" type="button" title="Perfil">
+        <div class="brand-actions">
+          <button id="theme-btn" class="theme-btn" type="button" title="Tema" aria-label="Trocar tema">
+            ☾
+          </button>
+          <button id="chip-perfil" class="avatar-chip hidden" type="button" title="Perfil">
           <span id="chip-face" class="avatar-face">🎯</span>
           <span id="chip-nome">Concurseiro</span>
-        </button>
+          </button>
+        </div>
       </header>
 
       <nav class="materias hidden" id="materias-nav" aria-label="Matérias"></nav>
@@ -164,11 +175,19 @@
           </div>
         </section>
       </main>
+      <nav class="dock hidden" id="dock" aria-label="Atalhos">
+        <button data-modo="questoes" type="button">Questões</button>
+        <button data-modo="cards" type="button">Cards</button>
+        <button data-modo="desempenho" type="button">Painel</button>
+        <button data-modo="rank" type="button">Rank</button>
+        <button data-modo="perfil" type="button">Conta</button>
+      </nav>
     </div>
     <script src="questoes.js"></script>
     <script src="supabase-config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js"></script>
     <script src="cloud.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
