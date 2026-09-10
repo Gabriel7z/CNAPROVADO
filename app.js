@@ -74,6 +74,7 @@ function cloud() {
 
 function mostrar(id) {
   [
+    "view-login",
     "view-questoes-home",
     "view-quiz",
     "view-result",
@@ -82,6 +83,16 @@ function mostrar(id) {
     "view-rank",
     "view-perfil",
   ].forEach((v) => $(`#${v}`).classList.toggle("hidden", v !== id));
+}
+
+function logado() {
+  return Boolean(cloud()?.logado());
+}
+
+function travarApp(on) {
+  $("#materias-nav").classList.toggle("hidden", !on);
+  $("#modos-nav").classList.toggle("hidden", !on);
+  $("#chip-perfil").classList.toggle("hidden", !on);
 }
 
 function renderMaterias() {
@@ -132,9 +143,8 @@ function renderModos() {
 
 function renderChip() {
   const p = db().perfil;
-  const logado = Boolean(cloud()?.logado());
-  $("#chip-face").textContent = logado ? p.avatar : "🔑";
-  $("#chip-nome").textContent = logado ? p.nome || "Concurseiro" : "Entrar";
+  $("#chip-face").textContent = p.avatar;
+  $("#chip-nome").textContent = p.nome || "Concurseiro";
 }
 
 function renderQuestoesHome() {
@@ -157,10 +167,6 @@ function renderQuestoesHome() {
         : "Questões no estilo concurso, gabarito na hora e revisão dos erros no final.";
     $("#comecar").classList.remove("hidden");
   }
-  renderConta($("#login-home"), {
-    titulo: "Login do ranking",
-    lead: "Entra ou cria a conta aqui. Sem isso o Rank fica vazio para você.",
-  });
 }
 
 function montarFila() {
@@ -179,6 +185,10 @@ function questaoAtual() {
 }
 
 function iniciar() {
+  if (!logado()) {
+    render();
+    return;
+  }
   const qs = questoes();
   if (!qs.length) return;
   ui.quiz.embaralhar = $("#embaralhar").checked;
@@ -684,6 +694,16 @@ async function renderRank() {
 }
 
 function render() {
+  if (!logado()) {
+    travarApp(false);
+    mostrar("view-login");
+    renderConta($("#login-gate"), {
+      titulo: "",
+      lead: "Usa um e-mail de verdade (Gmail). Se pedir confirmação, abre a caixa e clica no link.",
+    });
+    return;
+  }
+  travarApp(true);
   renderChip();
   renderMaterias();
   renderModos();

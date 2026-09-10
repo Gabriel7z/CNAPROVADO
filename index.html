@@ -16,15 +16,15 @@
     <div class="wrap app-shell">
       <header class="brand">
         <div class="logo">CNAPROVADO</div>
-        <button id="chip-perfil" class="avatar-chip" type="button" title="Perfil">
+        <button id="chip-perfil" class="avatar-chip hidden" type="button" title="Perfil">
           <span id="chip-face" class="avatar-face">🎯</span>
           <span id="chip-nome">Concurseiro</span>
         </button>
       </header>
 
-      <nav class="materias" id="materias-nav" aria-label="Matérias"></nav>
+      <nav class="materias hidden" id="materias-nav" aria-label="Matérias"></nav>
 
-      <nav class="modos" id="modos-nav" aria-label="Modos">
+      <nav class="modos hidden" id="modos-nav" aria-label="Modos">
         <button class="modo ativo" data-modo="questoes" type="button">Questões</button>
         <button class="modo" data-modo="cards" type="button">Cards</button>
         <button class="modo" data-modo="desempenho" type="button">Desempenho</button>
@@ -33,8 +33,17 @@
       </nav>
 
       <main class="card">
-        <section id="view-questoes-home" class="hero">
-          <div id="login-home" class="login-card"></div>
+        <section id="view-login" class="hero">
+          <p class="kicker">Acesso</p>
+          <h1>Entre para estudar</h1>
+          <p class="lead">
+            Primeiro o login. Depois você entra nas questões, nos cards, no
+            desempenho e no ranking.
+          </p>
+          <div id="login-gate"></div>
+        </section>
+
+        <section id="view-questoes-home" class="hero hidden">
           <p class="kicker" id="kicker-materia">Direito Administrativo</p>
           <h1 id="titulo-materia">Tópicos 1 e 2 — Fontes, Estado e Governo</h1>
           <p class="lead" id="lead-materia">
@@ -135,11 +144,10 @@
         </section>
 
         <section id="view-perfil" class="hero hidden">
-          <p class="kicker">Conta</p>
-          <h1>Entrar no CNAPROVADO</h1>
+          <p class="kicker">Identidade</p>
+          <h1>Sua conta</h1>
           <p class="lead" id="conta-lead">
-            Crie a conta para o ranking e para salvar o estudo em qualquer aparelho.
-            As questões continuam neste site; o banco guarda só pessoas e resultados.
+            Conta ligada. Aqui você troca o avatar e sai quando quiser.
           </p>
           <div id="conta-box"></div>
 
