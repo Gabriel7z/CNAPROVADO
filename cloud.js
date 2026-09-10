@@ -49,6 +49,9 @@ const Cloud = {
     if (lower.includes("failed to fetch") || lower.includes("network")) {
       return "Não deu para falar com a nuvem. Confere a URL do projeto.";
     }
+    if (lower.includes("could not find the table") || lower.includes("schema cache")) {
+      return "O banco ainda não tem as tabelas. Cola o arquivo supabase.sql no SQL Editor e roda.";
+    }
     return msg;
   },
 
