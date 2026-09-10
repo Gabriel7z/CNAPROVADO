@@ -68,8 +68,43 @@ function esc(s) {
     .replace(/"/g, "&quot;");
 }
 
-function cloud() {
-  return window.CNAPROVADO_CLOUD;
+function prefersReduced() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function celebrar(tipo) {
+  if (!window.confetti || prefersReduced()) return;
+  const cores = ["#4f46e5", "#34d399", "#f59e0b", "#fb7185"];
+  if (tipo === "ok") {
+    window.confetti({
+      particleCount: 36,
+      spread: 55,
+      origin: { y: 0.72 },
+      colors: cores,
+      disableForReducedMotion: true,
+    });
+  } else if (tipo === "win") {
+    window.confetti({
+      particleCount: 140,
+      spread: 80,
+      origin: { y: 0.6 },
+      colors: cores,
+      disableForReducedMotion: true,
+    });
+  }
+}
+
+function temaAtual() {
+  return document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+}
+
+function aplicarTema(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  try {
+    localStorage.setItem("cnaprovado-theme", theme);
+  } catch {}
+  const btn = $("#theme-btn");
+  if (btn) btn.textContent = theme === "dark" ? "☀" : "☾";
 }
 
 function mostrar(id) {
@@ -85,6 +120,9 @@ function mostrar(id) {
   ].forEach((v) => $(`#${v}`).classList.toggle("hidden", v !== id));
 }
 
+function cloud() {
+  return window.CNAPROVADO_CLOUD;
+}
 function logado() {
   return Boolean(cloud()?.logado());
 }
@@ -93,6 +131,7 @@ function travarApp(on) {
   $("#materias-nav").classList.toggle("hidden", !on);
   $("#modos-nav").classList.toggle("hidden", !on);
   $("#chip-perfil").classList.toggle("hidden", !on);
+  $("#dock")?.classList.toggle("hidden", !on);
 }
 
 function renderMaterias() {
@@ -136,7 +175,7 @@ function novaMateria() {
 }
 
 function renderModos() {
-  $$(".modo").forEach((btn) => {
+  $$("[data-modo]").forEach((btn) => {
     btn.classList.toggle("ativo", btn.dataset.modo === ui.modo);
   });
 }
@@ -252,6 +291,7 @@ function responder(idx, btn) {
       ? q.alternativas[q.correta]
       : `${letra(q.correta)}) ${q.alternativas[q.correta]}`;
   fb.innerHTML = `<b>${acertou ? "Acertou." : "Errou."} Gabarito: ${gabarito}</b>${q.explicacao}`;
+  if (acertou) celebrar("ok");
   $("#proxima").classList.remove("hidden");
   $("#proxima").textContent =
     ui.quiz.i + 1 >= questoes().length ? "Ver resultado" : "Próxima";
@@ -287,6 +327,7 @@ function renderResultado() {
   mostrar("view-result");
   $("#score").innerHTML = `${acertos}<span>/${total}</span>`;
   $("#pct").textContent = `${pct}% · ${selo}`;
+  if (pct >= 70) celebrar("win");
   const erros = ui.quiz.respostas.filter((r) => !r.acertou);
   const review = $("#review");
   review.innerHTML = "";
@@ -728,7 +769,7 @@ function render() {
 document.addEventListener("DOMContentLoaded", async () => {
   window.CNAPROVADO_ON_CLOUD = () => render();
   render();
-  $$(".modo").forEach((btn) => {
+  $$("#modos-nav .modo, #dock [data-modo]").forEach((btn) => {
     btn.addEventListener("click", () => {
       ui.modo = btn.dataset.modo;
       render();
@@ -738,6 +779,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     ui.modo = "perfil";
     render();
   });
+  $("#theme-btn")?.addEventListener("click", () => {
+    aplicarTema(temaAtual() === "dark" ? "light" : "dark");
+  });
+  aplicarTema(temaAtual());
   $("#comecar").addEventListener("click", iniciar);
   $("#proxima").addEventListener("click", avancar);
   $("#refazer").addEventListener("click", iniciar);
