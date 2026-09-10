@@ -28,6 +28,7 @@
         <button class="modo ativo" data-modo="questoes" type="button">Questões</button>
         <button class="modo" data-modo="cards" type="button">Cards</button>
         <button class="modo" data-modo="desempenho" type="button">Desempenho</button>
+        <button class="modo" data-modo="rank" type="button">Rank</button>
         <button class="modo" data-modo="perfil" type="button">Avatar</button>
       </nav>
 
@@ -108,7 +109,10 @@
         <section id="view-desempenho" class="hero hidden">
           <p class="kicker">Painel</p>
           <h1>Desempenho</h1>
-          <p class="lead">Acertos, erros e evolução por matéria. Fica salvo neste aparelho.</p>
+          <p class="lead" id="desempenho-lead">
+            Acertos, erros e evolução por matéria. Fica neste aparelho; se você entrar na
+            conta, também sobe para a nuvem.
+          </p>
           <div class="stats-grid" id="stats-kpis"></div>
           <h2 class="chart-title">Geral: acertos × erros</h2>
           <div id="chart-geral" class="chart-box"></div>
@@ -118,10 +122,21 @@
           <div id="historico" class="review"></div>
         </section>
 
+        <section id="view-rank" class="hero hidden">
+          <p class="kicker">Competição</p>
+          <h1>Ranking</h1>
+          <p class="lead" id="rank-lead">
+            Quem mais acerta nesta matéria. Só entra quem tem pelo menos 10 respostas
+            e marcou para aparecer no rank.
+          </p>
+          <p id="rank-status" class="lead"></p>
+          <div id="rank-tabela" class="rank-box"></div>
+        </section>
+
         <section id="view-perfil" class="hero hidden">
           <p class="kicker">Identidade</p>
           <h1>Seu avatar</h1>
-          <p class="lead">Escolha um rosto e um nome. Isso aparece no topo e no painel.</p>
+          <p class="lead">Escolha um rosto e um nome. Isso aparece no topo, no painel e no rank.</p>
           <label class="field">
             Nome
             <input id="perfil-nome" type="text" maxlength="24" placeholder="Seu nome" />
@@ -131,10 +146,20 @@
           <div class="actions">
             <button id="salvar-perfil" class="primary" type="button">Salvar avatar</button>
           </div>
+
+          <h2 class="chart-title">Conta na nuvem</h2>
+          <p class="lead" id="conta-lead">
+            Login para salvar em qualquer aparelho, estatísticas e ranking. As questões
+            continuam no app; o banco guarda só pessoas e resultados.
+          </p>
+          <div id="conta-box"></div>
         </section>
       </main>
     </div>
     <script src="questoes.js"></script>
+    <script src="supabase-config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="cloud.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
