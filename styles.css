@@ -376,9 +376,11 @@ button,
 }
 
 .avatar-opt {
-  aspect-ratio: 1;
+  aspect-ratio: auto;
+  min-height: 56px;
+  padding: 10px;
   border-radius: 16px;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   background: #fff;
   border: 1.5px solid rgba(16, 42, 74, 0.12);
 }
