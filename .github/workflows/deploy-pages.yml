@@ -24,7 +24,7 @@ jobs:
       - name: Stage static site
         run: |
           mkdir _site
-          cp index.html app.js questoes.js styles.css _site/
+          cp index.html app.js questoes.js styles.css cloud.js supabase-config.js _site/
           touch _site/.nojekyll
 
       - uses: actions/configure-pages@v5
