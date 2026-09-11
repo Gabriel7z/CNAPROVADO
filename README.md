@@ -4,7 +4,7 @@ App de estudo para concursos: https://gabriel7z.github.io/CNAPROVADO/
 
 - Abas de matéria (D.Adm, Português, Constitucional; dá para criar outras)
 - Questões, cards estilo Anki, avatar, gráficos e ranking
-- D.Adm: 100 questões (Tópico 1 + Tópico 2, Thállius Moraes) e 100 cards Anki
+- D.Adm: 150 questões (Tópicos 1 a 3, Thállius Moraes) e 150 cards Anki
 - Conta e ranking na nuvem com Supabase (as questões continuam neste site; o banco guarda pessoas e resultados)
 
 ## Ligar o Supabase (ranking e login)

@@ -192,7 +192,9 @@ function renderQuestoesHome() {
   const cs = cards();
   $("#kicker-materia").textContent = m.nome;
   $("#titulo-materia").textContent =
-    m.id === "dadm" ? "Tópicos 1 e 2 — Fontes, Estado e Governo" : m.nome;
+    m.id === "dadm"
+      ? "Tópicos 1 a 3 — Fontes, Estado e Administração Direta"
+      : m.nome;
   $("#qtd").textContent = String(qs.length);
   $("#meta-cards").textContent = String(cs.length);
   if (!qs.length) {
@@ -202,7 +204,7 @@ function renderQuestoesHome() {
   } else {
     $("#lead-materia").textContent =
       m.id === "dadm"
-        ? "Tópico 1 (Q1–50) + Tópico 2 Estado e Governo (Q51–100). Gabarito na hora e revisão dos erros no final."
+        ? "Tópico 1 (Q1–50) + Tópico 2 Estado e Governo (Q51–100) + Tópico 3 Administração Direta (Q101–150). Gabarito na hora e revisão dos erros no final."
         : "Questões no estilo concurso, gabarito na hora e revisão dos erros no final.";
     $("#comecar").classList.remove("hidden");
   }

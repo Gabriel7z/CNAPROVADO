@@ -1,10 +1,11 @@
 const AULA = {
-  titulo: "Tópicos 1 e 2 — Fontes, Estado e Governo",
+  titulo: "Tópicos 1 a 3 — Fontes, Estado e Administração Direta",
   professor: "Thállius Moraes",
   materia: "Direito Administrativo",
   fonte:
     "https://www.youtube.com/watch?v=JvaumlEAPnI&list=PLl6y9CqXvcCIqKM0eBk_YcFp17Ae2k21c",
   fonte2: "https://youtu.be/qATMH3H1Oek",
+  fonte3: "https://youtu.be/TqLkEtVvv00",
 };
 
 const QUESTOES = [
@@ -1161,6 +1162,586 @@ const QUESTOES = [
     correta: 1,
     explicacao:
       "Poderes: independentes e harmônicos + freios e contrapesos (aula 1 / título do Tópico 2). Entes: autonomia, não soberania. E federativa é forma de Estado, não de governo.",
+  },
+  {
+    id: 101,
+    tipo: "ce",
+    tema: "Critério formal",
+    enunciado:
+      "O Brasil adota o critério formal, também chamado de subjetivo ou orgânico, para definir quem é Administração Pública: o que a lei diz que é AP.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Aula 3: critério formal/subjetivo/orgânico = quem a lei aponta. O Brasil adota esse critério (CF + Decreto-Lei 200/67). A atividade em si não decide.",
+  },
+  {
+    id: 102,
+    tipo: "ce",
+    tema: "Critério material",
+    enunciado:
+      "No critério material, objetivo ou funcional, Administração Pública é a própria atividade administrativa, independentemente de quem a exerce.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Material/objetivo/funcional olha a atividade. Um particular prestando serviço público entraria nesse conceito. O Brasil não adota esse critério, mas a banca pode cobrar o que ele significa.",
+  },
+  {
+    id: 103,
+    tipo: "ce",
+    tema: "Critério formal",
+    enunciado:
+      "No critério formal, o que importa é a atividade desenvolvida: se for serviço público, o prestador é Administração Pública.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Isso é o critério material. No formal, a atividade não importa: o rol legal é que define quem é AP.",
+  },
+  {
+    id: 104,
+    tipo: "ce",
+    tema: "Critério material",
+    enunciado:
+      "O ordenamento brasileiro adotou o critério material/objetivo/funcional para delimitar a Administração Pública.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Adotado é o formal/subjetivo/orgânico. O material existe na doutrina e cai em prova, mas não é o critério do Brasil.",
+  },
+  {
+    id: 105,
+    tipo: "me",
+    tema: "Critério formal",
+    enunciado:
+      "Sobre os critérios de identificação da Administração Pública, assinale a opção correta:",
+    alternativas: [
+      "O Brasil adota o critério material: AP é a atividade administrativa em si.",
+      "O critério formal/subjetivo/orgânico, adotado no Brasil, define a AP pelo que a lei diz que ela é.",
+      "Critério formal e critério material são sinônimos e ambos foram adotados pela CF/88.",
+      "O Decreto-Lei 200/67 adotou só o critério funcional, deixando de lado o orgânico.",
+    ],
+    correta: 1,
+    explicacao:
+      "Dica da aula: formal + subjetivo = o que está na lei (adotado). O outro par é material/objetivo = a atividade (não adotado).",
+  },
+  {
+    id: 106,
+    tipo: "ce",
+    tema: "Entes da Administração",
+    enunciado:
+      "Pelo critério formal, a Administração Pública brasileira se traduz em um rol taxativo de oito pessoas jurídicas, além dos órgãos e agentes que as integram.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Oito PJs: União, Estados, DF e Municípios (direta) + autarquias, fundações públicas, empresas públicas e sociedades de economia mista (indireta).",
+  },
+  {
+    id: 107,
+    tipo: "ce",
+    tema: "Entes da direta",
+    enunciado:
+      "Compõem a Administração Direta a União, os Estados, o Distrito Federal e os Municípios.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Os quatro entes federados são a direta. Autarquia, fundação, empresa pública e SEM ficam na indireta.",
+  },
+  {
+    id: 108,
+    tipo: "ce",
+    tema: "Entes da indireta",
+    enunciado:
+      "Autarquias, fundações públicas, empresas públicas e sociedades de economia mista integram a Administração Indireta.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Essas quatro entidades administrativas são a indireta (administração descentralizada).",
+  },
+  {
+    id: 109,
+    tipo: "ce",
+    tema: "Sinônimos",
+    enunciado:
+      "Administração Direta, entes federados, entes políticos, pessoas políticas e administração centralizada são expressões usadas como sinônimas no recorte da aula.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Pegadinha clássica: se a banca fala “entes federados/políticos” e depois coloca autarquia no mesmo saco, o item cai. Autarquia é indireta.",
+  },
+  {
+    id: 110,
+    tipo: "me",
+    tema: "Entes da direta",
+    enunciado:
+      "Integram a Administração Direta:",
+    alternativas: [
+      "União, Estados, DF, Municípios, autarquias e fundações públicas.",
+      "Somente a União e os Estados, porque Municípios não têm personalidade jurídica.",
+      "União, Estados, Distrito Federal e Municípios.",
+      "Empresas públicas e sociedades de economia mista, por serem pessoas políticas.",
+    ],
+    correta: 2,
+    explicacao:
+      "Direta = os quatro entes federados. Autarquia e fundação são indireta. EP e SEM são empresas estatais da indireta, não pessoas políticas.",
+  },
+  {
+    id: 111,
+    tipo: "ce",
+    tema: "Sinônimos",
+    enunciado:
+      "Administração Direta corresponde à administração centralizada; Administração Indireta, à administração descentralizada.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Item no estilo da tela da aula: direta = centralizada; indireta = descentralizada.",
+  },
+  {
+    id: 112,
+    tipo: "ce",
+    tema: "Sinônimos",
+    enunciado:
+      "“Entidades administrativas” é expressão que, na aula, designa os entes da Administração Direta.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Entidades administrativas = indireta. Direta = entes/pessoas políticas. Banco que mistura os dois rótulos está errado.",
+  },
+  {
+    id: 113,
+    tipo: "ce",
+    tema: "Sinônimos",
+    enunciado:
+      "Empresa pública e sociedade de economia mista podem ser agrupadas sob o rótulo de empresas estatais.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "EP + SEM = empresas estatais. Continuam na indireta; não se confundem com os entes políticos da direta.",
+  },
+  {
+    id: 114,
+    tipo: "ce",
+    tema: "Sinônimos",
+    enunciado:
+      "Se o enunciado fala em entes federados ou pessoas políticas e inclui autarquia nesse conjunto, o item está de acordo com a classificação da aula.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Autarquia não é ente federado nem pessoa política. É entidade administrativa da indireta.",
+  },
+  {
+    id: 115,
+    tipo: "me",
+    tema: "Sinônimos",
+    enunciado:
+      "Assinale a correspondência correta, segundo a aula 3:",
+    alternativas: [
+      "Direta = entidades administrativas = administração descentralizada.",
+      "Indireta = pessoas políticas = administração centralizada.",
+      "Direta = entes políticos = administração centralizada; indireta = entidades administrativas = administração descentralizada.",
+      "Empresas estatais = União, Estados, DF e Municípios.",
+    ],
+    correta: 2,
+    explicacao:
+      "Memorizar os pares. Empresas estatais são só EP e SEM, não os quatro entes da direta.",
+  },
+  {
+    id: 116,
+    tipo: "ce",
+    tema: "Entes da direta",
+    enunciado:
+      "Os quatro entes da Administração Direta são pessoas jurídicas de direito público, o que lhes confere posição de superioridade em relação aos particulares.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "PJ de direito público: não estão no mesmo patamar do administrado. Personalidade também traz capacidade processual e patrimônio próprio.",
+  },
+  {
+    id: 117,
+    tipo: "ce",
+    tema: "Personalidade jurídica",
+    enunciado:
+      "Por terem personalidade jurídica, os entes da direta têm capacidade processual (podem ser autor ou réu) e patrimônio próprio.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Personalidade = aptidão para direitos e obrigações. Daí a capacidade de estar em juízo e o patrimônio separado.",
+  },
+  {
+    id: 118,
+    tipo: "ce",
+    tema: "Hierarquia",
+    enunciado:
+      "Há hierarquia e subordinação entre União, Estados, Distrito Federal e Municípios: a União manda nos demais entes.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Não há hierarquia entre os entes federados. A hierarquia existe para dentro de cada um (órgãos internos), não de um ente para outro.",
+  },
+  {
+    id: 119,
+    tipo: "ce",
+    tema: "Hierarquia",
+    enunciado:
+      "A hierarquia na Administração Direta é interna a cada ente: o Município não se subordina hierarquicamente ao Estado nem à União.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Autonomia federativa: cada ente se organiza para dentro. Não existe “União chefe” dos Municípios no sentido hierárquico.",
+  },
+  {
+    id: 120,
+    tipo: "me",
+    tema: "Hierarquia",
+    enunciado:
+      "Sobre a relação entre os entes da Administração Direta, assinale a correta:",
+    alternativas: [
+      "A União é hierarquicamente superior aos Estados, e estes, aos Municípios.",
+      "O DF se subordina à União porque não tem Constituição própria.",
+      "Não há hierarquia nem subordinação entre União, Estados, DF e Municípios; a hierarquia é interna a cada ente.",
+      "Municípios se subordinam ao Estado-membro, que cria a comarca e o fórum.",
+    ],
+    correta: 2,
+    explicacao:
+      "Sem hierarquia entre entes. Fórum da comarca é justiça estadual, mas isso não transforma o Município em órgão do Estado.",
+  },
+  {
+    id: 121,
+    tipo: "ce",
+    tema: "Autonomia política",
+    enunciado:
+      "A autonomia política dos entes da direta é a capacidade de legislar; por isso são chamados de entes ou pessoas políticas.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Política aqui = legislar. A indireta não legisla: não é “ente político”. Também há autonomia administrativa e financeira.",
+  },
+  {
+    id: 122,
+    tipo: "ce",
+    tema: "Autonomia política",
+    enunciado:
+      "As entidades da Administração Indireta também exercem autonomia política, podendo editar leis em sentido estrito.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Indireta não legisla. Autonomia política (capacidade legislativa) é marca da direta — daí “pessoas políticas”.",
+  },
+  {
+    id: 123,
+    tipo: "ce",
+    tema: "Autonomia",
+    enunciado:
+      "Além da autonomia política, os entes da direta têm autonomia administrativa e financeira.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Três fatias da aula: política (legislar), administrativa (organizar a máquina) e financeira (receitas e despesas próprias).",
+  },
+  {
+    id: 124,
+    tipo: "ce",
+    tema: "Poderes",
+    enunciado:
+      "União, Estados e Distrito Federal organizam-se com Poder Executivo, Legislativo e Judiciário.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Os três têm os três Poderes. O Município é a exceção: só Executivo e Legislativo — não há Judiciário municipal.",
+  },
+  {
+    id: 125,
+    tipo: "me",
+    tema: "Judiciário municipal",
+    enunciado:
+      "Quanto à organização dos Poderes nos entes da direta, assinale a correta:",
+    alternativas: [
+      "Todo ente federado, inclusive o Município, possui Executivo, Legislativo e Judiciário próprios.",
+      "Apenas a União tem Judiciário; Estados e Municípios têm só Executivo e Legislativo.",
+      "União, Estados e DF têm Executivo, Legislativo e Judiciário; o Município tem Executivo e Legislativo, mas não Judiciário próprio.",
+      "O fórum da comarca é órgão do Município, o que supre a falta de Judiciário municipal.",
+    ],
+    correta: 2,
+    explicacao:
+      "Município: E + L. O fórum da comarca é justiça estadual, não “Judiciário da prefeitura”.",
+  },
+  {
+    id: 126,
+    tipo: "ce",
+    tema: "Judiciário municipal",
+    enunciado:
+      "Os Municípios têm Poder Executivo e Poder Legislativo, mas não possuem Poder Judiciário próprio.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Item no estilo da tela da aula: Municípios não têm Judiciário. Quem julga na comarca é a justiça do Estado.",
+  },
+  {
+    id: 127,
+    tipo: "ce",
+    tema: "Judiciário municipal",
+    enunciado:
+      "O fórum da comarca instalado no Município é órgão do Judiciário municipal.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "É justiça estadual. Ter prédio de fórum na cidade não cria Poder Judiciário do Município.",
+  },
+  {
+    id: 128,
+    tipo: "ce",
+    tema: "Autonomia",
+    enunciado:
+      "A ausência de Judiciário próprio significa que o Município não tem autonomia, ficando subordinado ao Estado-membro.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Item comentado na aula e dado como errado. Municípios têm autonomia (política, administrativa e financeira) mesmo sem Judiciário próprio.",
+  },
+  {
+    id: 129,
+    tipo: "ce",
+    tema: "Criação da indireta",
+    enunciado:
+      "Os Municípios, a exemplo dos Estados, podem instituir Administração Indireta, em razão da autonomia reconhecida pela Constituição.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Item da tela: Município pode ter autarquia, fundação, EP, SEM. Autonomia federativa não é só da União e dos Estados.",
+  },
+  {
+    id: 130,
+    tipo: "me",
+    tema: "Criação da indireta",
+    enunciado:
+      "A respeito da criação de entidades da Administração Indireta, assinale a correta:",
+    alternativas: [
+      "Só o Poder Executivo pode criar autarquia, fundação pública, empresa pública ou sociedade de economia mista.",
+      "A indireta nasce por lei; o mais típico é o Executivo criar, mas não é defeso ao Legislativo e ao Judiciário instituírem entidades da indireta.",
+      "É defeso ao Judiciário e ao Legislativo criar entidades da indireta.",
+      "A indireta se cria por decreto do chefe do Executivo, sem lei.",
+    ],
+    correta: 1,
+    explicacao:
+      "Criação por lei. Função administrativa típica do Executivo, mas “defeso” (proibido) ao L e ao J criar indireta é afirmativa errada.",
+  },
+  {
+    id: 131,
+    tipo: "ce",
+    tema: "Criação da indireta",
+    enunciado:
+      "A Administração Direta cria as entidades da Indireta por meio de lei.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Descentralização por outorga: a direta institui a indireta na forma da lei. Não é “no grito” nem só por decreto.",
+  },
+  {
+    id: 132,
+    tipo: "ce",
+    tema: "Criação da indireta",
+    enunciado:
+      "Criar entidade da indireta é função administrativa típica, em regra atribuída ao Poder Executivo.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Típico do Executivo, sim. Isso não quer dizer que Legislativo e Judiciário estejam proibidos de criar a sua indireta.",
+  },
+  {
+    id: 133,
+    tipo: "ce",
+    tema: "Defeso",
+    enunciado:
+      "É defeso ao Poder Judiciário e ao Poder Legislativo criar autarquias, fundações públicas e demais entidades da Administração Indireta.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Questão da tela: errado. Defeso = proibido/vedado. Não é proibido: L e J podem criar entidades da indireta.",
+  },
+  {
+    id: 134,
+    tipo: "ce",
+    tema: "Defeso",
+    enunciado:
+      "Na linguagem de prova, “defeso” equivale a proibido, vedado, não permitido.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "O professor para na palavra: se você não traduz “defeso”, erra o item mesmo sabendo o conteúdo.",
+  },
+  {
+    id: 135,
+    tipo: "ce",
+    tema: "Criação da indireta",
+    enunciado:
+      "O Poder Legislativo pode instituir entidades da Administração Indireta.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Pode. O mesmo vale para o Judiciário. O Executivo é o mais usual, não o exclusivo.",
+  },
+  {
+    id: 136,
+    tipo: "ce",
+    tema: "Responsabilidade civil",
+    enunciado:
+      "Os entes da Administração Direta submetem-se à responsabilidade civil objetiva prevista no art. 37, § 6º, da Constituição.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Traço genérico da direta na aula: responsabilidade objetiva pelos danos que agentes, nessa qualidade, causarem a terceiros. O detalhe fica para tópico próprio.",
+  },
+  {
+    id: 137,
+    tipo: "ce",
+    tema: "Regime de pessoal",
+    enunciado:
+      "O pessoal da Administração Direta rege-se, em regra, por estatuto próprio, e não pela CLT.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Na União, o estatuto é a Lei 8.112/90. CLT é o regime típico da iniciativa privada (e, em regra, das empresas estatais), não da direta.",
+  },
+  {
+    id: 138,
+    tipo: "ce",
+    tema: "Regime de pessoal",
+    enunciado:
+      "Os servidores da União, na Administração Direta, têm como estatuto típico a Lei 8.112/1990.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "8.112 é o RJU federal. Estados e Municípios têm estatutos próprios, mas a lógica é a mesma: regime estatutário na direta.",
+  },
+  {
+    id: 139,
+    tipo: "ce",
+    tema: "Imunidade tributária",
+    enunciado:
+      "Os entes da direta gozam de imunidade tributária recíproca: em regra, um não tributa o outro.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Imunidade recíproca é prerrogativa clássica dos entes políticos. A aula cita o traço; o detalhe constitucional vem em D. Constitucional / tributário.",
+  },
+  {
+    id: 140,
+    tipo: "ce",
+    tema: "Bens públicos",
+    enunciado:
+      "Os bens da Administração Direta têm proteção especial, inclusive impenhorabilidade.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Bem público não se penhora como o do particular. Dívida judicial do ente público caminha, em regra, por precatório.",
+  },
+  {
+    id: 141,
+    tipo: "ce",
+    tema: "Precatórios",
+    enunciado:
+      "Condenações judiciais pecuniárias contra os entes da direta são, em regra, pagas por precatório, e não por penhora de bens públicos.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Impenhorabilidade + regime de precatórios. É uma das “carinhas” da direta que a aula lista para você ir reconhecendo.",
+  },
+  {
+    id: 142,
+    tipo: "ce",
+    tema: "Prerrogativas processuais",
+    enunciado:
+      "Entre as prerrogativas processuais dos entes da direta está, em regra, o prazo em dobro.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Fazenda Pública com prazo dilatado (dobro, no recorte da aula). Não precisa decorar o CPC agora: grave que há privilégio processual.",
+  },
+  {
+    id: 143,
+    tipo: "ce",
+    tema: "Organização da AP",
+    enunciado:
+      "A organização da Administração Pública (quem é a AP) é a base da matéria: os princípios se aplicam tanto à direta quanto à indireta.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Abertura da aula 3: primeiro saiba quem é a Administração; LIMPE e o restante incidem sobre direta e indireta.",
+  },
+  {
+    id: 144,
+    tipo: "ce",
+    tema: "Critério formal",
+    enunciado:
+      "Critério orgânico é outro nome do critério formal/subjetivo de identificação da Administração Pública.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Três nomes, mesma ideia: formal = subjetivo = orgânico. Do outro lado: material = objetivo = funcional.",
+  },
+  {
+    id: 145,
+    tipo: "ce",
+    tema: "Critério material",
+    enunciado:
+      "Pelo critério material, um particular que preste serviço público seria considerado Administração Pública, porque o que vale é a atividade.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Exemplo da aula para fixar o critério que o Brasil não adotou. Aqui o prestador particular “entra” no conceito porque a atividade é administrativa.",
+  },
+  {
+    id: 146,
+    tipo: "ce",
+    tema: "Critério formal",
+    enunciado:
+      "O critério formal brasileiro encontra respaldo na Constituição e no Decreto-Lei 200/1967.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "CF + DL 200/67 desenham o rol de quem é AP. Por isso o professor manda gravar o critério e as oito pessoas jurídicas.",
+  },
+  {
+    id: 147,
+    tipo: "ce",
+    tema: "Sinônimos",
+    enunciado:
+      "A Administração Direta é composta por órgãos e entidades administrativas, submetidos a regime de direito público, com competência exercida de forma centralizada.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Item da tela: errado. “Entidades administrativas” são a indireta. A direta são os entes/órgãos da administração centralizada, não as entidades da indireta.",
+  },
+  {
+    id: 148,
+    tipo: "ce",
+    tema: "Entes da direta",
+    enunciado:
+      "A Administração Direta federal é composta pelos Ministérios e pelas autarquias federais.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Item da tela: errado. Ministério é órgão da direta (União). Autarquia é entidade da indireta.",
+  },
+  {
+    id: 149,
+    tipo: "ce",
+    tema: "Sinônimos",
+    enunciado:
+      "Administração Direta equivale à administração centralizada; Administração Indireta, à administração descentralizada.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Item comentado na aula e dado como certo. É o par de sinônimos que mais cai.",
+  },
+  {
+    id: 150,
+    tipo: "ce",
+    tema: "Judiciário municipal",
+    enunciado:
+      "Os Municípios organizam-se com Poder Executivo e Poder Legislativo, inexistindo Poder Judiciário municipal.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Último item no espírito da tela da aula 3: Município = E + L, sem Judiciário próprio. Isso não retira a autonomia municipal.",
   },
 
 ];
