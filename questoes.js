@@ -1,11 +1,12 @@
 const AULA = {
-  titulo: "Tópicos 1 a 3 — Fontes, Estado e Administração Direta",
+  titulo: "Tópicos 1 a 4 — Fontes, Estado, Direta e Indireta",
   professor: "Thállius Moraes",
   materia: "Direito Administrativo",
   fonte:
     "https://www.youtube.com/watch?v=JvaumlEAPnI&list=PLl6y9CqXvcCIqKM0eBk_YcFp17Ae2k21c",
   fonte2: "https://youtu.be/qATMH3H1Oek",
   fonte3: "https://youtu.be/TqLkEtVvv00",
+  fonte4: "https://youtu.be/Z8YWnT4STLQ",
 };
 
 const QUESTOES = [
@@ -1742,6 +1743,586 @@ const QUESTOES = [
     correta: 0,
     explicacao:
       "Último item no espírito da tela da aula 3: Município = E + L, sem Judiciário próprio. Isso não retira a autonomia municipal.",
+  },
+  {
+    id: 151,
+    tipo: "ce",
+    tema: "Entes da indireta",
+    enunciado:
+      "A Administração Indireta é composta por autarquia, fundação pública, empresa pública e sociedade de economia mista.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Aula 4: os quatro da indireta. A direta é o passeio; a indireta é o que desaba em prova, porque cada ente tem cara própria e também traços comuns.",
+  },
+  {
+    id: 152,
+    tipo: "ce",
+    tema: "Personalidade jurídica",
+    enunciado:
+      "Os quatro entes da indireta são pessoas jurídicas: têm capacidade processual e patrimônio próprio.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Personalidade = autor/réu + bens próprios. Por isso o dano do servidor do INSS se cobra do INSS, não da União.",
+  },
+  {
+    id: 153,
+    tipo: "ce",
+    tema: "Personalidade jurídica",
+    enunciado:
+      "Se um servidor do INSS, autarquia federal, causa dano a terceiro, a ação deve ser proposta contra a União, porque o INSS não tem personalidade jurídica.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "INSS é autarquia da União, PJ com personalidade própria. Processa-se o INSS, não a União, no exemplo da aula.",
+  },
+  {
+    id: 154,
+    tipo: "ce",
+    tema: "Personalidade jurídica",
+    enunciado:
+      "Na regra geral da aula, só a autarquia é pessoa jurídica de direito público; fundação pública, empresa pública e sociedade de economia mista são de direito privado.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Regra geral do quadro comum. O professor avisa que fundação pública ainda ganha recorte próprio depois; para esta aula, grave: autarquia = público; os outros três = privado.",
+  },
+  {
+    id: 155,
+    tipo: "me",
+    tema: "Personalidade jurídica",
+    enunciado:
+      "Quanto à personalidade jurídica dos entes da indireta, na regra geral da aula 4, assinale a correta:",
+    alternativas: [
+      "Os quatro são pessoas jurídicas de direito público.",
+      "Só a empresa pública é de direito privado; autarquia, fundação e SEM são de direito público.",
+      "Autarquia é, em regra, PJ de direito público; fundação pública, empresa pública e SEM são, em regra, de direito privado.",
+      "Nenhum ente da indireta tem personalidade jurídica própria: quem responde é sempre o ente criador.",
+    ],
+    correta: 2,
+    explicacao:
+      "Única de direito público, na regra geral, é a autarquia. Os quatro, porém, são pessoas — ninguém “some” na União.",
+  },
+  {
+    id: 156,
+    tipo: "ce",
+    tema: "Autonomia",
+    enunciado:
+      "Os entes da indireta têm autonomia administrativa e financeira: cuidam da própria vida, dentro dos ditames legais.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "INSS decide quando faz concurso e onde aplica as verbas; a União não “manda” nisso. Autonomia ≠ carta branca: vale o que a lei de criação e o ordenamento permitem.",
+  },
+  {
+    id: 157,
+    tipo: "ce",
+    tema: "Autonomia política",
+    enunciado:
+      "Além da autonomia administrativa e financeira, os entes da indireta possuem autonomia política, podendo legislar.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Pegadinha clássica da aula: indireta NÃO legisla. Autonomia política é só das pessoas políticas da direta.",
+  },
+  {
+    id: 158,
+    tipo: "ce",
+    tema: "Autonomia",
+    enunciado:
+      "A União determina a data do concurso e a aplicação das verbas do INSS, porque autarquia federal se subordina hierarquicamente ao ente criador.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Não há hierarquia. Autonomia administrativa/financeira: o INSS organiza o concurso e aplica as verbas, nos limites da lei.",
+  },
+  {
+    id: 159,
+    tipo: "ce",
+    tema: "Reserva legal",
+    enunciado:
+      "Pelo princípio da reserva legal, a criação e a extinção dos entes da indireta dependem de lei.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Reserva legal = aquilo só se faz por lei. Criação e extinção caminham com as mesmas formalidades.",
+  },
+  {
+    id: 160,
+    tipo: "me",
+    tema: "Autonomia",
+    enunciado:
+      "Assinale a opção correta sobre a autonomia dos entes da Administração Indireta:",
+    alternativas: [
+      "Têm autonomia política, administrativa e financeira, como os entes federados.",
+      "Têm autonomia administrativa e financeira, mas não autonomia política.",
+      "Não têm qualquer autonomia, porque se subordinam à União.",
+      "Só a autarquia tem autonomia; EP e SEM dependem de ordem do Ministério da Economia.",
+    ],
+    correta: 1,
+    explicacao:
+      "Administrativa + financeira, sim. Política (legislar), não. Subordinação hierárquica à União, tampouco.",
+  },
+  {
+    id: 161,
+    tipo: "ce",
+    tema: "Reserva legal",
+    enunciado:
+      "Ente da indireta pode ser criado por decreto ou outro ato administrativo, desde que haja autorização do chefe do Executivo.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Decreto não cria. Precisa de lei — princípio da reserva legal.",
+  },
+  {
+    id: 162,
+    tipo: "ce",
+    tema: "Reserva legal",
+    enunciado:
+      "A lei cria a autarquia; para fundação pública, empresa pública e sociedade de economia mista, a lei autoriza a criação.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Distinção da aula: autarquia = lei cria. Demais = lei autoriza. Se a banca só disser “depende de lei”, os quatro passam.",
+  },
+  {
+    id: 163,
+    tipo: "ce",
+    tema: "Reserva legal",
+    enunciado:
+      "Quando o enunciado afirma apenas que a criação da indireta depende de lei, o item está correto para autarquia, fundação pública, empresa pública e SEM.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Não invente a pegadinha cria vs autoriza se a banca não perguntou isso. “Depende de lei” / “lei específica” vale para os quatro.",
+  },
+  {
+    id: 164,
+    tipo: "ce",
+    tema: "Lei específica",
+    enunciado:
+      "Lei específica, no recorte da aula, é a lei cuja finalidade é criar (ou autorizar) o ente e definir suas finalidades, sem aproveitar o embalo para legislar sobre outros assuntos.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Não serve lei que amplia rol de crimes e, no mesmo pacote, cria autarquia. A lei específica trata do ente.",
+  },
+  {
+    id: 165,
+    tipo: "ce",
+    tema: "Lei específica",
+    enunciado:
+      "Se a banca exigir “lei específica” e o candidato só lembrar de “lei”, o item está necessariamente errado, porque o texto constitucional exige a palavra “específica” no enunciado da prova.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Na aula: “lei específica” ou “lei” — as duas cabem. Não precisa estar escrito “específica” para o item sobre reserva legal estar certo.",
+  },
+  {
+    id: 166,
+    tipo: "me",
+    tema: "Reserva legal",
+    enunciado:
+      "Sobre criação dos entes da indireta, assinale a correta:",
+    alternativas: [
+      "Os quatro são criados diretamente por decreto do Presidente da República.",
+      "A lei cria autarquia e também cria, no mesmo sentido, empresa pública e SEM.",
+      "A lei cria a autarquia e autoriza a criação de fundação pública, empresa pública e SEM; em qualquer caso, depende de lei.",
+      "Só a autarquia depende de lei; EP e SEM nascem por contrato societário, sem lei.",
+    ],
+    correta: 2,
+    explicacao:
+      "Cria vs autoriza muda conforme o ente; “depende de lei” é o teto comum. Decreto não substitui a lei.",
+  },
+  {
+    id: 167,
+    tipo: "ce",
+    tema: "Lei ordinária",
+    enunciado:
+      "A criação da indireta depende, necessariamente, de lei complementar; lei ordinária não serve.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Ordinária ou complementar: as duas podem. O usual é ordinária (coro menor). Dizer que “só LC” está errado.",
+  },
+  {
+    id: 168,
+    tipo: "ce",
+    tema: "Lei ordinária",
+    enunciado:
+      "Não há vedação a criar autarquia por lei complementar, embora o caminho usual seja a lei ordinária.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Pode a via mais difícil; o que não pode é dizer que LC é obrigatória ou que só ordinária existe como hipótese.",
+  },
+  {
+    id: 169,
+    tipo: "ce",
+    tema: "Reserva legal",
+    enunciado:
+      "A extinção do ente da indireta observa as mesmas formalidades da criação: se a lei criou a autarquia, a lei a extingue; se a lei autorizou a EP, a lei autoriza a extinção.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Simetria da reserva legal. Entrou por lei, sai por lei.",
+  },
+  {
+    id: 170,
+    tipo: "ce",
+    tema: "Especialidade",
+    enunciado:
+      "Pelo princípio da especialidade, as finalidades do ente já constam da lei de criação; não se cria primeiro para definir o objeto depois.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "A lei que cria a autarquia já diz para que ela existe. INSS: benefícios previdenciários e assistenciais, não “a gente vê depois”.",
+  },
+  {
+    id: 171,
+    tipo: "ce",
+    tema: "Especialidade",
+    enunciado:
+      "É possível instituir autarquia com objeto em branco e, em ato posterior do Executivo, fixar as finalidades que ela vai desempenhar.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Isso quebra a especialidade. A finalidade já vai na lei de criação e vincula o ente.",
+  },
+  {
+    id: 172,
+    tipo: "ce",
+    tema: "Descentralização",
+    enunciado:
+      "A Administração Indireta presta serviço público de forma descentralizada; é exemplo de descentralização administrativa.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Link com a aula 3: direta = centralizada; indireta = descentralizada. Fora do centro, com personalidade própria.",
+  },
+  {
+    id: 173,
+    tipo: "ce",
+    tema: "Subsidiárias",
+    enunciado:
+      "A criação de subsidiária da indireta depende de lei que autorize essa criação, e não de decreto nem de lei que “crie” a subsidiária.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Art. 37 da CF, no recorte da aula: lei autorizando. Exemplo: Transpetro como subsidiária da Petrobras. Decreto = errado; lei criando = errado.",
+  },
+  {
+    id: 174,
+    tipo: "ce",
+    tema: "Subsidiárias",
+    enunciado:
+      "A participação da indireta ou de sua subsidiária na iniciativa privada prescinde de autorização legislativa, bastando decisão do conselho de administração.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Também precisa de lei autorizando. Criação de subsidiária e participação na iniciativa privada: as duas pedem autorização legislativa.",
+  },
+  {
+    id: 175,
+    tipo: "me",
+    tema: "Especialidade",
+    enunciado:
+      "O princípio da especialidade, no recorte da aula 4, significa que:",
+    alternativas: [
+      "Cada Ministério especializa um único ente da indireta, sob pena de nulidade.",
+      "As finalidades do ente já constam da lei de criação; o ente fica vinculado a esse objeto.",
+      "A especialidade autoriza o ente a exercer qualquer atividade de interesse público, ainda que estranha à lei de criação.",
+      "Só autarquia tem finalidade especial; EP e SEM atuam em objeto livre de mercado.",
+    ],
+    correta: 1,
+    explicacao:
+      "Especialidade = finalidade na lei + vinculação a essa finalidade. É o gancho da tutela (controle dos fins).",
+  },
+  {
+    id: 176,
+    tipo: "ce",
+    tema: "Hierarquia",
+    enunciado:
+      "Entre o ente da direta que instituiu a indireta e o ente criado não há hierarquia nem subordinação.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "União não manda no INSS no sentido hierárquico. A direta não chega dizendo “faz concurso sexta”.",
+  },
+  {
+    id: 177,
+    tipo: "ce",
+    tema: "Tutela administrativa",
+    enunciado:
+      "A inexistência de hierarquia significa que a indireta pode exercer finalidade diversa daquela para a qual foi criada, sem controle da direta.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Analogia do aluguel: o dono não manda na casa, mas cobra se o contrato (a finalidade) está sendo desrespeitado. A direta fiscaliza os fins.",
+  },
+  {
+    id: 178,
+    tipo: "ce",
+    tema: "Tutela administrativa",
+    enunciado:
+      "A relação entre direta e indireta é a tutela administrativa, também chamada de controle finalístico ou supervisão ministerial.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Três nomes, mesma ideia: a direta fica de olho se a indireta cumpre a finalidade de criação. No federal, via Ministério (INSS/Previdência; Funai/Justiça).",
+  },
+  {
+    id: 179,
+    tipo: "ce",
+    tema: "Supervisão ministerial",
+    enunciado:
+      "Supervisão ministerial é controle hierárquico: o Ministério manda no ente da indireta como manda em seus órgãos internos.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Supervisão ≠ hierarquia. Ministério fiscaliza fins (tutela), não comanda o dia a dia como se a autarquia fosse departamento.",
+  },
+  {
+    id: 180,
+    tipo: "me",
+    tema: "Tutela administrativa",
+    enunciado:
+      "A relação entre Administração Direta e Indireta, segundo a aula, é:",
+    alternativas: [
+      "Hierarquia e subordinação, porque quem cria manda.",
+      "Independência absoluta, sem qualquer controle da direta.",
+      "Tutela administrativa / controle finalístico / supervisão ministerial, sem hierarquia.",
+      "Tutela apenas sobre autarquia; EP e SEM ficam só sob o direito privado, sem supervisão.",
+    ],
+    correta: 2,
+    explicacao:
+      "Não manda, mas olha os fins. Os quatro da indireta entram nessa lógica de vinculação à finalidade.",
+  },
+  {
+    id: 181,
+    tipo: "ce",
+    tema: "Autarquia",
+    enunciado:
+      "O Decreto-Lei 200/67 trata a autarquia como serviço autônomo destinado a desempenhar atividades típicas de Estado.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Se a prova chamar autarquia de “serviço autônomo”, está alinhada ao DL 200/67. Atividade típica = o que a própria direta faria.",
+  },
+  {
+    id: 182,
+    tipo: "ce",
+    tema: "Autarquia",
+    enunciado:
+      "A autarquia, por ser PJ de direito público, pode atuar com superioridade em face dos particulares e exercer poder de polícia.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "É o único da indireta com essa personalidade, na regra geral da aula. Por isso parece tanto com a direta — INSS “parece” Receita, mas tem personalidade própria.",
+  },
+  {
+    id: 183,
+    tipo: "ce",
+    tema: "Autarquia",
+    enunciado:
+      "O INSS é órgão público da União, da mesma natureza da Receita Federal, sem personalidade jurídica própria.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Parece órgão, mas é autarquia: ente da indireta com personalidade. Receita é órgão da direta.",
+  },
+  {
+    id: 184,
+    tipo: "ce",
+    tema: "Autarquia",
+    enunciado:
+      "A autarquia adquire personalidade jurídica com a publicação (vigência) da lei que a cria, independentemente de registro em cartório.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Pessoa física nasce com vida; PJ comum nasce no cartório; autarquia nasce na lei. Registro posterior pode existir, mas a personalidade não depende dele.",
+  },
+  {
+    id: 185,
+    tipo: "ce",
+    tema: "Autarquia",
+    enunciado:
+      "Como as demais pessoas jurídicas, a autarquia só existe depois do registro dos atos constitutivos no cartório competente.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Exceção da aula: autarquia não espera cartório para existir. A lei publicada já a faz nascer.",
+  },
+  {
+    id: 186,
+    tipo: "ce",
+    tema: "Autarquia",
+    enunciado:
+      "A responsabilidade civil da autarquia é objetiva, à semelhança da Administração Direta, independentemente de dolo ou culpa.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Característica geral: objetiva. O aprofundamento fica para o tópico de responsabilidade civil.",
+  },
+  {
+    id: 187,
+    tipo: "ce",
+    tema: "Autarquia",
+    enunciado:
+      "O pessoal da autarquia, na regra de prova da aula, rege-se por estatuto (na União, Lei 8.112/90), e não pela CLT.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Estatutário. O professor admite exceções “esquisitas”, mas a prova genérica cobra regime estatutário.",
+  },
+  {
+    id: 188,
+    tipo: "me",
+    tema: "Autarquia",
+    enunciado:
+      "Assinale a característica correta das autarquias, no recorte da aula 4:",
+    alternativas: [
+      "São criadas por decreto e só adquirem personalidade com o registro em cartório.",
+      "São PJ de direito privado e, por isso, não exercem poder de polícia.",
+      "Lei as cria; nascem com a vigência da lei; são PJ de direito público, com responsabilidade objetiva, bens públicos e regime estatutário.",
+      "Integram a Administração Direta, porque se confundem com os Ministérios.",
+    ],
+    correta: 2,
+    explicacao:
+      "Pacote da autarquia: lei cria, personalidade na lei, direito público, cara de direta — mas continua indireta.",
+  },
+  {
+    id: 189,
+    tipo: "ce",
+    tema: "Autarquia",
+    enunciado:
+      "Os bens autárquicos são bens públicos, impenhoráveis; débitos judiciais seguem, em regra, o regime de precatórios, e há imunidade tributária recíproca e prazo em dobro.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "O quadro da autarquia replica o da direta: bem público, precatório (art. 100 da CF), imunidade recíproca, prerrogativas processuais.",
+  },
+  {
+    id: 190,
+    tipo: "ce",
+    tema: "Espécies de autarquia",
+    enunciado:
+      "Agências reguladoras (ANAC, Anvisa, Ancine, Anatel) são espécies de autarquia, ainda que o detalhe de cada uma só caiba quando o edital traz o tópico.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Para organização da AP, basta saber: reguladora = autarquia. Lei própria e regras específicas ficam para o edital que pedir.",
+  },
+  {
+    id: 191,
+    tipo: "ce",
+    tema: "Espécies de autarquia",
+    enunciado:
+      "Ainda existem territórios federais no Brasil, cada um organizado como Estado-membro, e não como autarquia.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Hoje não há território. O último foi Fernando de Noronha, incorporado a Pernambuco. Se houvesse, seria autarquia territorial federal.",
+  },
+  {
+    id: 192,
+    tipo: "ce",
+    tema: "Conselhos profissionais",
+    enunciado:
+      "Os conselhos de fiscalização profissional (CRM, CRO etc.) são, hoje, autarquias, porque exercem poder de polícia e, após a CF/88, isso exige personalidade de direito público.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Antes de 88, direito privado; a Constituição mudou o jogo. Fiscalizar profissão = polícia administrativa = autarquia.",
+  },
+  {
+    id: 193,
+    tipo: "ce",
+    tema: "OAB",
+    enunciado:
+      "A OAB é autarquia profissional como o CRM, sujeita a concurso público, licitação e prestação de contas.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "STF: OAB é entidade sui generis (ímpar). Tem natureza de direito público e exerce polícia, mas não se submete a concurso, licitação e prestação de contas como as demais autarquias — e, para a aula, não é autarquia.",
+  },
+  {
+    id: 194,
+    tipo: "ce",
+    tema: "Tutela administrativa",
+    enunciado:
+      "Entre as pessoas da Administração Indireta e os entes federativos que as instituíram ou autorizaram sua criação inexiste relação de subordinação, havendo vinculação que fundamenta o controle finalístico ou tutela.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Item da tela da aula 4: certo. Sem subordinação; com tutela / controle finalístico / supervisão ministerial.",
+  },
+  {
+    id: 195,
+    tipo: "ce",
+    tema: "Reserva legal",
+    enunciado:
+      "As autarquias somente podem ser criadas mediante lei específica, enquanto empresas públicas, sociedades de economia mista e fundações que integram a Administração Direta podem ter a criação autorizada por decreto do Presidente da República.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Item da tela: errado. Decreto não autoriza. Reserva legal. E EP, SEM e fundação são indireta, não direta.",
+  },
+  {
+    id: 196,
+    tipo: "ce",
+    tema: "Autarquia",
+    enunciado:
+      "As autarquias são pessoas jurídicas criadas por lei e possuem liberdade administrativa, não sendo subordinadas a órgãos estatais.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Item da tela: certo. Lei cria + autonomia administrativa + sem subordinação hierárquica a órgãos.",
+  },
+  {
+    id: 197,
+    tipo: "ce",
+    tema: "Reserva legal",
+    enunciado:
+      "Em virtude do princípio da reserva legal, a criação dos entes da Administração Indireta depende de leis específicas.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Item da tela: certo. A banca não perguntou se a lei cria ou autoriza; perguntou se depende de lei específica. Depende.",
+  },
+  {
+    id: 198,
+    tipo: "ce",
+    tema: "Especialidade",
+    enunciado:
+      "O princípio da especialidade da Administração Indireta impõe que conste, na lei de criação da entidade, a atividade a ser exercida de modo descentralizado.",
+    alternativas: ["Certo", "Errado"],
+    correta: 0,
+    explicacao:
+      "Item da tela: certo. Finalidades/especialidades já na lei de criação.",
+  },
+  {
+    id: 199,
+    tipo: "ce",
+    tema: "Hierarquia",
+    enunciado:
+      "A Administração Pública Indireta, na esfera federal, compreende entidades de direito público e de direito privado, as quais mantêm relação de subordinação e controle hierárquico com os Ministérios com os quais guardam pertinência.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Item da tela: errado na segunda parte. Há público e privado, ok; não há subordinação nem controle hierárquico — há supervisão ministerial (tutela).",
+  },
+  {
+    id: 200,
+    tipo: "ce",
+    tema: "Lei ordinária",
+    enunciado:
+      "A criação de autarquia federal depende da edição de lei complementar.",
+    alternativas: ["Certo", "Errado"],
+    correta: 1,
+    explicacao:
+      "Último item da tela: errado. Lei ordinária basta (e é o caminho usual). LC não é requisito.",
   },
 
 ];
