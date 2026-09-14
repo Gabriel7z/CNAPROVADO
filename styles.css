@@ -1045,6 +1045,126 @@ button:active {
   font-size: 0.88rem;
 }
 
+.plano-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 16px;
+}
+
+#view-plano.vista-cai #plano-estudo,
+#view-plano.vista-cai #plano-dia-sel,
+#view-plano.vista-cai #plano-lista,
+#view-plano.vista-cai #plano-calendario {
+  display: none;
+}
+
+.plano-incidencia {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.plano-incidencia a {
+  color: var(--primary);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.inc-filtro-label {
+  display: block;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+
+.inc-filtro {
+  font: inherit;
+  font-size: 16px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1.5px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  width: 100%;
+  max-width: 100%;
+  margin: 0 0 16px;
+}
+
+.inc-legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.inc-leg-prio {
+  color: var(--ok);
+}
+
+.inc-lista {
+  display: grid;
+  gap: 4px;
+  margin: 0 0 14px;
+  min-width: 0;
+}
+
+.inc-item {
+  min-width: 0;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.inc-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 8px;
+}
+
+.inc-head b {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.inc-head strong {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.inc-item.is-prio .inc-head strong {
+  color: var(--ok);
+}
+
+.inc-bar {
+  height: 8px;
+  border-radius: 99px;
+  background: var(--line);
+  overflow: hidden;
+  margin: 0 0 8px;
+}
+
+.inc-bar > span {
+  display: block;
+  height: 100%;
+  max-width: 100%;
+  border-radius: inherit;
+  background: color-mix(in srgb, var(--muted) 55%, var(--line));
+}
+
+.inc-item.is-prio .inc-bar > span {
+  background: var(--ok);
+}
+
+.inc-item p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
 .plano-legenda {
   display: flex;
   flex-wrap: wrap;
@@ -1250,6 +1370,12 @@ button:active {
     text-align: center;
     padding-left: 10px;
     padding-right: 10px;
+  }
+
+  #plano-vista .modo,
+  #inc-concursos .modo,
+  #inc-materias .modo {
+    padding: 8px 12px;
   }
 
   .plano-cal-weekdays .wd-l {

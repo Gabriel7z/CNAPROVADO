@@ -8,6 +8,7 @@ const ui = {
   materia: "dadm",
   modo: "plano",
   planoIsoSel: null,
+  incidenciaFiltro: "",
   quiz: { i: 0, respostas: [], bloqueado: false, embaralhar: false, fila: [] },
   anki: { i: 0, virado: false, fila: [] },
 };
@@ -34,10 +35,16 @@ function db() {
   if (data.perfil.mostrarRank == null) data.perfil.mostrarRank = true;
   if (!data.planoPorEmail) data.planoPorEmail = {};
   if (!data.planoFeito) data.planoFeito = {};
-  if (data.planoVista !== "calendario" && data.planoVista !== "lista") {
+  if (
+    data.planoVista !== "calendario" &&
+    data.planoVista !== "lista" &&
+    data.planoVista !== "cai"
+  ) {
     data.planoVista = "lista";
   }
   if (!data.planoHorasPorEmail) data.planoHorasPorEmail = {};
+  if (!data.incidenciaConcurso) data.incidenciaConcurso = "sedf";
+  if (!data.incidenciaMateria) data.incidenciaMateria = "pt";
   return data;
 }
 
@@ -231,12 +238,13 @@ function toggleDiaFeito(iso) {
 }
 
 function planoVistaAtual() {
-  return db().planoVista === "calendario" ? "calendario" : "lista";
+  const v = db().planoVista;
+  return v === "calendario" || v === "cai" ? v : "lista";
 }
 
 function setPlanoVista(vista) {
   persist((d) => {
-    d.planoVista = vista === "calendario" ? "calendario" : "lista";
+    d.planoVista = vista === "calendario" || vista === "cai" ? vista : "lista";
   });
 }
 
@@ -403,6 +411,139 @@ function htmlCalendario(api, dias, hoje) {
     <div class="plano-legenda" aria-label="Cores das matérias">${legenda}</div>`;
 }
 
+function fmtPct(n) {
+  const s = Number.isInteger(n) ? String(n) : n.toFixed(1).replace(".", ",");
+  return `${s}%`;
+}
+
+function incidenciaSel() {
+  const api = window.CNAPROVADO_INCIDENCIA;
+  if (!api) return null;
+  const concursos = api.concursos();
+  let concurso = db().incidenciaConcurso;
+  if (!concursos.some((c) => c.id === concurso)) concurso = concursos[0]?.id || "sedf";
+  const materias = api.materias(concurso);
+  let materia = db().incidenciaMateria;
+  if (!materias.some((m) => m.id === materia)) materia = materias[0]?.id || "pt";
+  return {
+    concursos,
+    materias,
+    concurso,
+    materia,
+    recorte: api.recorte(concurso, materia),
+  };
+}
+
+function setIncidenciaFiltro(concurso, materia) {
+  persist((d) => {
+    if (concurso) d.incidenciaConcurso = concurso;
+    if (materia) d.incidenciaMateria = materia;
+  });
+}
+
+function htmlIncidenciaLista(recorte, filtro) {
+  const q = String(filtro || "")
+    .trim()
+    .toLowerCase();
+  const rows = recorte.topicos.filter((t) => !q || t.nome.toLowerCase().includes(q));
+  if (!rows.length) {
+    return `<p class="vazio">Nenhum assunto com esse filtro.</p>`;
+  }
+  return rows
+    .map((t) => {
+      const w = t.pct > 0 ? Math.max(t.pct, 1.6) : 0;
+      return `<article class="inc-item${t.prio ? " is-prio" : ""}">
+        <div class="inc-head">
+          <b>${esc(t.nome)}</b>
+          <strong>${fmtPct(t.pct)}</strong>
+        </div>
+        <div class="inc-bar" aria-hidden="true"><span style="width:${w}%"></span></div>
+        <p>${t.q} questões · acumula ${fmtPct(t.acc)}${t.prio ? " · prioridade (~70%)" : ""}</p>
+      </article>`;
+    })
+    .join("");
+}
+
+function htmlIncidencia() {
+  const sel = incidenciaSel();
+  if (!sel?.recorte) {
+    return `<p class="vazio">Não deu para carregar a tabela de incidência.</p>`;
+  }
+  const { recorte, concursos, materias, concurso, materia } = sel;
+  const concBtns = concursos
+    .map(
+      (c) =>
+        `<button type="button" class="modo${c.id === concurso ? " ativo" : ""}" data-concurso="${esc(c.id)}">${esc(c.nome)}</button>`
+    )
+    .join("");
+  const matBtns = materias
+    .map(
+      (m) =>
+        `<button type="button" class="modo${m.id === materia ? " ativo" : ""}" data-materia="${esc(m.id)}">${esc(m.nome)}</button>`
+    )
+    .join("");
+  const filtro = ui.incidenciaFiltro || "";
+  const prioN = recorte.topicos.filter((t) => t.prio).length;
+  return `
+    <div class="plano-metodo">
+      <p class="kicker">De onde vêm esses %</p>
+      <p>
+        QConcursos e TEC não soltam API pública. Estas barras são o caderno
+        histórico que o TEC publicou para a banca do concurso — não é o edital
+        de 2026 e não prevê a prova. Serve para priorizar o que a banca mais
+        cobra.
+      </p>
+    </div>
+    <p class="field-label">Concurso</p>
+    <div class="plano-switch" id="inc-concursos">${concBtns}</div>
+    <p class="field-label">Matéria</p>
+    <div class="plano-switch" id="inc-materias">${matBtns}</div>
+    <label class="inc-filtro-label" for="inc-filtro">Filtrar assunto</label>
+    <input id="inc-filtro" class="inc-filtro" type="search" placeholder="ex.: interpretação, licitações" value="${esc(filtro)}" autocomplete="off" />
+    <div class="meta inc-resumo">
+      <div><b>${esc(recorte.concursoNome)}</b><span>${esc(recorte.banca)} · ${esc(recorte.materiaNome)}</span></div>
+      <div><b>${recorte.total.toLocaleString("pt-BR")}</b><span>questões no caderno</span></div>
+      <div><b>${prioN}</b><span>assuntos até ~70%</span></div>
+    </div>
+    <p class="plano-cal-hint">${esc(recorte.recorte)}</p>
+    <div class="inc-legenda" aria-label="Legenda">
+      <span class="inc-leg-prio">Cai mais (prioridade)</span>
+      <span>Cai pouco</span>
+    </div>
+    <div id="inc-lista" class="inc-lista">${htmlIncidenciaLista(recorte, filtro)}</div>
+    <p class="plano-cal-nota">Fonte: <a href="${esc(recorte.fonteUrl)}" target="_blank" rel="noopener noreferrer">TEC Concursos · priorização de assuntos</a></p>
+  `;
+}
+
+function bindIncidencia() {
+  $$("#inc-concursos [data-concurso]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const concurso = btn.dataset.concurso;
+      const mats = window.CNAPROVADO_INCIDENCIA?.materias(concurso) || [];
+      const atual = db().incidenciaMateria;
+      const materia = mats.some((m) => m.id === atual) ? atual : mats[0]?.id;
+      setIncidenciaFiltro(concurso, materia);
+      const y = window.scrollY;
+      renderPlano();
+      window.scrollTo(0, y);
+    });
+  });
+  $$("#inc-materias [data-materia]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      setIncidenciaFiltro(null, btn.dataset.materia);
+      const y = window.scrollY;
+      renderPlano();
+      window.scrollTo(0, y);
+    });
+  });
+  $("#inc-filtro")?.addEventListener("input", (e) => {
+    ui.incidenciaFiltro = e.target.value;
+    const sel = incidenciaSel();
+    const box = $("#inc-lista");
+    if (sel?.recorte && box) box.innerHTML = htmlIncidenciaLista(sel.recorte, ui.incidenciaFiltro);
+  });
+}
+
 function renderPlano() {
   const api = window.CNAPROVADO_PLANOS;
   if (!api) return;
@@ -417,10 +558,18 @@ function renderPlano() {
   const deSel = dias.find((d) => d.iso === ui.planoIsoSel) || (vista === "calendario" ? deHoje : null);
   const mostrarSel = Boolean(vista === "calendario" && deSel);
 
-  $("#plano-kicker").textContent = `Mês 1 · ${meta.dono}`;
-  $("#plano-titulo").textContent =
-    id === "amanda" ? "Plano da Amanda" : "Plano do Gabriel";
-  $("#plano-lead").textContent = `${meta.alvo}. ${meta.materias}. 14/09 a 13/10/2026. A matéria do dia não muda: o que muda é o tamanho da tarefa e a revisão periódica.`;
+  $("#view-plano").classList.toggle("vista-cai", vista === "cai");
+  if (vista === "cai") {
+    $("#plano-kicker").textContent = "Banca · o que mais cai";
+    $("#plano-titulo").textContent = "Filtro por conteúdo";
+    $("#plano-lead").textContent =
+      "Não tem API pública da QConcursos ou do TEC. Estas barras são o histórico da banca nos cadernos que o TEC publicou: SEDF/Quadrix, TCE-GO/FCC e PMDF/Cebraspe. Não é o edital de 2026 e não prevê a prova — é o que mais caiu até agora.";
+  } else {
+    $("#plano-kicker").textContent = `Mês 1 · ${meta.dono}`;
+    $("#plano-titulo").textContent =
+      id === "amanda" ? "Plano da Amanda" : "Plano do Gabriel";
+    $("#plano-lead").textContent = `${meta.alvo}. ${meta.materias}. 14/09 a 13/10/2026. A matéria do dia não muda: o que muda é o tamanho da tarefa e a revisão periódica.`;
+  }
   $("#plano-meta").innerHTML = `
     <div><b>${feitos}/${dias.length}</b><span>dias feitos</span></div>
     <div><b>${deHoje.horas}h</b><span>hoje</span></div>
@@ -432,7 +581,7 @@ function renderPlano() {
     admId: "plano-abrir-adm",
     cardsId: "plano-cards-hoje",
   });
-  $("#plano-hoje").classList.toggle("hidden", vista === "calendario");
+  $("#plano-hoje").classList.toggle("hidden", vista !== "lista");
   $("#plano-switch").innerHTML = `
     <button type="button" class="modo${id === "gabriel" ? " ativo" : ""}" data-plano="gabriel">Gabriel</button>
     <button type="button" class="modo${id === "amanda" ? " ativo" : ""}" data-plano="amanda">Amanda</button>
@@ -443,9 +592,12 @@ function renderPlano() {
   $("#plano-vista").innerHTML = `
     <button type="button" class="modo${vista === "lista" ? " ativo" : ""}" data-vista="lista">Lista</button>
     <button type="button" class="modo${vista === "calendario" ? " ativo" : ""}" data-vista="calendario">Calendário</button>
+    <button type="button" class="modo${vista === "cai" ? " ativo" : ""}" data-vista="cai">O que cai</button>
   `;
   $("#plano-lista").classList.toggle("hidden", vista !== "lista");
   $("#plano-calendario").classList.toggle("hidden", vista !== "calendario");
+  $("#plano-incidencia").classList.toggle("hidden", vista !== "cai");
+  $("#plano-incidencia").innerHTML = vista === "cai" ? htmlIncidencia() : "";
   $("#plano-lista").innerHTML = dias
     .map((d) => {
       const nomeDia = d.data.toLocaleDateString("pt-BR", {
@@ -521,8 +673,11 @@ function renderPlano() {
   $$("#plano-vista [data-vista]").forEach((btn) => {
     btn.addEventListener("click", () => {
       setPlanoVista(btn.dataset.vista);
-      if (btn.dataset.vista === "lista") ui.planoIsoSel = null;
-      else if (!ui.planoIsoSel) ui.planoIsoSel = hoje;
+      if (btn.dataset.vista === "calendario") {
+        if (!ui.planoIsoSel) ui.planoIsoSel = hoje;
+      } else {
+        ui.planoIsoSel = null;
+      }
       renderPlano();
       $("#plano-vista")?.scrollIntoView({ block: "start" });
     });
@@ -543,6 +698,7 @@ function renderPlano() {
       }
     });
   });
+  if (vista === "cai") bindIncidencia();
 }
 
 function renderQuestoesHome() {
