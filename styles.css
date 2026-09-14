@@ -1520,6 +1520,19 @@ select.inc-filtro {
     padding: 8px 12px;
   }
 
+  #plano-concurso {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  #plano-concurso .modo {
+    width: 100%;
+    min-width: 0;
+    text-align: center;
+    padding: 8px 4px;
+  }
+
   .plano-cal-weekdays .wd-l {
     display: none;
   }

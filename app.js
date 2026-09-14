@@ -617,10 +617,11 @@ function renderPlano() {
     $("#plano-lead").textContent =
       "Não tem API pública da QConcursos ou do TEC. Estas barras são o histórico da banca nos cadernos que o TEC publicou: SEDF/Quadrix, TCE-GO/FCC e PMDF/Cebraspe. Não é o edital de 2026 e não prevê a prova — é o que mais caiu até agora.";
   } else {
-    $("#plano-kicker").textContent = `Mês 1 · ${meta.dono} · ${meta.alvo}`;
+    $("#plano-kicker").textContent = `Mês 1 · ${meta.dono}`;
     $("#plano-titulo").textContent =
       id === "amanda" ? `Plano da Amanda · ${api.CONCURSOS[concurso].nome}` : `Plano do Gabriel · ${api.CONCURSOS[concurso].nome}`;
-    $("#plano-lead").textContent = `${meta.materias}. 14/09 a 13/10/2026. Troca o concurso em cima: SEDF, PMDF ou TCE-GO. A matéria do dia não muda com as horas: o que muda é o tamanho da tarefa.`;
+    $("#plano-lead").textContent =
+      `${meta.materias}. São 3 planos separados — SEDF, PM DF e TCE-GO. Troca o botão em cima para mudar de concurso; o calendário não mistura os três. No Gmail do Gabriel entra TI na sexta; na Amanda não entra TI. 14/09 a 13/10/2026. As horas só mudam o tamanho da tarefa.`;
   }
   $("#plano-meta").innerHTML = `
     <div><b>${feitos}/${dias.length}</b><span>dias feitos</span></div>

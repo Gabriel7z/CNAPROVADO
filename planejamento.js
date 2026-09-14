@@ -5,7 +5,7 @@ const EMAIL_GABRIEL = "ggabriel.ferreira.099@gmail.com";
 
 const CONCURSOS = {
   sedf: { id: "sedf", nome: "SEDF", banca: "Quadrix", cargo: "Gestor TI" },
-  pmdf: { id: "pmdf", nome: "PMDF", banca: "Cebraspe", cargo: "área policial" },
+  pmdf: { id: "pmdf", nome: "PM DF", banca: "Cebraspe", cargo: "área policial" },
   tcego: { id: "tcego", nome: "TCE-GO", banca: "FCC", cargo: "TI" },
 };
 
