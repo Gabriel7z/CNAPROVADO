@@ -392,7 +392,40 @@ button:active {
 }
 
 .aula-link {
-  color: inherit;
+  color: var(--primary);
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
+}
+
+.fonte-aula {
+  margin: 8px 0 22px;
+  padding: 14px 16px;
+  border: 1.5px solid var(--line);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--chip) 65%, var(--card));
+}
+
+.fonte-aula p {
+  margin: 0 0 8px;
+  color: var(--ink);
+}
+
+.fonte-aula ul {
+  margin: 8px 0 0;
+  padding: 0 0 0 18px;
+}
+
+.fonte-aula li {
+  margin: 0 0 6px;
+}
+
+.quiz-aula {
+  margin: 0 0 12px;
+  font-size: 0.9rem;
+  color: var(--muted);
+  font-weight: 700;
 }
 
 .materias,

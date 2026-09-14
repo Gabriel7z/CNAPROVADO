@@ -165,7 +165,10 @@ function travarApp(on) {
 function renderMaterias() {
   const nav = $("#materias-nav");
   nav.innerHTML = "";
-  materias().forEach((m) => {
+  const esconderTi = planoIdAtual() === "amanda";
+  const lista = materias().filter((m) => !(esconderTi && m.id === "ti"));
+  if (esconderTi && ui.materia === "ti") ui.materia = "dadm";
+  lista.forEach((m) => {
     const btn = document.createElement("button");
     btn.className = `materia${m.id === ui.materia ? " ativa" : ""}`;
     btn.type = "button";
@@ -917,17 +920,50 @@ function bindAfinidade() {
   });
 }
 
+function htmlLinkAula(href, texto) {
+  return `<a class="aula-link" href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(texto)}</a>`;
+}
+
+function htmlFonteAula(materiaId) {
+  const pack = window.CNAPROVADO_AULAS?.daMateria?.(materiaId);
+  if (!pack) return "";
+  const linhas = (pack.aulas || [])
+    .map((a) => {
+      const n = a.de === a.ate ? `Q${a.de}` : `Q${a.de}–${a.ate}`;
+      return `<li>${esc(n)} · ${htmlLinkAula(a.url, a.titulo)}</li>`;
+    })
+    .join("");
+  const extra = pack.extra
+    ? `<p>Também serve: ${htmlLinkAula(pack.extra.url, pack.extra.titulo)}.</p>`
+    : "";
+  return `<div class="fonte-aula">
+    <p class="kicker">De onde vêm as questões</p>
+    <p>${esc(pack.titulo)} · ${esc(pack.professor)}.</p>
+    <p><b>Para responder estas questões, veja a aula neste link:</b> ${htmlLinkAula(pack.playlist.url, pack.playlist.titulo)}.</p>
+    <p>O vídeo não fica no app — o link abre no YouTube.</p>
+    ${extra}
+    <ul>${linhas}</ul>
+  </div>`;
+}
+
+function htmlQuizAula(materiaId, qid) {
+  const api = window.CNAPROVADO_AULAS;
+  const info = api?.daQuestao?.(materiaId, qid);
+  if (!info?.aula) return "";
+  return `<p class="quiz-aula">Para esta questão, veja a aula: ${htmlLinkAula(info.aula.url, info.aula.titulo)} · ${esc(info.pack.professor)}.</p>`;
+}
+
 function renderQuestoesHome() {
   const m = materiaAtual();
   const qs = questoes();
   const cs = cards();
+  const pack = window.CNAPROVADO_AULAS?.daMateria?.(m.id);
   $("#kicker-materia").textContent = m.nome;
-  $("#titulo-materia").textContent =
-    m.id === "dadm"
-      ? "Tópicos 1 a 4 — Fontes, Estado, Direta e Indireta"
-      : m.nome;
+  $("#titulo-materia").textContent = pack?.titulo || m.nome;
   $("#qtd").textContent = String(qs.length);
   $("#meta-cards").textContent = String(cs.length);
+  const box = $("#fonte-aula");
+  if (box) box.innerHTML = htmlFonteAula(m.id);
   if (!qs.length) {
     $("#lead-materia").textContent =
       "Ainda não tem questões nesta aba. Você pode estudar pelos cards quando houver, ou vamos incluindo as baterias conforme o estudo avançar.";
@@ -938,10 +974,15 @@ function renderQuestoesHome() {
       nErros > 0
         ? ` Você tem ${nErros} erro${nErros === 1 ? "" : "s"} em aberto nesta matéria — revisa no Caderno de erros.`
         : "";
+    const aulaTxt = pack
+      ? ` As questões saem da aula/playlist do YouTube (${pack.professor}). Não tem vídeo aqui: o link abre a aula.`
+      : "";
     $("#lead-materia").textContent =
       (m.id === "dadm"
         ? "Tópico 1 (Q1–50) + Tópico 2 (Q51–100) + Tópico 3 Direta (Q101–150) + Tópico 4 Indireta (Q151–200). Gabarito na hora e revisão dos erros no final."
-        : "Questões no estilo concurso, gabarito na hora e revisão dos erros no final.") + extra;
+        : "Questões no estilo concurso, gabarito na hora e revisão dos erros no final.") +
+      aulaTxt +
+      extra;
     $("#comecar").classList.remove("hidden");
   }
 }
@@ -1065,6 +1106,12 @@ function renderQuestao() {
   $("#progresso-texto").textContent = `${prefixo} ${n} de ${total}`;
   $("#barra").style.width = `${(n / total) * 100}%`;
   $("#tema").textContent = `${q.tipo === "ce" ? "Certo ou Errado" : "Múltipla escolha"} · ${q.tema}`;
+  const aulaEl = $("#quiz-aula");
+  if (aulaEl) {
+    const mat = ui.quiz.fila[ui.quiz.i]?.materia || ui.materia;
+    aulaEl.innerHTML = htmlQuizAula(mat, q.id);
+    aulaEl.classList.toggle("hidden", !aulaEl.innerHTML);
+  }
   $("#enunciado").textContent = q.enunciado;
   $("#feedback").className = "feedback hidden";
   $("#proxima").classList.add("hidden");

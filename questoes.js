@@ -2346,10 +2346,19 @@ const MATERIAS_BASE = [
     sigla: "D.Const",
     cor: "#c46b5a",
   },
+  {
+    id: "ti",
+    nome: "Informática / TI",
+    sigla: "TI",
+    cor: "#2f9e8f",
+  },
 ];
 
 function questoesDaMateria(id) {
   if (id === "dadm") return QUESTOES;
+  if (id === "pt") return typeof QUESTOES_PT !== "undefined" ? QUESTOES_PT : [];
+  if (id === "dc") return typeof QUESTOES_DC !== "undefined" ? QUESTOES_DC : [];
+  if (id === "ti") return typeof QUESTOES_TI !== "undefined" ? QUESTOES_TI : [];
   return [];
 }
 
