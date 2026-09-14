@@ -1233,6 +1233,14 @@ select.inc-filtro {
   margin: 0 0 10px;
 }
 
+#erros-acoes {
+  justify-content: flex-start;
+}
+
+#erros-acoes .primary {
+  min-height: 44px;
+}
+
 .plano-legenda {
   display: flex;
   flex-wrap: wrap;
