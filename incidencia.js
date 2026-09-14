@@ -280,9 +280,282 @@ function incidenciaRecorte(concurso, materia) {
   return item ? incidenciaComPct(item) : null;
 }
 
+const CONCURSO_ORDEM = ["sedf", "pmdf", "tcego"];
+const CONCURSO_NOME = { sedf: "SEDF", pmdf: "PM DF", tcego: "TCE-GO" };
+
+const MATERIAS_AFINIDADE = [
+  {
+    id: "adm",
+    nome: "D.Adm",
+    concursos: ["sedf", "pmdf", "tcego"],
+    nota: "Vale nos 3. SEDF puxa organização e LC 840; PM DF e TCE-GO puxam licitação e improbidade.",
+  },
+  {
+    id: "const",
+    nome: "D.Const",
+    concursos: ["sedf", "pmdf", "tcego"],
+    nota: "Vale nos 3. PM DF pesa art. 5º e 136–144; TCE-GO pesa Legislativo e TCs; SEDF puxa educação na CF.",
+  },
+  {
+    id: "pt",
+    nome: "Português",
+    concursos: ["sedf", "pmdf", "tcego"],
+    nota: "Vale nos 3. Interpretação e reescrita são o núcleo comum.",
+  },
+  {
+    id: "ti",
+    nome: "TI",
+    concursos: ["sedf", "pmdf", "tcego"],
+    soGabriel: true,
+    nota: "No nome vale nos 3, mas o conteúdo quase não se mistura: SEDF = Windows/Office; PM DF = informática Cebraspe; TCE-GO = redes/SQL.",
+  },
+  {
+    id: "red",
+    nome: "Redação",
+    concursos: ["sedf", "pmdf", "tcego"],
+    nota: "Fim de semana nos 3 planos. O que muda é o tema (educação, segurança, controle).",
+  },
+];
+
+const AFINIDADE_PLANO = [
+  { concurso: "sedf", materia: "const", topicos: ["Princípios fundamentais", "Organização do Estado", "Administração Pública na CF", "Educação na CF"] },
+  { concurso: "sedf", materia: "red", topicos: ["Dissertação (tema do concurso)"] },
+  { concurso: "pmdf", materia: "ti", topicos: ["Informática básica (hardware, software, SO)", "Internet e navegação segura", "Segurança da informação", "Pacote Office e nuvem"] },
+  { concurso: "pmdf", materia: "red", topicos: ["Dissertação (tema do concurso)"] },
+  { concurso: "tcego", materia: "ti", topicos: ["Redes e protocolos", "Banco de dados e SQL", "Segurança da informação", "Dev, Git e governança"] },
+  { concurso: "tcego", materia: "red", topicos: ["Dissertação (tema do concurso)"] },
+];
+
+const AFINIDADE_ALIAS = [
+  [/origem.*conceito.*fontes|conceito e fontes/, "conceito-fontes"],
+  [/licitacoes|pregao|legislacao esparsa/, "licitacoes"],
+  [/contratos administrativos/, "contratos"],
+  [/atos administrativos/, "atos"],
+  [/organizacao administrativa/, "organizacao-adm"],
+  [/poderes e deveres/, "poderes"],
+  [/responsabilidade civil/, "responsabilidade"],
+  [/controle da administracao/, "controle"],
+  [/regime juridico/, "regime"],
+  [/improbidade/, "improbidade"],
+  [/processo administrativo/, "processo"],
+  [/servicos publicos/, "servicos"],
+  [/intervencao na propriedade/, "intervencao"],
+  [/agentes publicos/, "agentes"],
+  [/interpretacao de textos/, "interpretacao"],
+  [/reescrita de frases/, "reescrita"],
+  [/coesao e coerencia/, "coesao"],
+  [/clareza e correcao/, "clareza"],
+  [/tipologia e genero/, "tipologia"],
+  [/questoes mescladas/, "mescladas"],
+  [/colocacao pronominal/, "colocacao"],
+  [/vozes \(ativa/, "vozes"],
+  [/particula se/, "particula-se"],
+  [/vocabulo que/, "vocabulo-que"],
+  [/vocabulo como/, "vocabulo-como"],
+  [/tipos de discurso/, "discurso"],
+  [/direitos e garantias fundamentais|direitos e deveres individuais/, "art-5"],
+  [/administracao publica na cf/, "ap-cf"],
+  [/principios fundamentais/, "principios"],
+  [/organizacao do estado|organizacao politico|uniao bens|estados federados|^municipios$/, "org-estado"],
+  [/organizacao dos poderes|poder legislativo|poder judiciario|poder executivo/, "poderes-cf"],
+  [/remedios constitucionais/, "remedios"],
+  [/defesa do estado/, "defesa-estado"],
+  [/educacao na cf/, "educacao-cf"],
+  [/windows|sistemas operacionais|informatica basica/, "so-arquivos"],
+  [/microsoft office|broffice|libreoffice|pacote office/, "office"],
+  [/navegadores|internet e navegacao|conceitos de internet|servicos de internet|correio eletronico/, "internet"],
+  [/ameacas|malware|seguranca da informacao|seguranca e lgpd/, "seguranca"],
+  [/redes|protocolos de redes/, "redes"],
+  [/banco de dados|sql/, "sql"],
+  [/dissertacao/, "dissertacao"],
+];
+
+const AFINIDADE_ROTULO = {
+  "conceito-fontes": "Conceito, origem e fontes",
+  licitacoes: "Licitações (e 14.133)",
+  contratos: "Contratos administrativos",
+  atos: "Atos administrativos",
+  "organizacao-adm": "Organização administrativa",
+  poderes: "Poderes e deveres da Administração",
+  responsabilidade: "Responsabilidade civil do Estado",
+  controle: "Controle da Administração",
+  regime: "Regime jurídico administrativo",
+  improbidade: "Improbidade administrativa",
+  processo: "Processo administrativo",
+  servicos: "Serviços públicos",
+  intervencao: "Intervenção na propriedade",
+  agentes: "Agentes públicos",
+  interpretacao: "Interpretação de textos",
+  reescrita: "Reescrita de frases",
+  coesao: "Coesão e coerência",
+  clareza: "Clareza e correção",
+  tipologia: "Tipologia e gênero textual",
+  mescladas: "Questões mescladas",
+  colocacao: "Colocação pronominal",
+  vozes: "Vozes (ativa/passiva)",
+  "particula-se": "Partícula “se”",
+  "vocabulo-que": "Vocábulo “que”",
+  "vocabulo-como": "Vocábulo “como”",
+  discurso: "Tipos de discurso",
+  "art-5": "Direitos fundamentais (art. 5º)",
+  "ap-cf": "Administração Pública na CF",
+  principios: "Princípios fundamentais",
+  "org-estado": "Organização do Estado",
+  "poderes-cf": "Organização dos Poderes",
+  remedios: "Remédios constitucionais",
+  "defesa-estado": "Defesa do Estado (arts. 136 a 144)",
+  "educacao-cf": "Educação na CF",
+  "so-arquivos": "SO, Windows e arquivos",
+  office: "Pacote Office",
+  internet: "Internet, navegador e e-mail",
+  seguranca: "Segurança da informação",
+  redes: "Redes e protocolos",
+  sql: "Banco de dados e SQL",
+  dissertacao: "Dissertação (tema do concurso)",
+};
+
+const AFINIDADE_MATERIA_NOME = {
+  adm: "D.Adm",
+  const: "D.Const",
+  pt: "Português",
+  ti: "TI",
+  red: "Redação",
+};
+
+function slugTexto(s) {
+  return String(s || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[“”"'`]/g, "")
+    .replace(/lei\s*[\d./]+/g, " ")
+    .replace(/arts?\.\s*[\dºoa,\s–-]+/gi, " ")
+    .replace(/\([^)]*\)/g, " ")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+function chaveAfinidade(nome) {
+  const slug = slugTexto(nome);
+  const hit = AFINIDADE_ALIAS.find(([re]) => re.test(slug));
+  if (hit) return hit[1];
+  return slug.replace(/\s+/g, "-");
+}
+
+function rotuloAfinidade(chave, fallback) {
+  return AFINIDADE_ROTULO[chave] || fallback || chave;
+}
+
+function fontesAfinidade() {
+  const rows = [];
+  INCIDENCIA.forEach((item) => {
+    const recorte = incidenciaComPct(item);
+    recorte.topicos.forEach((t) => {
+      rows.push({
+        concurso: item.concurso,
+        materia: item.materia,
+        nome: t.nome,
+        chave: chaveAfinidade(t.nome),
+        pct: t.pct,
+        q: t.q,
+        fonte: "caderno",
+      });
+    });
+  });
+  AFINIDADE_PLANO.forEach((item) => {
+    item.topicos.forEach((nome) => {
+      const chave = chaveAfinidade(nome);
+      const jaTemCaderno = rows.some(
+        (r) => r.concurso === item.concurso && r.materia === item.materia && r.chave === chave
+      );
+      if (jaTemCaderno) return;
+      rows.push({
+        concurso: item.concurso,
+        materia: item.materia,
+        nome,
+        chave,
+        pct: null,
+        q: 0,
+        fonte: "plano",
+      });
+    });
+  });
+  return rows;
+}
+
+function parConcursos(ids) {
+  const nomes = ids.map((id) => CONCURSO_NOME[id] || id);
+  if (nomes.length === 3) return "SEDF · PM DF · TCE-GO";
+  if (nomes.length === 2) return nomes.join(" · ");
+  return nomes[0] || "";
+}
+
+function agruparAfinidade(opts) {
+  const pessoa = opts?.pessoa === "amanda" ? "amanda" : "gabriel";
+  const materiaFiltro = opts?.materia && opts.materia !== "todas" ? opts.materia : "";
+  const q = slugTexto(opts?.filtro || "");
+  const rows = fontesAfinidade().filter((r) => {
+    if (pessoa === "amanda" && r.materia === "ti") return false;
+    if (materiaFiltro && r.materia !== materiaFiltro) return false;
+    return true;
+  });
+  const mapa = new Map();
+  rows.forEach((r) => {
+    const id = `${r.materia}|${r.chave}`;
+    if (!mapa.has(id)) {
+      mapa.set(id, {
+        id,
+        materia: r.materia,
+        materiaNome: AFINIDADE_MATERIA_NOME[r.materia] || r.materia,
+        chave: r.chave,
+        nome: rotuloAfinidade(r.chave, r.nome),
+        porConcurso: {},
+      });
+    }
+    const item = mapa.get(id);
+    const atual = item.porConcurso[r.concurso];
+    if (!atual || (r.pct || 0) > (atual.pct || 0)) {
+      item.porConcurso[r.concurso] = r;
+    }
+  });
+  const assuntos = [...mapa.values()]
+    .map((item) => {
+      const concursos = CONCURSO_ORDEM.filter((c) => item.porConcurso[c]);
+      return {
+        ...item,
+        concursos,
+        n: concursos.length,
+        par: parConcursos(concursos),
+      };
+    })
+    .filter((item) => {
+      if (!q) return true;
+      return slugTexto(`${item.nome} ${item.materiaNome} ${item.par}`).includes(q);
+    })
+    .sort((a, b) => b.n - a.n || a.materiaNome.localeCompare(b.materiaNome, "pt-BR") || a.nome.localeCompare(b.nome, "pt-BR"));
+
+  const materias = MATERIAS_AFINIDADE.filter((m) => !(pessoa === "amanda" && m.soGabriel)).map((m) => ({
+    ...m,
+    n: m.concursos.length,
+    par: parConcursos(m.concursos),
+  }));
+
+  return {
+    materias,
+    nos3: assuntos.filter((a) => a.n === 3),
+    nos2: assuntos.filter((a) => a.n === 2),
+    nos1: assuntos.filter((a) => a.n === 1),
+    assuntos,
+  };
+}
+
 window.CNAPROVADO_INCIDENCIA = {
   lista: INCIDENCIA,
   concursos: incidenciaConcursos,
   materias: incidenciaMaterias,
   recorte: incidenciaRecorte,
+  afinidade: agruparAfinidade,
+  materiasAfinidade: MATERIAS_AFINIDADE,
+  concursoNome: CONCURSO_NOME,
+  concursoOrdem: CONCURSO_ORDEM,
 };

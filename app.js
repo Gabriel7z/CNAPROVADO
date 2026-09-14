@@ -9,6 +9,7 @@ const ui = {
   modo: "plano",
   planoIsoSel: null,
   incidenciaFiltro: "",
+  afinidadeFiltro: "",
   errosMateria: "todas",
   errosTema: "todos",
   errosAberto: null,
@@ -43,10 +44,12 @@ function db() {
   if (
     data.planoVista !== "calendario" &&
     data.planoVista !== "lista" &&
-    data.planoVista !== "cai"
+    data.planoVista !== "cai" &&
+    data.planoVista !== "afin"
   ) {
     data.planoVista = "lista";
   }
+  if (!data.afinidadeMateria) data.afinidadeMateria = "todas";
   if (!data.planoHorasPorEmail) data.planoHorasPorEmail = {};
   if (!data.incidenciaConcurso) data.incidenciaConcurso = "sedf";
   if (!data.incidenciaMateria) data.incidenciaMateria = "pt";
@@ -276,12 +279,12 @@ function toggleDiaFeito(iso) {
 
 function planoVistaAtual() {
   const v = db().planoVista;
-  return v === "calendario" || v === "cai" ? v : "lista";
+  return v === "calendario" || v === "cai" || v === "afin" ? v : "lista";
 }
 
 function setPlanoVista(vista) {
   persist((d) => {
-    d.planoVista = vista === "calendario" || vista === "cai" ? vista : "lista";
+    d.planoVista = vista === "calendario" || vista === "cai" || vista === "afin" ? vista : "lista";
   });
 }
 
@@ -611,11 +614,17 @@ function renderPlano() {
   const mostrarSel = Boolean(vista === "calendario" && deSel);
 
   $("#view-plano").classList.toggle("vista-cai", vista === "cai");
+  $("#view-plano").classList.toggle("vista-afin", vista === "afin");
   if (vista === "cai") {
     $("#plano-kicker").textContent = "Banca · o que mais cai";
     $("#plano-titulo").textContent = "Filtro por conteúdo";
     $("#plano-lead").textContent =
       "Não tem API pública da QConcursos ou do TEC. Estas barras são o histórico da banca nos cadernos que o TEC publicou: SEDF/Quadrix, TCE-GO/FCC e PMDF/Cebraspe. Não é o edital de 2026 e não prevê a prova — é o que mais caiu até agora.";
+  } else if (vista === "afin") {
+    $("#plano-kicker").textContent = `Afinidade · ${meta.dono}`;
+    $("#plano-titulo").textContent = "O que vale em mais de um concurso";
+    $("#plano-lead").textContent =
+      "Os planos individuais continuam: SEDF, PM DF e TCE-GO cada um no seu calendário. Aqui você vê o que estudar uma vez e aproveitar nos 3, o que vale em 2, e o recorte que é só de um.";
   } else {
     $("#plano-kicker").textContent = `Mês 1 · ${meta.dono}`;
     $("#plano-titulo").textContent =
@@ -653,11 +662,14 @@ function renderPlano() {
     <button type="button" class="modo${vista === "lista" ? " ativo" : ""}" data-vista="lista">Lista</button>
     <button type="button" class="modo${vista === "calendario" ? " ativo" : ""}" data-vista="calendario">Calendário</button>
     <button type="button" class="modo${vista === "cai" ? " ativo" : ""}" data-vista="cai">O que cai</button>
+    <button type="button" class="modo${vista === "afin" ? " ativo" : ""}" data-vista="afin">Afinidade</button>
   `;
   $("#plano-lista").classList.toggle("hidden", vista !== "lista");
   $("#plano-calendario").classList.toggle("hidden", vista !== "calendario");
   $("#plano-incidencia").classList.toggle("hidden", vista !== "cai");
   $("#plano-incidencia").innerHTML = vista === "cai" ? htmlIncidencia() : "";
+  $("#plano-afinidade").classList.toggle("hidden", vista !== "afin");
+  $("#plano-afinidade").innerHTML = vista === "afin" ? htmlAfinidade() : "";
   $("#plano-lista").innerHTML = dias
     .map((d) => {
       const nomeDia = d.data.toLocaleDateString("pt-BR", {
@@ -769,6 +781,140 @@ function renderPlano() {
     });
   });
   if (vista === "cai") bindIncidencia();
+  if (vista === "afin") bindAfinidade();
+}
+
+function htmlAfinPct(row) {
+  if (!row) return `<span class="afin-vazio">—</span>`;
+  if (row.pct == null) return `<span class="afin-plano">plano</span>`;
+  return `<strong>${fmtPct(row.pct)}</strong>`;
+}
+
+function htmlAfinChips(concursos) {
+  const api = window.CNAPROVADO_INCIDENCIA;
+  const ordem = api?.concursoOrdem || ["sedf", "pmdf", "tcego"];
+  return ordem
+    .map((id) => {
+      const on = concursos.includes(id);
+      const nome = api?.concursoNome?.[id] || id;
+      return `<span class="afin-chip${on ? " on" : ""}">${esc(nome)}</span>`;
+    })
+    .join("");
+}
+
+function htmlAfinAssunto(item) {
+  const api = window.CNAPROVADO_INCIDENCIA;
+  const ordem = api?.concursoOrdem || ["sedf", "pmdf", "tcego"];
+  const pcts = ordem
+    .map((id) => {
+      const nome = api?.concursoNome?.[id] || id;
+      return `<span><i>${esc(nome)}</i>${htmlAfinPct(item.porConcurso[id])}</span>`;
+    })
+    .join("");
+  return `<article class="afin-item n${item.n}">
+    <header>
+      <p class="kicker">${esc(item.materiaNome)} · ${esc(item.par)}</p>
+      <h3>${esc(item.nome)}</h3>
+    </header>
+    <div class="afin-chips">${htmlAfinChips(item.concursos)}</div>
+    <div class="afin-pcts">${pcts}</div>
+  </article>`;
+}
+
+function htmlAfinGrupo(titulo, lead, itens) {
+  if (!itens.length) return "";
+  return `<section class="afin-grupo">
+    <h2>${esc(titulo)} <b>${itens.length}</b></h2>
+    <p class="afin-grupo-lead">${esc(lead)}</p>
+    <div class="afin-lista">${itens.map(htmlAfinAssunto).join("")}</div>
+  </section>`;
+}
+
+function htmlAfinidade() {
+  const api = window.CNAPROVADO_INCIDENCIA;
+  if (!api?.afinidade) return `<p class="vazio">Não deu para carregar a afinidade.</p>`;
+  const pessoa = planoIdAtual();
+  const materia = db().afinidadeMateria || "todas";
+  const filtro = ui.afinidadeFiltro || "";
+  const dados = api.afinidade({ pessoa, materia, filtro });
+  const mats = [
+    { id: "todas", nome: "Todas" },
+    ...dados.materias.map((m) => ({ id: m.id, nome: m.nome })),
+  ];
+  const matBtns = mats
+    .map(
+      (m) =>
+        `<button type="button" class="modo${m.id === materia ? " ativo" : ""}" data-afin-mat="${esc(m.id)}">${esc(m.nome)}</button>`
+    )
+    .join("");
+  const matCards = dados.materias
+    .map(
+      (m) => `<article class="afin-mat n${m.n}">
+        <p class="kicker">${esc(m.par)}</p>
+        <h3>${esc(m.nome)}</h3>
+        <p>${esc(m.nota)}</p>
+      </article>`
+    )
+    .join("");
+  return `
+    <div class="plano-metodo">
+      <p class="kicker">Como ler</p>
+      <p>
+        Verde = o mesmo assunto cai nos <b>3</b> concursos: estuda uma vez, vale nos três.
+        Amarelo = vale em <b>2</b>. Cinza = recorte de <b>um</b> só. Os % vêm do caderno
+        histórico do TEC (não é o edital de 2026). “plano” é assunto do calendário
+        quando a banca não publicou caderno daquela matéria.
+      </p>
+    </div>
+    <div class="afin-mats">${matCards}</div>
+    <p class="field-label">Filtrar matéria</p>
+    <div class="plano-switch" id="afin-materias">${matBtns}</div>
+    <label class="inc-filtro-label" for="afin-filtro">Filtrar assunto</label>
+    <input id="afin-filtro" class="inc-filtro" type="search" placeholder="ex.: licitações, art. 5º, Windows" value="${esc(filtro)}" autocomplete="off" />
+    <div id="afin-live">${htmlAfinBlocos(dados)}</div>
+  `;
+}
+
+function htmlAfinBlocos(dados) {
+  const vazio = dados.assuntos.length
+    ? ""
+    : `<p class="vazio">Nenhum assunto com esse filtro.</p>`;
+  return `
+    <div class="meta inc-resumo" id="afin-meta">
+      <div><b>${dados.nos3.length}</b><span>valem nos 3</span></div>
+      <div><b>${dados.nos2.length}</b><span>valem em 2</span></div>
+      <div><b>${dados.nos1.length}</b><span>só de um</span></div>
+    </div>
+    ${vazio}
+    <div id="afin-blocos">
+    ${htmlAfinGrupo("Vale nos 3", "Estuda uma vez. Cai na SEDF, na PM DF e no TCE-GO.", dados.nos3)}
+    ${htmlAfinGrupo("Vale em 2", "Cai em dois concursos. O terceiro não cobra esse recorte (ou cobra pouco e fora do caderno).", dados.nos2)}
+    ${htmlAfinGrupo("Só de um concurso", "Não mistura. Estuda quando o plano daquele concurso pedir.", dados.nos1)}
+    </div>`;
+}
+
+function bindAfinidade() {
+  $$("#afin-materias [data-afin-mat]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      persist((d) => {
+        d.afinidadeMateria = btn.dataset.afinMat;
+      });
+      const y = window.scrollY;
+      renderPlano();
+      window.scrollTo(0, y);
+    });
+  });
+  $("#afin-filtro")?.addEventListener("input", (e) => {
+    ui.afinidadeFiltro = e.target.value;
+    const api = window.CNAPROVADO_INCIDENCIA;
+    const dados = api?.afinidade({
+      pessoa: planoIdAtual(),
+      materia: db().afinidadeMateria || "todas",
+      filtro: ui.afinidadeFiltro,
+    });
+    const wrap = $("#afin-live");
+    if (dados && wrap) wrap.innerHTML = htmlAfinBlocos(dados);
+  });
 }
 
 function renderQuestoesHome() {
