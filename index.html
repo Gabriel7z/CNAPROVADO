@@ -31,7 +31,7 @@
         document.documentElement.setAttribute("data-theme", t);
       } catch (e) {}
     </script>
-    <link rel="stylesheet" href="styles.css?v=201" />
+    <link rel="stylesheet" href="styles.css?v=202" />
   </head>
   <body>
     <div class="wrap app-shell">
@@ -74,6 +74,11 @@
         <button class="modo" data-modo="perfil" type="button">Conta</button>
       </nav>
 
+      <div class="concurso-bar hidden" id="concurso-bar">
+        <p class="field-label">Ver só um concurso</p>
+        <div class="plano-switch" id="filtro-concurso" aria-label="SEDF, PM DF ou TCE-GO"></div>
+      </div>
+
       <main class="card">
         <section id="view-login" class="hero">
           <p class="kicker">Acesso</p>
@@ -102,8 +107,8 @@
             <div class="plano-hoje" id="plano-hoje"></div>
           <p class="field-label">De quem é este plano</p>
           <div class="plano-switch" id="plano-switch"></div>
-          <p class="field-label">Plano individual — um concurso por vez</p>
-          <div class="plano-switch" id="plano-concurso" aria-label="SEDF, PM DF ou TCE-GO"></div>
+          <p class="field-label plano-conc-dup">Plano individual — um concurso por vez</p>
+          <div class="plano-switch plano-conc-dup" id="plano-concurso" aria-label="SEDF, PM DF ou TCE-GO"></div>
             <p class="field-label">Quanto tempo você tem</p>
             <div class="plano-carga-box">
               <div class="plano-carga-row">
@@ -154,8 +159,6 @@
               Embaralhar ordem
             </label>
           </div>
-          <p class="field-label">Ver só um concurso</p>
-          <div class="plano-switch" id="qs-concurso" aria-label="SEDF, PM DF ou TCE-GO"></div>
           <div id="cai-materia"></div>
           <div id="fonte-aula"></div>
           <div class="actions">
@@ -202,6 +205,7 @@
             Só o que você errou e ainda não acertou de novo. Filtra por matéria
             e tema, abre o gabarito ou treina só essas questões.
           </p>
+          <div id="cai-erros"></div>
           <div class="meta" id="erros-meta"></div>
           <p class="field-label">Matéria</p>
           <div class="plano-switch" id="erros-materias"></div>
@@ -255,6 +259,7 @@
             Frente e verso. Marque de novo, difícil, bom ou fácil para o próximo
             intervalo.
           </p>
+          <div id="cai-cards"></div>
           <p id="cards-stats" class="lead"></p>
           <div id="anki-stage"></div>
         </section>
@@ -323,7 +328,7 @@
     <script src="questoes-pt.js?v=200"></script>
     <script src="questoes-dc.js?v=200"></script>
     <script src="questoes-ti.js?v=200"></script>
-    <script src="aulas.js?v=201"></script>
+    <script src="aulas.js?v=202"></script>
     <script src="planejamento.js"></script>
     <script src="incidencia.js?v=201"></script>
     <script src="redacao.js"></script>
@@ -331,6 +336,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js"></script>
     <script src="cloud.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-    <script src="app.js?v=201"></script>
+    <script src="app.js?v=202"></script>
   </body>
 </html>

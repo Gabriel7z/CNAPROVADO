@@ -195,10 +195,20 @@ function questoesDoConcurso(lista, materiaId, concurso) {
   return (lista || []).filter((q) => aulas.some((a) => q.id >= a.de && q.id <= a.ate));
 }
 
+function questaoDoConcurso(materiaId, qid, concurso) {
+  const aulas = aulasDoConcurso(materiaId, concurso);
+  if (!aulas.length) return true;
+  const todas = aulaDaMateria(materiaId)?.aulas || [];
+  if (aulas.length === todas.length) return true;
+  const n = Number(qid);
+  return aulas.some((a) => n >= a.de && n <= a.ate);
+}
+
 window.CNAPROVADO_AULAS = {
   lista: AULAS,
   daMateria: aulaDaMateria,
   daQuestao: aulaDaQuestao,
   aulasDoConcurso,
   questoesDoConcurso,
+  questaoDoConcurso,
 };

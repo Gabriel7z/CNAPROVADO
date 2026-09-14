@@ -174,6 +174,7 @@ function logado() {
 function travarApp(on) {
   $("#materias-nav").classList.toggle("hidden", !on);
   $("#modos-nav").classList.toggle("hidden", !on);
+  $("#concurso-bar")?.classList.toggle("hidden", !on);
   $("#chip-perfil").classList.toggle("hidden", !on);
   $("#dock")?.classList.toggle("hidden", !on);
 }
@@ -1063,8 +1064,20 @@ function htmlSwitchConcurso(ativoId) {
     .join("");
 }
 
-function bindQuestoesHome() {
-  $$("#qs-concurso [data-concurso]").forEach((btn) => {
+function nomeConcursoAtual() {
+  const id = planoConcursoAtual();
+  return window.CNAPROVADO_PLANOS?.CONCURSOS?.[id]?.nome || window.CNAPROVADO_INCIDENCIA?.concursoNome?.[id] || id;
+}
+
+function bancaConcursoAtual() {
+  return window.CNAPROVADO_PLANOS?.CONCURSOS?.[planoConcursoAtual()]?.banca || "";
+}
+
+function renderFiltroConcurso() {
+  const el = $("#filtro-concurso");
+  if (!el) return;
+  el.innerHTML = htmlSwitchConcurso(planoConcursoAtual());
+  el.querySelectorAll("[data-concurso]").forEach((btn) => {
     btn.addEventListener("click", () => {
       setPlanoConcurso(btn.dataset.concurso);
       const y = window.scrollY;
@@ -1072,6 +1085,19 @@ function bindQuestoesHome() {
       window.scrollTo(0, y);
     });
   });
+}
+
+function extraRedacaoDoConcurso(banca, conc) {
+  const n = String(banca || "")
+    .toLowerCase()
+    .replace(/\s+/g, "");
+  if (conc === "sedf") return n.includes("sedf") || n.includes("quadrix");
+  if (conc === "pmdf") return n.includes("pmdf") || n.includes("cebraspe");
+  if (conc === "tcego") return n.includes("tce") || n.includes("fcc");
+  return true;
+}
+
+function bindQuestoesHome() {
   $$("#fonte-aula [data-treino-de]").forEach((btn) => {
     btn.addEventListener("click", () => {
       iniciarFaixa(Number(btn.dataset.treinoDe), Number(btn.dataset.treinoAte));
@@ -1114,13 +1140,11 @@ function renderQuestoesHome() {
   const concurso = planoConcursoAtual();
   const aulas =
     window.CNAPROVADO_AULAS?.aulasDoConcurso?.(m.id, concurso) || pack?.aulas || [];
-  const nomeConc = window.CNAPROVADO_INCIDENCIA?.concursoNome?.[concurso] || concurso;
+  const nomeConc = nomeConcursoAtual();
   $("#kicker-materia").textContent = `${m.nome} · ${nomeConc}`;
   $("#titulo-materia").textContent = pack?.titulo || m.nome;
   $("#qtd").textContent = String(qs.length);
   $("#meta-cards").textContent = String(cs.length);
-  const switchEl = $("#qs-concurso");
-  if (switchEl) switchEl.innerHTML = htmlSwitchConcurso(concurso);
   const caiEl = $("#cai-materia");
   if (caiEl) caiEl.innerHTML = htmlCaiNaMateria(m.id);
   const box = $("#fonte-aula");
@@ -1130,7 +1154,7 @@ function renderQuestoesHome() {
       "Ainda não tem questões nesta aba para este concurso. Troca o concurso em cima ou espera a próxima bateria.";
     $("#comecar").classList.add("hidden");
   } else {
-    const nErros = cadernoItens().filter((it) => it.materia === m.id).length;
+    const nErros = cadernoFiltrado().filter((it) => it.materia === m.id).length;
     const extra =
       nErros > 0
         ? ` Você tem ${nErros} erro${nErros === 1 ? "" : "s"} em aberto nesta matéria — revisa no Caderno de erros.`
@@ -1188,9 +1212,12 @@ function cadernoItens() {
 }
 
 function cadernoFiltrado() {
+  const conc = planoConcursoAtual();
+  const api = window.CNAPROVADO_AULAS;
   return cadernoItens().filter((it) => {
     if (ui.errosMateria !== "todas" && it.materia !== ui.errosMateria) return false;
     if (ui.errosTema !== "todos" && it.tema !== ui.errosTema) return false;
+    if (api?.questaoDoConcurso && !api.questaoDoConcurso(it.materia, it.qid, conc)) return false;
     return true;
   });
 }
@@ -1376,7 +1403,11 @@ function renderResultado() {
 }
 
 function renderErros() {
-  const todos = cadernoItens();
+  const conc = planoConcursoAtual();
+  const apiAulas = window.CNAPROVADO_AULAS;
+  const todos = cadernoItens().filter((it) =>
+    apiAulas?.questaoDoConcurso ? apiAulas.questaoDoConcurso(it.materia, it.qid, conc) : true
+  );
   const lista = cadernoFiltrado();
   const matsComErro = [...new Set(todos.map((it) => it.materia))];
   if (ui.errosMateria !== "todas" && !matsComErro.includes(ui.errosMateria) && matsComErro.length) {
@@ -1390,8 +1421,10 @@ function renderErros() {
   if (ui.errosTema !== "todos" && !temas.includes(ui.errosTema)) ui.errosTema = "todos";
 
   $("#erros-lead").textContent = todos.length
-    ? "Só entra o que a última tentativa ainda errou. Se você acertar de novo, sai da lista. “Já revisei” esconde até você errar outra vez."
-    : "Ainda não tem erro gravado. Faz uma bateria em Questões: o que você errar aparece aqui para revisar.";
+    ? `Só entra o que a última tentativa ainda errou neste concurso (${nomeConcursoAtual()}). Se você acertar de novo, sai da lista.`
+    : `Ainda não tem erro gravado no ${nomeConcursoAtual()}. Faz uma bateria em Questões: o que você errar aparece aqui.`;
+  const caiErros = $("#cai-erros");
+  if (caiErros) caiErros.innerHTML = htmlCaiNaMateria(ui.errosMateria === "todas" ? ui.materia : ui.errosMateria);
   $("#erros-meta").innerHTML = `
     <div><b>${todos.length}</b><span>em aberto</span></div>
     <div><b>${lista.length}</b><span>neste filtro</span></div>
@@ -1501,8 +1534,13 @@ function renderCards() {
   ui.anki.virado = false;
   const due = fila.filter((c) => ankiState(c.id).reps).length;
   const novos = fila.length - due;
+  const nomeConc = nomeConcursoAtual();
+  $("#cards-lead").textContent =
+    `Cards do ${nomeConc} nesta matéria. Frente e verso; marque de novo, difícil, bom ou fácil para o próximo intervalo.`;
+  const caiCards = $("#cai-cards");
+  if (caiCards) caiCards.innerHTML = htmlCaiNaMateria(ui.materia);
   $("#cards-stats").textContent = fila.length
-    ? `${due} para revisar agora · ${novos} novos nesta matéria`
+    ? `${due} para revisar agora · ${novos} novos neste concurso`
     : "";
   if (!cards().length) {
     $("#anki-stage").innerHTML =
@@ -1889,7 +1927,9 @@ function listaTemasRedacao() {
       minutos: red.minutosDoFazer(d.fazer, d.titulo),
       eHoje: d.iso === hoje,
     }));
-  const extras = (red?.EXTRAS || []).map((t) => ({
+  const extras = (red?.EXTRAS || [])
+    .filter((t) => extraRedacaoDoConcurso(t.banca, conc))
+    .map((t) => ({
     key: redacaoChave("livre", t.id),
     label: `${t.banca} · ${t.titulo}`,
     titulo: t.titulo,
@@ -2059,10 +2099,12 @@ function renderRedacao() {
   sel.value = chave;
   const item = pack.itens.find((t) => t.key === chave) || pack.itens[0];
   const hojeRed = String(pack.diaHoje?.materia || "").startsWith("Redação");
-  $("#redacao-kicker").textContent = hojeRed ? "Hoje · fim de semana" : "Treino de redação";
+  $("#redacao-kicker").textContent = hojeRed
+    ? `Hoje · ${nomeConcursoAtual()}`
+    : `Treino de redação · ${nomeConcursoAtual()}`;
   $("#redacao-lead").textContent = hojeRed
-    ? "Hoje o plano é escrever. Liga o cronômetro, marca o checklist e não precisa de professor no app — só não pular."
-    : "Hoje o plano não é redação, mas você pode treinar mesmo assim. Sábado e domingo o tema do plano aparece na lista.";
+    ? `Hoje o plano do ${nomeConcursoAtual()} é escrever. Liga o cronômetro, marca o checklist e não precisa de professor no app — só não pular.`
+    : `Temas do ${nomeConcursoAtual()} (${bancaConcursoAtual()}). Hoje o plano pode não ser redação, mas você treina mesmo assim.`;
   $("#redacao-proposta").innerHTML = item
     ? `<p class="kicker">${esc(item.titulo)}</p><p>${esc(item.proposta)}</p>`
     : "";
@@ -2140,6 +2182,7 @@ function render() {
   renderChip();
   renderMaterias();
   renderModos();
+  renderFiltroConcurso();
   if (ui.modo === "plano") {
     mostrar("view-plano");
     renderPlano();

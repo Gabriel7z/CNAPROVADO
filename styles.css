@@ -421,6 +421,22 @@ button:active {
   margin: 0 0 6px;
 }
 
+.concurso-bar {
+  margin: 0 0 14px;
+}
+
+.concurso-bar .field-label {
+  margin-bottom: 6px;
+}
+
+.concurso-bar .plano-switch {
+  margin-bottom: 0;
+}
+
+.plano-conc-dup {
+  display: none !important;
+}
+
 .linkish {
   display: inline;
   margin-left: 8px;
