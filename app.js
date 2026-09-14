@@ -7,6 +7,7 @@ const AVATARES = ["🎯", "🦁", "🦅", "🐺", "🐉", "⚡", "📚", "⚖️
 const ui = {
   materia: "dadm",
   modo: "plano",
+  planoIsoSel: null,
   quiz: { i: 0, respostas: [], bloqueado: false, embaralhar: false, fila: [] },
   anki: { i: 0, virado: false, fila: [] },
 };
@@ -33,6 +34,9 @@ function db() {
   if (data.perfil.mostrarRank == null) data.perfil.mostrarRank = true;
   if (!data.planoPorEmail) data.planoPorEmail = {};
   if (!data.planoFeito) data.planoFeito = {};
+  if (data.planoVista !== "calendario" && data.planoVista !== "lista") {
+    data.planoVista = "lista";
+  }
   return data;
 }
 
@@ -225,6 +229,112 @@ function toggleDiaFeito(iso) {
   });
 }
 
+function planoVistaAtual() {
+  return db().planoVista === "calendario" ? "calendario" : "lista";
+}
+
+function setPlanoVista(vista) {
+  persist((d) => {
+    d.planoVista = vista === "calendario" ? "calendario" : "lista";
+  });
+}
+
+function htmlPlanoBloco(d, opts) {
+  const feito = diaFeito(d.iso);
+  return `
+    <p class="kicker">${esc(opts.kicker)}</p>
+    <h2>${esc(d.materia)} · ${esc(d.titulo)}</h2>
+    <p>${esc(d.fazer)}</p>
+    <div class="actions">
+      <button class="primary" type="button" id="${opts.feitoId}">${
+        feito ? "Feito ✓" : "Marcar como feito"
+      }</button>
+      ${
+        d.materia === "D.Adm"
+          ? `<button class="ghost" type="button" id="${opts.admId}">Abrir questões de D.Adm</button>`
+          : ""
+      }
+    </div>
+  `;
+}
+
+function bindAbrirAdm(id) {
+  $(`#${id}`)?.addEventListener("click", () => {
+    ui.materia = "dadm";
+    ui.modo = "questoes";
+    render();
+  });
+}
+
+function htmlCalendario(api, dias, hoje) {
+  const porIso = new Map(dias.map((d) => [d.iso, d]));
+  const sel = ui.planoIsoSel;
+  const meses = api.mesesDoCalendario(dias);
+  const weekdays = [
+    ["Seg", "S"],
+    ["Ter", "T"],
+    ["Qua", "Q"],
+    ["Qui", "Q"],
+    ["Sex", "S"],
+    ["Sáb", "S"],
+    ["Dom", "D"],
+  ];
+  const cab = weekdays
+    .map(
+      ([full, short]) =>
+        `<span title="${full}"><span class="wd-l">${full}</span><span class="wd-s">${short}</span></span>`
+    )
+    .join("");
+  const mesesHtml = meses
+    .map((m) => {
+      const cells = api.celulasDoMes(m.ano, m.mes, porIso);
+      const grid = cells
+        .map((c) => {
+          if (c.vazio) return `<div class="plano-cal-cell is-pad" aria-hidden="true"></div>`;
+          if (!c.item) {
+            return `<div class="plano-cal-cell is-off"><span class="plano-cal-num">${c.day}</span></div>`;
+          }
+          const chave = api.materiaChave(c.item.materia);
+          const curta = api.materiaCurta(c.item.materia);
+          const eHoje = c.iso === hoje;
+          const eSel = c.iso === sel;
+          const feito = diaFeito(c.iso);
+          const label = `${c.day} de ${m.nome}, ${c.item.materia}: ${c.item.titulo}${
+            feito ? ", feito" : ""
+          }${eHoje ? ", hoje" : ""}`;
+          return `<button type="button" class="plano-cal-cell mat-${chave}${eHoje ? " is-hoje" : ""}${
+            eSel ? " is-sel" : ""
+          }${feito ? " is-feito" : ""}" data-iso="${c.iso}" aria-label="${esc(label)}" aria-pressed="${
+            eSel || eHoje ? "true" : "false"
+          }">
+            <span class="plano-cal-num">${c.day}</span>
+            <span class="plano-cal-tag">${esc(curta)}</span>
+            ${feito ? `<span class="plano-cal-ok" aria-hidden="true">✓</span>` : ""}
+          </button>`;
+        })
+        .join("");
+      return `<section class="plano-cal-mes">
+        <h3>${esc(m.nome)}</h3>
+        <div class="plano-cal-weekdays">${cab}</div>
+        <div class="plano-cal-grid">${grid}</div>
+      </section>`;
+    })
+    .join("");
+  const legendas = [
+    ["adm", "D.Adm"],
+    ["const", "D.Const"],
+    ["pt", "Português"],
+    ["ti", "TI"],
+    ["red", "Redação"],
+  ].filter(([chave]) => dias.some((d) => api.materiaChave(d.materia) === chave));
+  const legenda = legendas
+    .map(([chave, nome]) => `<span class="mat-${chave}">${nome}</span>`)
+    .join("");
+  return `${mesesHtml}
+    <p class="plano-cal-hint">Toque no dia para ver o que estudar.</p>
+    <div class="plano-legenda" aria-label="Cores das matérias">${legenda}</div>`;
+}
+
 function renderPlano() {
   const api = window.CNAPROVADO_PLANOS;
   if (!api) return;
@@ -234,6 +344,9 @@ function renderPlano() {
   const hoje = api.hojeIso();
   const feitos = dias.filter((d) => diaFeito(d.iso)).length;
   const deHoje = dias.find((d) => d.iso === hoje) || dias[0];
+  const vista = planoVistaAtual();
+  const deSel = dias.find((d) => d.iso === ui.planoIsoSel);
+  const mostrarSel = vista === "calendario" && deSel && deSel.iso !== deHoje.iso;
 
   $("#plano-kicker").textContent = `Mês 1 · ${meta.dono}`;
   $("#plano-titulo").textContent =
@@ -244,25 +357,21 @@ function renderPlano() {
     <div><b>${deHoje.materia}</b><span>hoje</span></div>
     <div><b>${id === "gabriel" ? "TI + redação" : "sem TI"}</b><span>fim de semana</span></div>
   `;
-  $("#plano-hoje").innerHTML = `
-    <p class="kicker">Hoje</p>
-    <h2>${esc(deHoje.materia)} · ${esc(deHoje.titulo)}</h2>
-    <p>${esc(deHoje.fazer)}</p>
-    <div class="actions">
-      <button class="primary" type="button" id="plano-feito-hoje">${
-        diaFeito(deHoje.iso) ? "Feito ✓" : "Marcar como feito"
-      }</button>
-      ${
-        deHoje.materia === "D.Adm"
-          ? `<button class="ghost" type="button" id="plano-abrir-adm">Abrir questões de D.Adm</button>`
-          : ""
-      }
-    </div>
-  `;
+  $("#plano-hoje").innerHTML = htmlPlanoBloco(deHoje, {
+    kicker: "Hoje",
+    feitoId: "plano-feito-hoje",
+    admId: "plano-abrir-adm",
+  });
   $("#plano-switch").innerHTML = `
     <button type="button" class="modo${id === "gabriel" ? " ativo" : ""}" data-plano="gabriel">Gabriel</button>
     <button type="button" class="modo${id === "amanda" ? " ativo" : ""}" data-plano="amanda">Amanda</button>
   `;
+  $("#plano-vista").innerHTML = `
+    <button type="button" class="modo${vista === "lista" ? " ativo" : ""}" data-vista="lista">Lista</button>
+    <button type="button" class="modo${vista === "calendario" ? " ativo" : ""}" data-vista="calendario">Calendário</button>
+  `;
+  $("#plano-lista").classList.toggle("hidden", vista !== "lista");
+  $("#plano-calendario").classList.toggle("hidden", vista !== "calendario");
   $("#plano-lista").innerHTML = dias
     .map((d) => {
       const nomeDia = d.data.toLocaleDateString("pt-BR", {
@@ -283,26 +392,67 @@ function renderPlano() {
       </article>`;
     })
     .join("");
+  $("#plano-calendario").innerHTML = htmlCalendario(api, dias, hoje);
+
+  const selEl = $("#plano-dia-sel");
+  selEl.classList.toggle("hidden", !mostrarSel);
+  if (mostrarSel) {
+    const kicker = deSel.data.toLocaleDateString("pt-BR", {
+      weekday: "long",
+      day: "2-digit",
+      month: "long",
+    });
+    selEl.innerHTML = htmlPlanoBloco(deSel, {
+      kicker,
+      feitoId: "plano-feito-sel",
+      admId: "plano-abrir-sel",
+    });
+  } else {
+    selEl.innerHTML = "";
+  }
 
   $("#plano-feito-hoje")?.addEventListener("click", () => {
+    const yNow = window.scrollY;
     toggleDiaFeito(deHoje.iso);
     renderPlano();
+    window.scrollTo(0, yNow);
   });
-  $("#plano-abrir-adm")?.addEventListener("click", () => {
-    ui.materia = "dadm";
-    ui.modo = "questoes";
-    render();
+  bindAbrirAdm("plano-abrir-adm");
+  $("#plano-feito-sel")?.addEventListener("click", () => {
+    const yNow = window.scrollY;
+    toggleDiaFeito(deSel.iso);
+    renderPlano();
+    window.scrollTo(0, yNow);
   });
+  bindAbrirAdm("plano-abrir-sel");
   $$("#plano-switch [data-plano]").forEach((btn) => {
     btn.addEventListener("click", () => {
       setPlanoId(btn.dataset.plano);
       renderPlano();
     });
   });
+  $$("#plano-vista [data-vista]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      setPlanoVista(btn.dataset.vista);
+      if (btn.dataset.vista === "lista") ui.planoIsoSel = null;
+      renderPlano();
+      $("#plano-vista")?.scrollIntoView({ block: "nearest" });
+    });
+  });
   $$("#plano-lista .plano-dia").forEach((el) => {
     el.querySelector(".plano-check")?.addEventListener("click", () => {
       toggleDiaFeito(el.dataset.iso);
       renderPlano();
+    });
+  });
+  $$("#plano-calendario [data-iso]").forEach((el) => {
+    el.addEventListener("click", () => {
+      ui.planoIsoSel = el.dataset.iso;
+      renderPlano();
+      const painel = $("#plano-dia-sel");
+      if (painel && !painel.classList.contains("hidden")) {
+        painel.scrollIntoView({ block: "nearest" });
+      }
     });
   });
 }

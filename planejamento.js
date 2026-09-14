@@ -353,9 +353,76 @@ function hojeIso() {
   return `${y}-${m}-${day}`;
 }
 
+const MESES_PT = [
+  "Janeiro",
+  "Fevereiro",
+  "Março",
+  "Abril",
+  "Maio",
+  "Junho",
+  "Julho",
+  "Agosto",
+  "Setembro",
+  "Outubro",
+  "Novembro",
+  "Dezembro",
+];
+
+function materiaChave(materia) {
+  const m = String(materia || "").toLowerCase();
+  if (m.startsWith("d.adm") || m.includes("administrativo")) return "adm";
+  if (m.startsWith("d.const") || m.includes("constitucional")) return "const";
+  if (m.startsWith("portugu")) return "pt";
+  if (m === "ti" || m.startsWith("ti ")) return "ti";
+  if (m.startsWith("reda")) return "red";
+  return "out";
+}
+
+function materiaCurta(materia) {
+  const map = { adm: "Adm", const: "Const", pt: "PT", ti: "TI", red: "Red" };
+  return map[materiaChave(materia)] || String(materia || "").slice(0, 4);
+}
+
+function mesesDoCalendario(dias) {
+  const seen = [];
+  const keys = new Set();
+  dias.forEach((d) => {
+    const ano = d.data.getFullYear();
+    const mes = d.data.getMonth();
+    const key = `${ano}-${mes}`;
+    if (keys.has(key)) return;
+    keys.add(key);
+    seen.push({ ano, mes, nome: `${MESES_PT[mes]} ${ano}` });
+  });
+  return seen;
+}
+
+function celulasDoMes(ano, mes, porIso) {
+  const first = new Date(ano, mes, 1, 12);
+  const lastDay = new Date(ano, mes + 1, 0).getDate();
+  const pad = (first.getDay() + 6) % 7;
+  const cells = [];
+  for (let i = 0; i < pad; i += 1) cells.push({ vazio: true });
+  for (let day = 1; day <= lastDay; day += 1) {
+    const dt = new Date(ano, mes, day, 12);
+    const iso = isoData(dt);
+    cells.push({
+      vazio: false,
+      day,
+      iso,
+      item: porIso.get(iso) || null,
+    });
+  }
+  return cells;
+}
+
 window.CNAPROVADO_PLANOS = {
   PLANOS,
   diasDoPlano,
   hojeIso,
   isoData,
+  materiaChave,
+  materiaCurta,
+  mesesDoCalendario,
+  celulasDoMes,
 };

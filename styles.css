@@ -737,6 +737,10 @@ button:active {
   margin: 0 0 18px;
 }
 
+#view-plano .field-label {
+  margin-top: 4px;
+}
+
 .plano-hoje {
   border: 1px solid var(--line);
   background: var(--chip);
@@ -801,6 +805,179 @@ button:active {
   width: auto;
   padding: 8px 12px;
   font-size: 0.8rem;
+}
+
+.plano-calendario {
+  margin-top: 18px;
+  display: grid;
+  gap: 22px;
+}
+
+.plano-cal-mes h3 {
+  margin: 0 0 10px;
+  font-size: 1.05rem;
+}
+
+.plano-cal-weekdays,
+.plano-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.plano-cal-weekdays {
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.plano-cal-weekdays .wd-s {
+  display: none;
+}
+
+.plano-cal-cell {
+  position: relative;
+  min-width: 0;
+  min-height: 58px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 6px 5px 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 2px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.plano-cal-cell.is-pad {
+  border-color: transparent;
+  background: transparent;
+  min-height: 0;
+  pointer-events: none;
+}
+
+.plano-cal-cell.is-off {
+  cursor: default;
+  opacity: 0.38;
+  pointer-events: none;
+  background: transparent;
+}
+
+.plano-cal-num {
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.plano-cal-tag {
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1.15;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.plano-cal-ok {
+  position: absolute;
+  top: 4px;
+  right: 5px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--ok);
+}
+
+.plano-cal-cell.mat-adm {
+  background: color-mix(in srgb, var(--primary) 18%, var(--card));
+  border-color: color-mix(in srgb, var(--primary) 48%, var(--line));
+}
+
+.plano-cal-cell.mat-const {
+  background: color-mix(in srgb, #7c3aed 16%, var(--card));
+  border-color: color-mix(in srgb, #7c3aed 46%, var(--line));
+}
+
+.plano-cal-cell.mat-pt {
+  background: color-mix(in srgb, #d97706 16%, var(--card));
+  border-color: color-mix(in srgb, #d97706 48%, var(--line));
+}
+
+.plano-cal-cell.mat-ti {
+  background: color-mix(in srgb, var(--ok) 16%, var(--card));
+  border-color: color-mix(in srgb, var(--ok) 46%, var(--line));
+}
+
+.plano-cal-cell.mat-red {
+  background: color-mix(in srgb, #e11d48 14%, var(--card));
+  border-color: color-mix(in srgb, #e11d48 42%, var(--line));
+}
+
+.plano-cal-cell.is-hoje {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 55%, transparent);
+}
+
+.plano-cal-cell.is-sel {
+  box-shadow: 0 0 0 2px var(--ink);
+}
+
+.plano-cal-cell.is-sel.is-hoje {
+  box-shadow:
+    0 0 0 2px var(--primary),
+    0 0 0 4px color-mix(in srgb, var(--ink) 55%, transparent);
+}
+
+.plano-cal-cell.is-feito {
+  opacity: 0.82;
+}
+
+.plano-cal-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.plano-legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.plano-legenda span {
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: 1px solid var(--line);
+}
+
+.plano-legenda .mat-adm {
+  background: color-mix(in srgb, var(--primary) 18%, var(--card));
+}
+
+.plano-legenda .mat-const {
+  background: color-mix(in srgb, #7c3aed 16%, var(--card));
+}
+
+.plano-legenda .mat-pt {
+  background: color-mix(in srgb, #d97706 16%, var(--card));
+}
+
+.plano-legenda .mat-ti {
+  background: color-mix(in srgb, var(--ok) 16%, var(--card));
+}
+
+.plano-legenda .mat-red {
+  background: color-mix(in srgb, #e11d48 14%, var(--card));
 }
 
 .dock {
@@ -958,6 +1135,35 @@ button:active {
 
   .plano-dia header {
     flex-wrap: wrap;
+  }
+
+  .plano-cal-weekdays .wd-l {
+    display: none;
+  }
+
+  .plano-cal-weekdays .wd-s {
+    display: inline;
+  }
+
+  .plano-cal-cell {
+    min-height: 42px;
+    aspect-ratio: 1;
+    padding: 4px;
+    border-radius: 10px;
+  }
+
+  .plano-cal-tag {
+    display: none;
+  }
+
+  .plano-cal-num {
+    font-size: 0.74rem;
+  }
+
+  .plano-cal-ok {
+    top: 3px;
+    right: 3px;
+    font-size: 0.6rem;
   }
 
   .score {
