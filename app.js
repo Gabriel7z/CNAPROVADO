@@ -52,6 +52,7 @@ function db() {
   if (!data.incidenciaMateria) data.incidenciaMateria = "pt";
   if (!data.errosArquivados) data.errosArquivados = {};
   if (!data.redacaoPorChave) data.redacaoPorChave = {};
+  if (!data.planoConcursoPorEmail) data.planoConcursoPorEmail = {};
   return data;
 }
 
@@ -215,12 +216,47 @@ function emailDaConta() {
 }
 
 function planoIdAtual() {
+  const api = window.CNAPROVADO_PLANOS;
   const email = emailDaConta();
   const nome = String(db().perfil?.nome || cloud()?.perfil?.apelido || "").toLowerCase();
   const mapa = db().planoPorEmail || {};
+  const gmail = api?.EMAIL_GABRIEL || "ggabriel.ferreira.099@gmail.com";
+  if (email === gmail) {
+    return mapa[email] === "amanda" ? "amanda" : "gabriel";
+  }
   if (email && (mapa[email] === "amanda" || mapa[email] === "gabriel")) return mapa[email];
   if (nome.includes("amanda") || email.includes("amanda")) return "amanda";
   return "gabriel";
+}
+
+function planoConcursoAtual() {
+  const api = window.CNAPROVADO_PLANOS;
+  const email = emailDaConta();
+  const mapa = db().planoConcursoPorEmail || {};
+  const salvo = email ? mapa[email] : db().planoConcurso;
+  return api?.normalizarConcurso(salvo) || "sedf";
+}
+
+function setPlanoConcurso(id) {
+  const api = window.CNAPROVADO_PLANOS;
+  const n = api?.normalizarConcurso(id) || "sedf";
+  const email = emailDaConta();
+  persist((d) => {
+    if (email) d.planoConcursoPorEmail[email] = n;
+    else d.planoConcurso = n;
+    d.incidenciaConcurso = n;
+  });
+}
+
+function planoFeitoKey(iso) {
+  return `${emailDaConta()}|${planoConcursoAtual()}|${iso}`;
+}
+
+function diaFeito(iso) {
+  const d = db().planoFeito;
+  const k = planoFeitoKey(iso);
+  if (d[k]) return true;
+  return Boolean(d[`${emailDaConta()}|${iso}`]);
 }
 
 function setPlanoId(id) {
@@ -229,14 +265,6 @@ function setPlanoId(id) {
   persist((d) => {
     d.planoPorEmail[email] = id;
   });
-}
-
-function planoFeitoKey(iso) {
-  return `${emailDaConta()}|${iso}`;
-}
-
-function diaFeito(iso) {
-  return Boolean(db().planoFeito[planoFeitoKey(iso)]);
 }
 
 function toggleDiaFeito(iso) {
@@ -351,7 +379,7 @@ function bindAbrirAdm(id) {
 function bindAbrirRedacao(id, iso) {
   $(`#${id}`)?.addEventListener("click", () => {
     ui.modo = "redacao";
-    if (iso) ui.redacaoKey = redacaoChave("plano", iso);
+    if (iso) ui.redacaoKey = redacaoChave("plano", `${planoConcursoAtual()}|${iso}`);
     render();
   });
 }
@@ -571,9 +599,10 @@ function renderPlano() {
   const api = window.CNAPROVADO_PLANOS;
   if (!api) return;
   const id = planoIdAtual();
-  const meta = api.PLANOS[id];
+  const concurso = planoConcursoAtual();
+  const meta = api.metaPlano ? api.metaPlano(id, concurso) : api.PLANOS[id];
   const carga = planoCargaAtual();
-  const dias = api.diasDoPlano(id, carga);
+  const dias = api.diasDoPlano(id, carga, concurso);
   const hoje = api.hojeIso();
   const feitos = dias.filter((d) => diaFeito(d.iso)).length;
   const deHoje = dias.find((d) => d.iso === hoje) || dias[0];
@@ -588,10 +617,10 @@ function renderPlano() {
     $("#plano-lead").textContent =
       "Não tem API pública da QConcursos ou do TEC. Estas barras são o histórico da banca nos cadernos que o TEC publicou: SEDF/Quadrix, TCE-GO/FCC e PMDF/Cebraspe. Não é o edital de 2026 e não prevê a prova — é o que mais caiu até agora.";
   } else {
-    $("#plano-kicker").textContent = `Mês 1 · ${meta.dono}`;
+    $("#plano-kicker").textContent = `Mês 1 · ${meta.dono} · ${meta.alvo}`;
     $("#plano-titulo").textContent =
-      id === "amanda" ? "Plano da Amanda" : "Plano do Gabriel";
-    $("#plano-lead").textContent = `${meta.alvo}. ${meta.materias}. 14/09 a 13/10/2026. A matéria do dia não muda: o que muda é o tamanho da tarefa e a revisão periódica.`;
+      id === "amanda" ? `Plano da Amanda · ${api.CONCURSOS[concurso].nome}` : `Plano do Gabriel · ${api.CONCURSOS[concurso].nome}`;
+    $("#plano-lead").textContent = `${meta.materias}. 14/09 a 13/10/2026. Troca o concurso em cima: SEDF, PMDF ou TCE-GO. A matéria do dia não muda com as horas: o que muda é o tamanho da tarefa.`;
   }
   $("#plano-meta").innerHTML = `
     <div><b>${feitos}/${dias.length}</b><span>dias feitos</span></div>
@@ -610,6 +639,12 @@ function renderPlano() {
     <button type="button" class="modo${id === "gabriel" ? " ativo" : ""}" data-plano="gabriel">Gabriel</button>
     <button type="button" class="modo${id === "amanda" ? " ativo" : ""}" data-plano="amanda">Amanda</button>
   `;
+  $("#plano-concurso").innerHTML = Object.values(api.CONCURSOS || {})
+    .map(
+      (c) =>
+        `<button type="button" class="modo${c.id === concurso ? " ativo" : ""}" data-concurso="${c.id}">${esc(c.nome)}</button>`
+    )
+    .join("");
   $("#plano-horas-dia").innerHTML = htmlHorasBtns(carga.dia, "dia");
   $("#plano-horas-fim").innerHTML = htmlHorasBtns(carga.fim, "fim");
   $("#plano-horas-hint").textContent = api.dicaCarga(carga);
@@ -688,6 +723,13 @@ function renderPlano() {
   $$("#plano-switch [data-plano]").forEach((btn) => {
     btn.addEventListener("click", () => {
       setPlanoId(btn.dataset.plano);
+      renderPlano();
+    });
+  });
+  $$("#plano-concurso [data-concurso]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      setPlanoConcurso(btn.dataset.concurso);
+      ui._redacaoMontada = "";
       renderPlano();
     });
   });
@@ -1470,12 +1512,13 @@ function parseRedacaoKey(chave) {
 function listaTemasRedacao() {
   const api = window.CNAPROVADO_PLANOS;
   const red = window.CNAPROVADO_REDACAO;
-  const dias = api?.diasDoPlano(planoIdAtual(), planoCargaAtual()) || [];
+  const dias = api?.diasDoPlano(planoIdAtual(), planoCargaAtual(), planoConcursoAtual()) || [];
   const hoje = api?.hojeIso?.() || "";
+  const conc = planoConcursoAtual();
   const plano = dias
     .filter((d) => String(d.materia).startsWith("Redação"))
     .map((d) => ({
-      key: redacaoChave("plano", d.iso),
+      key: redacaoChave("plano", `${conc}|${d.iso}`),
       label: `${d.data.toLocaleDateString("pt-BR", {
         weekday: "short",
         day: "2-digit",
@@ -1624,7 +1667,7 @@ function carregarRascunhoNaTela(item) {
   if (!r.texto && item.iso) {
     const sab = window.CNAPROVADO_REDACAO.sabadoDe(item.iso);
     if (sab) {
-      const prev = rascunhoRedacao(redacaoChave("plano", sab));
+      const prev = rascunhoRedacao(redacaoChave("plano", `${planoConcursoAtual()}|${sab}`));
       if (prev.texto) r = { ...r, texto: prev.texto };
     }
   }

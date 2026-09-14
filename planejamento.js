@@ -1,20 +1,49 @@
 const PLANO_INICIO = "2026-09-14";
 const PLANO_DIAS = 30;
 
+const EMAIL_GABRIEL = "ggabriel.ferreira.099@gmail.com";
+
+const CONCURSOS = {
+  sedf: { id: "sedf", nome: "SEDF", banca: "Quadrix", cargo: "Gestor TI" },
+  pmdf: { id: "pmdf", nome: "PMDF", banca: "Cebraspe", cargo: "área policial" },
+  tcego: { id: "tcego", nome: "TCE-GO", banca: "FCC", cargo: "TI" },
+};
+
 const PLANOS = {
   gabriel: {
     id: "gabriel",
     dono: "Gabriel",
-    alvo: "PMDF · TCE-GO TI · SEDF Gestor TI",
-    materias: "D.Adm, D.Const, Português, TI e redação no fim de semana",
+    email: EMAIL_GABRIEL,
+    materias: "D.Adm, D.Const, Português, TI e redação",
   },
   amanda: {
     id: "amanda",
     dono: "Amanda",
-    alvo: "base jurídica e português",
     materias: "D.Adm, D.Const, Português e redação",
   },
 };
+
+function normalizarConcurso(id) {
+  const k = String(id || "").toLowerCase();
+  if (k === "pmdf" || k === "tcego" || k === "sedf") return k;
+  return "sedf";
+}
+
+function normalizarPessoa(id) {
+  return id === "amanda" ? "amanda" : "gabriel";
+}
+
+function metaPlano(pessoa, concurso) {
+  const p = normalizarPessoa(pessoa);
+  const c = CONCURSOS[normalizarConcurso(concurso)];
+  const base = PLANOS[p];
+  return {
+    ...base,
+    concurso: c.id,
+    alvo: p === "gabriel" ? `${c.nome} · ${c.cargo} · ${c.banca}` : `${c.nome} · ${c.banca}`,
+    materias: base.materias,
+  };
+}
 
 function dataDoPlano(offset) {
   const d = new Date(`${PLANO_INICIO}T12:00:00`);
@@ -29,301 +58,177 @@ function isoData(d) {
   return `${y}-${m}-${day}`;
 }
 
-function semanalGabriel(semana) {
-  const adm = [
-    {
-      materia: "D.Adm",
-      titulo: "Fontes, conceito e objeto",
-      fazer: "Tópico 1 da playlist (Thállius). Faz Q1–50 no app, sem embaralhar. Anota o que errar.",
-    },
-    {
-      materia: "D.Adm",
-      titulo: "Administração Direta",
-      fazer: "Tópico 3. Q101–150: critério formal, entes, autonomia, Município sem Judiciário.",
-    },
-    {
-      materia: "D.Adm",
-      titulo: "Administração Indireta",
-      fazer: "Tópico 4. Q151–200: reserva legal, tutela, autarquia, OAB sui generis.",
-    },
-    {
-      materia: "D.Adm",
-      titulo: "Princípios, poderes e atos + LC 840",
-      fazer: "Revisa direta/indireta no Anki. Estuda princípios (LIMPE), poderes e noções de ato. Lê o índice da LC 840/2011 (agentes do DF).",
-    },
-  ];
-  const consti = [
-    {
-      materia: "D.Const",
-      titulo: "Princípios fundamentais",
-      fazer: "CF arts. 1º a 4º. República, Federação, objetivos. 15 itens certo/errado.",
-    },
-    {
-      materia: "D.Const",
-      titulo: "Organização do Estado e do DF",
-      fazer: "União, Estados, Municípios e DF. Autonomia vs soberania. 15 itens.",
-    },
-    {
-      materia: "D.Const",
-      titulo: "Administração Pública na CF",
-      fazer: "Art. 37 (LIMPE), servidores, art. 37 §6º. Cruza com o D.Adm do dia anterior.",
-    },
-    {
-      materia: "D.Const",
-      titulo: "Poderes e Tribunal de Contas",
-      fazer: "Arts. 70 a 75 (fiscalização). Harmonia e independência. Base PM + TCE + SEDF.",
-    },
-  ];
-  const pt = [
-    {
-      materia: "Português",
-      titulo: "Interpretação de texto",
-      fazer: "2 textos curtos + 12 itens. Marca inferência vs o que está escrito.",
-    },
-    {
-      materia: "Português",
-      titulo: "Crase e pontuação",
-      fazer: "Regra da crase + vírgula. 15 itens. Erro vai para o sábado.",
-    },
-    {
-      materia: "Português",
-      titulo: "Concordância e regência",
-      fazer: "Verbal e nominal. 15 itens Cebraspe. Reescreve 3 frases.",
-    },
-    {
-      materia: "Português",
-      titulo: "Coesão e reescrita",
-      fazer: "Pronomes, conectivos, equivalência. 12 itens + 1 parágrafo reescrito.",
-    },
-  ];
-  const ti = [
-    {
-      materia: "TI",
-      titulo: "Informática básica + redes",
-      fazer: "Windows, navegador, Google Classroom/Docs (SEDF). Depois TCP/IP, IP, DNS, HTTP. 20 itens mistos.",
-    },
-    {
-      materia: "TI",
-      titulo: "Banco de dados e SQL",
-      fazer: "SELECT, JOIN, PK/FK, normalização. 15 questões SQL. Um exercício no papel: modelar 3 tabelas.",
-    },
-    {
-      materia: "TI",
-      titulo: "Segurança e LGPD",
-      fazer: "Confidencialidade, integridade, disponibilidade. Backup, malware. LGPD: privacy by design, minimização. 15 itens.",
-    },
-    {
-      materia: "TI",
-      titulo: "Dev, Git e governança",
-      fazer: "HTML/CSS/JS, REST/JSON, Git. COBIT/ITIL só o recorte de conceito. 15 itens.",
-    },
-  ];
-  const redacaoSab = [
-    {
-      materia: "Redação",
-      titulo: "Estrutura da dissertação",
-      fazer: "Tema: o papel da Administração Pública na vida do cidadão. 20–30 linhas. Introdução, 2 desenvolvimentos, conclusão.",
-    },
-    {
-      materia: "Redação",
-      titulo: "Educação e tecnologia",
-      fazer: "Tema SEDF: tecnologia na escola pública. 20–30 linhas. Usa 1 argumento jurídico (CF art. 205 ou 37) e 1 prático.",
-    },
-    {
-      materia: "Redação",
-      titulo: "Controle e transparência",
-      fazer: "Tema TCE/PM: controle externo e interesse público. 20–30 linhas. Evita clichê; cita um princípio da AP.",
-    },
-    {
-      materia: "Redação",
-      titulo: "Simulado de discursiva",
-      fazer: "Sorteia um dos três temas já feitos e reescreve do zero em 40 min, sem consulta. Depois corrige gramática.",
-    },
-  ];
-  const redacaoDom = [
-    {
-      materia: "Redação",
-      titulo: "Reescrita + revisão da semana",
-      fazer: "Reescreve o texto de sábado (corte 10%). 20 min de Anki de D.Adm. Lista 5 erros da semana.",
-    },
-    {
-      materia: "Redação",
-      titulo: "Parágrafo de intervenção",
-      fazer: "Escreve só a conclusão do texto de sábado, mais concreta. Revisa Q de Const da quinta.",
-    },
-    {
-      materia: "Redação",
-      titulo: "Coesão no texto",
-      fazer: "Marca conectivos do texto de sábado e troca 5. 20 min de TI (erros de sexta).",
-    },
-    {
-      materia: "Redação",
-      titulo: "Leitura em voz alta",
-      fazer: "Lê o simulado em voz alta, corrige cacófato e período longo. Fecha o mês com Anki das 4 matérias.",
-    },
-  ];
-  const s = Math.min(semana, 3);
-  return {
-    1: adm[s],
-    2: pt[s],
-    3: {
-      materia: "D.Adm",
-      titulo: `${adm[s].titulo} — questões`,
-      fazer: "Fecha a bateria do tópico no app e refaz só os erros. 20 min de Anki no fim.",
-    },
-    4: consti[s],
-    5: ti[s],
-    6: redacaoSab[s],
-    0: redacaoDom[s],
-  };
+function bloco(materia, titulo, fazer) {
+  return { materia, titulo, fazer };
 }
 
-function semanalAmanda(semana) {
-  const adm = [
-    {
-      materia: "D.Adm",
-      titulo: "Fontes, conceito e objeto",
-      fazer: "Tópico 1 da playlist. Q1–50 no app, sem embaralhar. Caderno só do que errar.",
-    },
-    {
-      materia: "D.Adm",
-      titulo: "Administração Direta",
-      fazer: "Tópico 3. Q101–150. Foca: quem é a AP, Município sem Judiciário, criação da indireta.",
-    },
-    {
-      materia: "D.Adm",
-      titulo: "Administração Indireta",
-      fazer: "Tópico 4. Q151–200. Reserva legal (cria vs autoriza) e tutela administrativa.",
-    },
-    {
-      materia: "D.Adm",
-      titulo: "Princípios e LC 840",
-      fazer: "LIMPE + Anki da direta/indireta. Abre a LC 840/2011: cargo, emprego, estabilidade (visão geral).",
-    },
-  ];
-  const consti = [
-    {
-      materia: "D.Const",
-      titulo: "Princípios fundamentais",
-      fazer: "CF arts. 1º a 4º. 15 itens certo/errado. Escreve os fundamentos da República de memória.",
-    },
-    {
-      materia: "D.Const",
-      titulo: "Direitos e garantias",
-      fazer: "Art. 5º (os mais cobrados: legalidade, devido processo, honra, igualdade). 15 itens.",
-    },
-    {
-      materia: "D.Const",
-      titulo: "Organização do Estado e art. 37",
-      fazer: "Entes federados + Administração Pública na CF. Cruza com o D.Adm da segunda.",
-    },
-    {
-      materia: "D.Const",
-      titulo: "Poderes e educação na CF",
-      fazer: "Indepêndencia dos Poderes. Arts. 205 a 214 (educação) — base SEDF. 12 itens.",
-    },
-  ];
-  const ptTer = [
-    {
-      materia: "Português",
-      titulo: "Interpretação",
-      fazer: "2 textos + 12 itens. Separa o que o texto diz do que você acha.",
-    },
-    {
-      materia: "Português",
-      titulo: "Crase e pontuação",
-      fazer: "15 itens. Monta um mini-quadro: a + a(o) = crase.",
-    },
-    {
-      materia: "Português",
-      titulo: "Concordância",
-      fazer: "15 itens. Sujeito coletivo, % e ‘um dos que’.",
-    },
-    {
-      materia: "Português",
-      titulo: "Regência e crase juntas",
-      fazer: "12 itens + reescreve 4 frases do caderno de erros.",
-    },
-  ];
-  const ptSex = [
-    {
-      materia: "Português",
-      titulo: "Ortografia e acentuação",
-      fazer: "por que / porque / porquê. 15 itens. Copia 10 palavras que você sempre erra.",
-    },
-    {
-      materia: "Português",
-      titulo: "Pronomes e coesão",
-      fazer: "Colocação pronominal no estilo banca. 12 itens.",
-    },
-    {
-      materia: "Português",
-      titulo: "Reescrita de frases",
-      fazer: "Equivalência e paralelismo. 12 itens Cebraspe.",
-    },
-    {
-      materia: "Português",
-      titulo: "Simulado de língua",
-      fazer: "20 itens mistos da semana. Sem consulta. Depois só revisa o erro.",
-    },
-  ];
-  const redacaoSab = [
-    {
-      materia: "Redação",
-      titulo: "Estrutura da dissertação",
-      fazer: "Tema: igualdade e Administração Pública. 20–30 linhas. Introdução com recorte claro.",
-    },
-    {
-      materia: "Redação",
-      titulo: "Direitos fundamentais",
-      fazer: "Tema: liberdade vs interesse público. 20–30 linhas. Um parágrafo com CF art. 5º.",
-    },
-    {
-      materia: "Redação",
-      titulo: "Educação pública",
-      fazer: "Tema: o direito à educação. 20–30 linhas. Usa art. 205 ou 206.",
-    },
-    {
-      materia: "Redação",
-      titulo: "Simulado",
-      fazer: "40 min, tema surpresa dos três anteriores. Depois corrige gramática com a lista da sexta.",
-    },
-  ];
-  const redacaoDom = [
-    {
-      materia: "Redação",
-      titulo: "Reescrita",
-      fazer: "Corta 10% do texto de sábado. 20 min de Anki de D.Adm.",
-    },
-    {
-      materia: "Redação",
-      titulo: "Conclusão forte",
-      fazer: "Reescreve só o último parágrafo, com proposta concreta. Revisa Const da quarta.",
-    },
-    {
-      materia: "Redação",
-      titulo: "Conectivos",
-      fazer: "Troca 5 conectivos fracos. Lê em voz alta. Anki da semana.",
-    },
-    {
-      materia: "Redação",
-      titulo: "Fechamento do mês",
-      fazer: "Lê os 4 textos e marca o melhor parágrafo. 30 min de revisão geral (Adm + Const + PT).",
-    },
-  ];
+const CICLOS = {
+  sedf: {
+    adm: [
+      bloco("D.Adm", "Fontes, conceito e objeto", "SEDF/Quadrix. Tópico 1 (Thállius). Q1–50 no app, sem embaralhar. Anota o que errar."),
+      bloco("D.Adm", "Organização administrativa", "Quadrix cobra muito: direta, indireta, desconcentração. Tópico 3. Q101–150."),
+      bloco("D.Adm", "Atos e poderes", "Atos administrativos + poderes (Quadrix). Cruza com o Anki da semana."),
+      bloco("D.Adm", "Agentes, LC 840 e controle", "Agentes públicos do DF (LC 840/2011). Controle e responsabilidade civil. Revisa direta/indireta."),
+    ],
+    consti: [
+      bloco("D.Const", "Princípios fundamentais", "CF arts. 1º a 4º. República, Federação, objetivos. 15 itens certo/errado."),
+      bloco("D.Const", "Organização do Estado e do DF", "União, Estados, Municípios e DF. Autonomia vs soberania. 15 itens."),
+      bloco("D.Const", "Administração Pública na CF", "Art. 37 (LIMPE), servidores, §6º. Cruza com o D.Adm."),
+      bloco("D.Const", "Educação na CF", "Arts. 205 a 214 — recorte SEDF. 12 itens + 1 esquema no papel."),
+    ],
+    pt: [
+      bloco("Português", "Interpretação de texto", "Estilo Quadrix. 2 textos curtos + 12 itens. Inferência vs o que está escrito."),
+      bloco("Português", "Reescrita de frases", "Quadrix pesa reescrita (~16%). 15 itens. Troca 3 frases sem mudar o sentido."),
+      bloco("Português", "Morfologia e sintaxe", "Classe gramatical + análise sintática. 15 itens Quadrix."),
+      bloco("Português", "Coesão e pontuação", "Pronomes, conectivos, vírgula. 12 itens + 1 parágrafo reescrito."),
+    ],
+    pt2: [
+      bloco("Português", "Ortografia", "Acentuação e porquê. 15 itens Quadrix. Copia 10 palavras que você erra."),
+      bloco("Português", "Concordância e regência", "Verbal e nominal. 15 itens. Reescreve 3 frases."),
+      bloco("Português", "Crase e pontuação", "Regra da crase + vírgula. 15 itens."),
+      bloco("Português", "Simulado de língua", "20 itens mistos Quadrix da semana, sem consulta. Só revisa o erro."),
+    ],
+    ti: [
+      bloco("TI", "Windows e arquivos", "Quadrix: Windows, pastas, atalhos. 20 itens. Mexe no próprio PC: 5 atalhos de verdade."),
+      bloco("TI", "Office e editores", "Word, Excel, PowerPoint (e o equivalente livre). 15 itens Quadrix."),
+      bloco("TI", "Navegador, internet e malware", "Chrome/Edge, vírus, backup, e-mail. 15 itens. Lista 5 golpes comuns."),
+      bloco("TI", "Redes básicas e serviços", "HTTP, DNS, IP, nuvem, Classroom/Docs (SEDF). 15 itens mistos."),
+    ],
+    redSab: [
+      bloco("Redação", "Estrutura da dissertação", "Tema SEDF: o papel da Administração na vida do cidadão. 20–30 linhas."),
+      bloco("Redação", "Tecnologia na escola", "Tema SEDF: tecnologia na escola pública. 1 argumento CF art. 205 ou 37 + 1 prático. 20–30 linhas."),
+      bloco("Redação", "Educação pública", "Direito à educação. Art. 205 ou 206. 20–30 linhas."),
+      bloco("Redação", "Simulado de discursiva", "40 min, um dos temas SEDF já feitos, sem consulta. Depois gramática."),
+    ],
+    redDom: [
+      bloco("Redação", "Reescrita + revisão", "Reescreve o texto de sábado (corte 10%). 20 min de Anki de D.Adm."),
+      bloco("Redação", "Conclusão", "Reescreve só o último parágrafo, com proposta para a escola/DF."),
+      bloco("Redação", "Coesão", "Marca conectivos e troca 5. Lê em voz alta."),
+      bloco("Redação", "Fechamento", "Lê os 4 textos SEDF e marca o melhor parágrafo. Anki das matérias da semana."),
+    ],
+  },
+  pmdf: {
+    adm: [
+      bloco("D.Adm", "Fontes, conceito e objeto", "PMDF/Cebraspe. Tópico 1. Q1–50 no app. Cuidado com o certo/errado pegadinha."),
+      bloco("D.Adm", "Atos e poderes", "Cebraspe ama atos e poderes. Marca nulidade vs anulabilidade. Cruza com Q do tópico."),
+      bloco("D.Adm", "Licitações (Lei 14.133)", "PMDF puxa 14.133. Princípios, fases, dispensa/inexigibilidade. 15 itens Cebraspe."),
+      bloco("D.Adm", "Improbidade e responsabilidade", "Lei 8.429 (após 14.230) + responsabilidade civil do Estado. 12 itens."),
+    ],
+    consti: [
+      bloco("D.Const", "Direitos e garantias fundamentais", "Art. 5º — o que mais cai na PMDF. 15 itens Cebraspe."),
+      bloco("D.Const", "Defesa do Estado e da sociedade", "Arts. 136 a 144 (GLO, PM, segurança pública). 15 itens."),
+      bloco("D.Const", "Organização do Estado", "União, Estados, DF, Municípios. 12 itens."),
+      bloco("D.Const", "Organização dos Poderes", "Executivo, Legislativo, Judiciário — visão PM. 12 itens."),
+    ],
+    pt: [
+      bloco("Português", "Interpretação Cebraspe", "2 textos + 12 itens. O erro costuma estar no detalhe do enunciado."),
+      bloco("Português", "Reescrita e equivalência", "Cebraspe: reescrita (~16%). 15 itens. Não inventa sentido."),
+      bloco("Português", "Coesão e pontuação", "Conectivos + vírgula. 15 itens certo/errado."),
+      bloco("Português", "Morfologia e semântica", "Classe da palavra + sentido no texto. 12 itens."),
+    ],
+    pt2: [
+      bloco("Português", "Concordância Cebraspe", "15 itens. Sujeito oculto e coletivo."),
+      bloco("Português", "Regência e crase", "15 itens. Marca o verbo que pede preposição."),
+      bloco("Português", "Tipologia e gênero", "Narração vs dissertação. 12 itens."),
+      bloco("Português", "Simulado Cebraspe", "20 itens mistos da semana, sem consulta."),
+    ],
+    ti: [
+      bloco("TI", "Informática Cebraspe", "Conceitos de hardware, software, sistema operacional. 15 itens certo/errado."),
+      bloco("TI", "Internet e navegação segura", "Browser, cookies, phishing. 15 itens. Estilo PMDF."),
+      bloco("TI", "Segurança da informação", "Senha, malware, backup, LGPD no essencial. 15 itens."),
+      bloco("TI", "Pacote office e nuvem", "Editor de texto, planilha, armazenamento. 12 itens."),
+    ],
+    redSab: [
+      bloco("Redação", "Liberdade e segurança", "Tema PMDF: liberdade vs interesse público. Um parágrafo com art. 5º. 20–30 linhas."),
+      bloco("Redação", "Direitos fundamentais", "Igualdade e Administração. Introdução com recorte claro. 20–30 linhas."),
+      bloco("Redação", "Segurança pública", "Papel da polícia militar e da CF arts. 136–144. 20–30 linhas."),
+      bloco("Redação", "Simulado PMDF", "40 min, tema surpresa das três redações. Depois gramática."),
+    ],
+    redDom: [
+      bloco("Redação", "Reescrita", "Corta 10% do texto de sábado. 20 min de Anki de D.Adm."),
+      bloco("Redação", "Conclusão forte", "Último parágrafo com proposta concreta (sem virar slogan)."),
+      bloco("Redação", "Conectivos", "Troca 5 conectivos fracos. Lê em voz alta."),
+      bloco("Redação", "Fechamento", "Lê os 4 textos PMDF. 30 min de revisão Adm + Const + PT."),
+    ],
+  },
+  tcego: {
+    adm: [
+      bloco("D.Adm", "Fontes, conceito e objeto", "TCE-GO/FCC. Tópico 1. Q1–50 no app. Anota o que errar."),
+      bloco("D.Adm", "Licitações (Lei 14.133)", "FCC do TCE puxa licitação. Fases, princípios, 14.133 (não fica só na 8.666). 15 itens."),
+      bloco("D.Adm", "Serviços e contratos", "Serviços públicos + contratos administrativos. 15 itens FCC."),
+      bloco("D.Adm", "Organização e controle", "Direta/indireta + controle (TCE). Cruza com arts. 70 a 75 da CF."),
+    ],
+    consti: [
+      bloco("D.Const", "Poder Legislativo e TCs", "Arts. 44 a 75 — o que mais cai na FCC do TCE. 15 itens. Fiscalização e TCU/TCE."),
+      bloco("D.Const", "Poder Judiciário", "Órgãos, garantias, súmula. 12 itens FCC."),
+      bloco("D.Const", "Art. 5º e remédios", "Direitos individuais + habeas corpus, mandado de segurança. 15 itens."),
+      bloco("D.Const", "Administração Pública na CF", "Arts. 37 a 43. Cruza com o D.Adm de controle."),
+    ],
+    pt: [
+      bloco("Português", "Interpretação FCC", "FCC: interpretação pesa ~34%. 2 textos + 12 itens."),
+      bloco("Português", "Reescrita e concordância", "Equivalência + concordância. 15 itens FCC."),
+      bloco("Português", "Morfologia e clareza", "Classe gramatical + correção. 15 itens."),
+      bloco("Português", "Pontuação e coesão", "Vírgula, conectivos. 12 itens + 1 parágrafo reescrito."),
+    ],
+    pt2: [
+      bloco("Português", "Regência FCC", "Verbal e nominal. 15 itens."),
+      bloco("Português", "Crase e pontuação", "15 itens. Mini-quadro da crase."),
+      bloco("Português", "Vozes e reescrita", "Ativa/passiva. 12 itens."),
+      bloco("Português", "Simulado FCC", "20 itens mistos da semana, sem consulta."),
+    ],
+    ti: [
+      bloco("TI", "Redes e protocolos", "TCE-GO TI: TCP/IP, OSI, IP, DNS, HTTP. 20 itens."),
+      bloco("TI", "Banco de dados e SQL", "SELECT, JOIN, PK/FK, normalização. 15 questões SQL. Modela 3 tabelas no papel."),
+      bloco("TI", "Segurança e LGPD", "CIA, backup, malware, minimização de dados. 15 itens."),
+      bloco("TI", "Dev, Git e governança", "HTML/CSS/JS, REST/JSON, Git. COBIT/ITIL só conceito. 15 itens."),
+    ],
+    redSab: [
+      bloco("Redação", "Controle e transparência", "Tema TCE: controle externo e interesse público. Cite um princípio da AP. 20–30 linhas."),
+      bloco("Redação", "Administração e cidadão", "Papel da Administração na vida do cidadão. 20–30 linhas."),
+      bloco("Redação", "Finanças e controle", "Responsabilidade na gestão de recurso público. 20–30 linhas."),
+      bloco("Redação", "Simulado TCE-GO", "40 min, um dos temas de controle, sem consulta. Depois gramática."),
+    ],
+    redDom: [
+      bloco("Redação", "Reescrita", "Corta 10% do sábado. 20 min de Anki de D.Adm."),
+      bloco("Redação", "Parágrafo de intervenção", "Conclusão mais concreta. Revisa Const da quinta."),
+      bloco("Redação", "Coesão", "Troca 5 conectivos. Revisa os erros da sexta."),
+      bloco("Redação", "Fechamento", "Lê os 4 textos TCE. Anki das matérias da semana."),
+    ],
+  },
+};
+
+function semanalPessoa(pessoa, concurso, semana) {
+  const c = CICLOS[normalizarConcurso(concurso)] || CICLOS.sedf;
   const s = Math.min(semana, 3);
+  const admQ = {
+    materia: "D.Adm",
+    titulo: `${c.adm[s].titulo} — questões`,
+    fazer: "Fecha a bateria do tópico no app e refaz só os erros. 20 min de Anki no fim.",
+  };
+  const constQ = {
+    materia: "D.Const",
+    titulo: `${c.consti[s].titulo} — questões`,
+    fazer: "20 itens certo/errado do tema, sem teoria nova. Erro vai para o caderno.",
+  };
+  if (pessoa === "amanda") {
+    return {
+      1: c.adm[s],
+      2: c.pt[s],
+      3: c.consti[s],
+      4: constQ,
+      5: c.pt2[s],
+      6: c.redSab[s],
+      0: c.redDom[s],
+    };
+  }
   return {
-    1: adm[s],
-    2: ptTer[s],
-    3: consti[s],
-    4: {
-      materia: "D.Const",
-      titulo: `${consti[s].titulo} — questões`,
-      fazer: "20 itens certo/errado do tema da quarta, sem teoria nova. Erro vai para o domingo.",
-    },
-    5: ptSex[s],
-    6: redacaoSab[s],
-    0: redacaoDom[s],
+    1: c.adm[s],
+    2: c.pt[s],
+    3: admQ,
+    4: c.consti[s],
+    5: c.ti[s],
+    6: c.redSab[s],
+    0: c.redDom[s],
   };
 }
 
@@ -493,12 +398,14 @@ function anexarRevisoes(dias) {
   });
 }
 
-function diasDoPlano(kind, carga) {
+function diasDoPlano(kind, carga, concurso) {
+  const pessoa = normalizarPessoa(kind);
+  concurso = normalizarConcurso(concurso);
   const out = [];
   for (let i = 0; i < PLANO_DIAS; i += 1) {
     const d = dataDoPlano(i);
     const semana = Math.min(Math.floor(i / 7), 3);
-    const mapa = kind === "amanda" ? semanalAmanda(semana) : semanalGabriel(semana);
+    const mapa = semanalPessoa(pessoa, concurso, semana);
     const bloco = mapa[d.getDay()];
     const horas = horasDoTurno(d, carga);
     out.push({
@@ -506,6 +413,7 @@ function diasDoPlano(kind, carga) {
       iso: isoData(d),
       data: d,
       semana: semana + 1,
+      concurso,
       ...bloco,
       horas,
       carga: rotuloHoras(horas),
@@ -588,6 +496,8 @@ function celulasDoMes(ano, mes, porIso) {
 
 window.CNAPROVADO_PLANOS = {
   PLANOS,
+  CONCURSOS,
+  EMAIL_GABRIEL,
   HORAS_OPCOES,
   REVISAO_PASSOS,
   diasDoPlano,
@@ -599,6 +509,9 @@ window.CNAPROVADO_PLANOS = {
   celulasDoMes,
   normalizarHoras,
   normalizarCarga,
+  normalizarConcurso,
+  normalizarPessoa,
+  metaPlano,
   cargaPadrao,
   rotuloHoras,
   dicaCarga,
