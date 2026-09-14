@@ -406,9 +406,6 @@ function adaptarFazer(fazer, horas, materia) {
   t = t.replace(/(\d+) frases/g, (_, n) => `${escalaNum(n, f, 2)} frases`);
   t = t.replace(/(\d+) palavras/g, (_, n) => `${escalaNum(n, f, 5)} palavras`);
   t = t.replace(/(\d+) conectivos/g, (_, n) => `${escalaNum(n, f, 2)} conectivos`);
-  if (h === 1) {
-    t += " Se o relógio apertar, fecha só o essencial e deixa o resto para o domingo.";
-  }
   if (h === 4) {
     t +=
       String(materia || "").startsWith("Redação")
