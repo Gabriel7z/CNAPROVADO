@@ -1089,6 +1089,10 @@ button:active {
   margin: 0 0 16px;
 }
 
+select.inc-filtro {
+  appearance: auto;
+}
+
 .inc-legenda {
   display: flex;
   flex-wrap: wrap;
@@ -1159,10 +1163,74 @@ button:active {
   background: var(--ok);
 }
 
-.inc-item p {
-  margin: 0;
+.erros-lista {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.erros-item {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px 16px;
+  min-width: 0;
+  cursor: pointer;
+  background: var(--card);
+}
+
+.erros-item.is-open {
+  border-color: var(--bad);
+}
+
+.erros-item header {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
   color: var(--muted);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.erros-item header b {
+  color: var(--bad);
+  flex: 0 0 auto;
+}
+
+.erros-item header span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.erros-item h3 {
+  margin: 8px 0 8px;
+  font-size: 0.98rem;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.erros-item.is-open h3 {
+  display: none;
+}
+
+.erros-detalhe p {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.erros-detalhe b {
+  color: var(--ink);
+}
+
+.erros-item .erros-arquivo {
+  margin-top: 4px;
+}
+
+.erros-item .hint {
+  margin: 0 0 10px;
 }
 
 .plano-legenda {
@@ -1205,7 +1273,7 @@ button:active {
   left: max(8px, env(safe-area-inset-left, 0px));
   right: max(8px, env(safe-area-inset-right, 0px));
   bottom: max(8px, env(safe-area-inset-bottom, 0px));
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 6px;
   padding: 8px;
   background: var(--card);
@@ -1418,6 +1486,12 @@ button:active {
   .dock:not(.hidden) {
     display: grid;
   }
+
+  .dock button {
+    font-size: 0.72rem;
+    padding: 8px 2px;
+    min-height: 44px;
+  }
 }
 
 @media (max-width: 380px) {
@@ -1429,5 +1503,9 @@ button:active {
   .add-materia {
     padding: 7px 10px;
     font-size: 0.8rem;
+  }
+
+  .dock button {
+    font-size: 0.68rem;
   }
 }

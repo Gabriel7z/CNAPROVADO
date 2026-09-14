@@ -9,7 +9,10 @@ const ui = {
   modo: "plano",
   planoIsoSel: null,
   incidenciaFiltro: "",
-  quiz: { i: 0, respostas: [], bloqueado: false, embaralhar: false, fila: [] },
+  errosMateria: "todas",
+  errosTema: "todos",
+  errosAberto: null,
+  quiz: { i: 0, respostas: [], bloqueado: false, embaralhar: false, fila: [], fonte: "materia" },
   anki: { i: 0, virado: false, fila: [] },
 };
 
@@ -45,6 +48,7 @@ function db() {
   if (!data.planoHorasPorEmail) data.planoHorasPorEmail = {};
   if (!data.incidenciaConcurso) data.incidenciaConcurso = "sedf";
   if (!data.incidenciaMateria) data.incidenciaMateria = "pt";
+  if (!data.errosArquivados) data.errosArquivados = {};
   return data;
 }
 
@@ -128,6 +132,7 @@ function mostrar(id) {
     "view-questoes-home",
     "view-quiz",
     "view-result",
+    "view-erros",
     "view-cards",
     "view-desempenho",
     "view-rank",
@@ -717,27 +722,97 @@ function renderQuestoesHome() {
       "Ainda não tem questões nesta aba. Você pode estudar pelos cards quando houver, ou vamos incluindo as baterias conforme o estudo avançar.";
     $("#comecar").classList.add("hidden");
   } else {
+    const nErros = cadernoItens().filter((it) => it.materia === m.id).length;
+    const extra =
+      nErros > 0
+        ? ` Você tem ${nErros} erro${nErros === 1 ? "" : "s"} em aberto nesta matéria — revisa no Caderno de erros.`
+        : "";
     $("#lead-materia").textContent =
-      m.id === "dadm"
+      (m.id === "dadm"
         ? "Tópico 1 (Q1–50) + Tópico 2 (Q51–100) + Tópico 3 Direta (Q101–150) + Tópico 4 Indireta (Q151–200). Gabarito na hora e revisão dos erros no final."
-        : "Questões no estilo concurso, gabarito na hora e revisão dos erros no final.";
+        : "Questões no estilo concurso, gabarito na hora e revisão dos erros no final.") + extra;
     $("#comecar").classList.remove("hidden");
   }
 }
 
-function montarFila() {
-  const qs = questoes();
-  ui.quiz.fila = qs.map((_, idx) => idx);
-  if (ui.quiz.embaralhar) {
-    for (let i = ui.quiz.fila.length - 1; i > 0; i -= 1) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [ui.quiz.fila[i], ui.quiz.fila[j]] = [ui.quiz.fila[j], ui.quiz.fila[i]];
-    }
+function chaveErro(materia, qid) {
+  return `${materia}|${qid}`;
+}
+
+function cadernoItens() {
+  const arquivados = db().errosArquivados || {};
+  const mapa = new Map();
+  (db().respostas || []).forEach((r) => {
+    const k = chaveErro(r.materia, r.qid);
+    const prev = mapa.get(k) || {
+      materia: r.materia,
+      qid: r.qid,
+      vezes: 0,
+      last: r,
+    };
+    if (!r.acertou) prev.vezes += 1;
+    prev.last = r;
+    mapa.set(k, prev);
+  });
+  return [...mapa.values()]
+    .filter((it) => !it.last.acertou && !arquivados[chaveErro(it.materia, it.qid)])
+    .map((it) => {
+      const q = questoesDaMateria(it.materia).find((item) => item.id === it.qid);
+      const mat = materias().find((m) => m.id === it.materia);
+      return {
+        ...it,
+        q,
+        tema: q?.tema || "Sem tema",
+        materiaNome: mat?.sigla || mat?.nome || it.materia,
+      };
+    })
+    .filter((it) => it.q)
+    .sort((a, b) => (b.last.ts || 0) - (a.last.ts || 0));
+}
+
+function cadernoFiltrado() {
+  return cadernoItens().filter((it) => {
+    if (ui.errosMateria !== "todas" && it.materia !== ui.errosMateria) return false;
+    if (ui.errosTema !== "todos" && it.tema !== ui.errosTema) return false;
+    return true;
+  });
+}
+
+function arquivarErro(materia, qid) {
+  persist((d) => {
+    d.errosArquivados[chaveErro(materia, qid)] = Date.now();
+  });
+}
+
+function textoAlt(q, idx) {
+  if (idx == null || idx < 0 || !q?.alternativas?.[idx]) return "não gravada";
+  return q.tipo === "ce" ? q.alternativas[idx] : `${letra(idx)}) ${q.alternativas[idx]}`;
+}
+
+function embaralharArr(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
   }
+  return a;
+}
+
+function montarFila(itens) {
+  const base =
+    itens ||
+    questoes().map((q) => ({ materia: ui.materia, qid: q.id }));
+  ui.quiz.fila = ui.quiz.embaralhar ? embaralharArr(base) : base;
 }
 
 function questaoAtual() {
-  return questoes()[ui.quiz.fila[ui.quiz.i]];
+  const item = ui.quiz.fila[ui.quiz.i];
+  if (!item) return null;
+  return questoesDaMateria(item.materia).find((q) => q.id === item.qid) || null;
+}
+
+function quizLen() {
+  return ui.quiz.fila.length;
 }
 
 function iniciar() {
@@ -747,7 +822,8 @@ function iniciar() {
   }
   const qs = questoes();
   if (!qs.length) return;
-  ui.quiz.embaralhar = $("#embaralhar").checked;
+  ui.quiz.fonte = "materia";
+  ui.quiz.embaralhar = Boolean($("#embaralhar")?.checked);
   ui.quiz.i = 0;
   ui.quiz.respostas = [];
   ui.quiz.bloqueado = false;
@@ -756,11 +832,26 @@ function iniciar() {
   renderQuestao();
 }
 
+function iniciarCaderno() {
+  const itens = cadernoFiltrado().map((it) => ({ materia: it.materia, qid: it.qid }));
+  if (!itens.length) return;
+  ui.quiz.fonte = "erros";
+  ui.quiz.embaralhar = true;
+  ui.quiz.i = 0;
+  ui.quiz.respostas = [];
+  ui.quiz.bloqueado = false;
+  montarFila(itens);
+  mostrar("view-quiz");
+  renderQuestao();
+}
+
 function renderQuestao() {
   const q = questaoAtual();
-  const total = questoes().length;
+  if (!q) return;
+  const total = quizLen();
   const n = ui.quiz.i + 1;
-  $("#progresso-texto").textContent = `Questão ${n} de ${total}`;
+  const prefixo = ui.quiz.fonte === "erros" ? "Erro" : "Questão";
+  $("#progresso-texto").textContent = `${prefixo} ${n} de ${total}`;
   $("#barra").style.width = `${(n / total) * 100}%`;
   $("#tema").textContent = `${q.tipo === "ce" ? "Certo ou Errado" : "Múltipla escolha"} · ${q.tema}`;
   $("#enunciado").textContent = q.enunciado;
@@ -783,16 +874,20 @@ function responder(idx, btn) {
   if (ui.quiz.bloqueado) return;
   ui.quiz.bloqueado = true;
   const q = questaoAtual();
+  const item = ui.quiz.fila[ui.quiz.i];
+  const materia = item?.materia || ui.materia;
   const acertou = idx === q.correta;
-  ui.quiz.respostas.push({ id: q.id, escolhida: idx, acertou });
+  ui.quiz.respostas.push({ id: q.id, materia, escolhida: idx, acertou });
   const row = {
-    materia: ui.materia,
+    materia,
     qid: q.id,
     acertou,
+    escolhida: idx,
     ts: Date.now(),
   };
   persist((d) => {
     d.respostas.push(row);
+    if (!acertou) delete d.errosArquivados[chaveErro(materia, q.id)];
   });
   cloud()?.salvarResposta(row);
   [...$("#opcoes").children].forEach((el, i) => {
@@ -803,19 +898,14 @@ function responder(idx, btn) {
   btn.classList.add("selected");
   const fb = $("#feedback");
   fb.className = `feedback ${acertou ? "ok" : "bad"}`;
-  const gabarito =
-    q.tipo === "ce"
-      ? q.alternativas[q.correta]
-      : `${letra(q.correta)}) ${q.alternativas[q.correta]}`;
-  fb.innerHTML = `<b>${acertou ? "Acertou." : "Errou."} Gabarito: ${gabarito}</b>${q.explicacao}`;
+  fb.innerHTML = `<b>${acertou ? "Acertou." : "Errou."} Gabarito: ${textoAlt(q, q.correta)}</b>${q.explicacao}`;
   if (acertou) celebrar("ok");
   $("#proxima").classList.remove("hidden");
-  $("#proxima").textContent =
-    ui.quiz.i + 1 >= questoes().length ? "Ver resultado" : "Próxima";
+  $("#proxima").textContent = ui.quiz.i + 1 >= quizLen() ? "Ver resultado" : "Próxima";
 }
 
 function avancar() {
-  if (ui.quiz.i + 1 >= questoes().length) {
+  if (ui.quiz.i + 1 >= quizLen()) {
     renderResultado();
     return;
   }
@@ -824,15 +914,16 @@ function avancar() {
 }
 
 function renderResultado() {
-  const total = questoes().length;
+  const total = quizLen();
   const acertos = ui.quiz.respostas.filter((r) => r.acertou).length;
-  const pct = Math.round((acertos / total) * 100);
+  const pct = total ? Math.round((acertos / total) * 100) : 0;
   let selo = "Siga na revisão.";
   if (pct >= 90) selo = "Nível aprovação.";
   else if (pct >= 70) selo = "Bom desempenho.";
   else if (pct >= 50) selo = "Base ok, aperte nos erros.";
+  const mats = new Set(ui.quiz.fila.map((f) => f.materia));
   const bateria = {
-    materia: ui.materia,
+    materia: mats.size === 1 ? [...mats][0] : ui.quiz.fonte === "erros" ? "erros" : ui.materia,
     acertos,
     total,
     ts: Date.now(),
@@ -852,20 +943,108 @@ function renderResultado() {
     review.innerHTML = "<p>Você não errou nenhuma nesta bateria.</p>";
     return;
   }
-  const qs = questoes();
   erros.forEach((r) => {
-    const q = qs.find((item) => item.id === r.id);
+    const q = questoesDaMateria(r.materia || ui.materia).find((item) => item.id === r.id);
+    if (!q) return;
     const art = document.createElement("article");
-    const sua =
-      q.tipo === "ce"
-        ? q.alternativas[r.escolhida]
-        : `${letra(r.escolhida)}) ${q.alternativas[r.escolhida]}`;
-    const gab =
-      q.tipo === "ce"
-        ? q.alternativas[q.correta]
-        : `${letra(q.correta)}) ${q.alternativas[q.correta]}`;
-    art.innerHTML = `<h3>Q${q.id} · ${q.tema}</h3><p>${q.enunciado}</p><p><b>Sua resposta:</b> ${sua}<br><b>Gabarito:</b> ${gab}</p><p>${q.explicacao}</p>`;
+    art.innerHTML = `<h3>Q${q.id} · ${esc(q.tema)}</h3><p>${esc(q.enunciado)}</p><p><b>Sua resposta:</b> ${esc(textoAlt(q, r.escolhida))}<br><b>Gabarito:</b> ${esc(textoAlt(q, q.correta))}</p><p>${esc(q.explicacao)}</p>`;
     review.appendChild(art);
+  });
+}
+
+function renderErros() {
+  const todos = cadernoItens();
+  const lista = cadernoFiltrado();
+  const matsComErro = [...new Set(todos.map((it) => it.materia))];
+  if (ui.errosMateria !== "todas" && !matsComErro.includes(ui.errosMateria) && matsComErro.length) {
+    ui.errosMateria = "todas";
+  }
+  const temas = [...new Set(
+    todos
+      .filter((it) => ui.errosMateria === "todas" || it.materia === ui.errosMateria)
+      .map((it) => it.tema)
+  )].sort((a, b) => a.localeCompare(b, "pt-BR"));
+  if (ui.errosTema !== "todos" && !temas.includes(ui.errosTema)) ui.errosTema = "todos";
+
+  $("#erros-lead").textContent = todos.length
+    ? "Só entra o que a última tentativa ainda errou. Se você acertar de novo, sai da lista. “Já revisei” esconde até você errar outra vez."
+    : "Ainda não tem erro gravado. Faz uma bateria em Questões: o que você errar aparece aqui para revisar.";
+  $("#erros-meta").innerHTML = `
+    <div><b>${todos.length}</b><span>em aberto</span></div>
+    <div><b>${lista.length}</b><span>neste filtro</span></div>
+    <div><b>${temas.length}</b><span>temas</span></div>
+  `;
+  const matBtns = [`<button type="button" class="modo${ui.errosMateria === "todas" ? " ativo" : ""}" data-erros-mat="todas">Todas</button>`]
+    .concat(
+      materias()
+        .filter((m) => matsComErro.includes(m.id) || m.id === ui.errosMateria)
+        .map(
+          (m) =>
+            `<button type="button" class="modo${ui.errosMateria === m.id ? " ativo" : ""}" data-erros-mat="${esc(m.id)}">${esc(m.sigla || m.nome)}</button>`
+        )
+    )
+    .join("");
+  $("#erros-materias").innerHTML = matBtns;
+  $("#erros-tema").innerHTML =
+    `<option value="todos">Todos os temas</option>` +
+    temas.map((t) => `<option value="${esc(t)}"${t === ui.errosTema ? " selected" : ""}>${esc(t)}</option>`).join("");
+  $("#erros-acoes").innerHTML = lista.length
+    ? `<button type="button" class="primary" id="erros-treinar">Treinar ${lista.length} erro${lista.length === 1 ? "" : "s"}</button>`
+    : "";
+  $("#erros-lista").innerHTML = lista.length
+    ? lista
+        .map((it) => {
+          const k = chaveErro(it.materia, it.qid);
+          const aberto = ui.errosAberto === k;
+          const quando = it.last.ts
+            ? new Date(it.last.ts).toLocaleDateString("pt-BR")
+            : "";
+          const detalhe = `<div class="erros-detalhe">
+            <p>${esc(it.q.enunciado)}</p>
+            <p><b>Sua resposta:</b> ${esc(textoAlt(it.q, it.last.escolhida))}<br>
+            <b>Gabarito:</b> ${esc(textoAlt(it.q, it.q.correta))}</p>
+            <p>${esc(it.q.explicacao)}</p>
+          </div>`;
+          return `<article class="erros-item${aberto ? " is-open" : ""}" data-key="${esc(k)}" data-mat="${esc(it.materia)}" data-qid="${it.qid}">
+            <header>
+              <span>${esc(it.materiaNome)} · Q${it.qid} · ${esc(it.tema)}</span>
+              <b>${it.vezes}x</b>
+            </header>
+            <h3>${esc(it.q.enunciado)}</h3>
+            ${aberto ? detalhe : ""}
+            <p class="hint">${quando ? `Último erro em ${quando}. ` : ""}Toque para ${aberto ? "fechar" : "ver gabarito"}.</p>
+            <button type="button" class="ghost erros-arquivo">Já revisei</button>
+          </article>`;
+        })
+        .join("")
+    : `<div class="vazio">${todos.length ? "Nada neste filtro." : "Sem erros em aberto."}</div>`;
+
+  $$("#erros-materias [data-erros-mat]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      ui.errosMateria = btn.dataset.errosMat;
+      ui.errosTema = "todos";
+      ui.errosAberto = null;
+      renderErros();
+    });
+  });
+  $("#erros-tema").onchange = (e) => {
+    ui.errosTema = e.target.value || "todos";
+    ui.errosAberto = null;
+    renderErros();
+  };
+  $("#erros-treinar")?.addEventListener("click", iniciarCaderno);
+  $$("#erros-lista .erros-item").forEach((el) => {
+    el.addEventListener("click", (ev) => {
+      if (ev.target.closest(".erros-arquivo")) return;
+      ui.errosAberto = ui.errosAberto === el.dataset.key ? null : el.dataset.key;
+      renderErros();
+    });
+    el.querySelector(".erros-arquivo")?.addEventListener("click", (ev) => {
+      ev.stopPropagation();
+      arquivarErro(el.dataset.mat, Number(el.dataset.qid));
+      if (ui.errosAberto === el.dataset.key) ui.errosAberto = null;
+      renderErros();
+    });
   });
 }
 
@@ -985,6 +1164,10 @@ function renderDesempenho() {
   const { geral, por } = totais();
   const total = geral.ok + geral.bad;
   const pct = total ? Math.round((geral.ok / total) * 100) : 0;
+  const nAberto = cadernoItens().length;
+  $("#desempenho-lead").textContent = nAberto
+    ? `Acertos, erros e evolução por matéria. ${nAberto} questão${nAberto === 1 ? "" : "s"} ainda em aberto no caderno de erros.`
+    : "Acertos, erros e evolução por matéria. Fica neste aparelho; se você entrar na conta, também sobe para a nuvem.";
   $("#stats-kpis").innerHTML = `
     <div><b>${pct}%</b><span>aproveitamento geral</span></div>
     <div><b>${geral.ok}</b><span>acertos</span></div>
@@ -1025,7 +1208,9 @@ function renderDesempenho() {
   $("#historico").innerHTML = hist.length
     ? hist
         .map((b) => {
-          const nome = materias().find((m) => m.id === b.materia)?.sigla || b.materia;
+          const nome =
+            materias().find((m) => m.id === b.materia)?.sigla ||
+            (b.materia === "erros" ? "Caderno de erros" : b.materia);
           const when = new Date(b.ts).toLocaleString("pt-BR");
           return `<article><h3>${nome} · ${b.acertos}/${b.total}</h3><p>${when}</p></article>`;
         })
@@ -1271,6 +1456,9 @@ function render() {
   } else if (ui.modo === "questoes") {
     mostrar("view-questoes-home");
     renderQuestoesHome();
+  } else if (ui.modo === "erros") {
+    mostrar("view-erros");
+    renderErros();
   } else if (ui.modo === "cards") {
     mostrar("view-cards");
     renderCards();
@@ -1302,7 +1490,21 @@ document.addEventListener("DOMContentLoaded", async () => {
   aplicarTema(temaAtual());
   $("#comecar").addEventListener("click", iniciar);
   $("#proxima").addEventListener("click", avancar);
-  $("#refazer").addEventListener("click", iniciar);
+  $("#refazer").addEventListener("click", () => {
+    if (ui.quiz.fonte === "erros") {
+      if (cadernoFiltrado().length) iniciarCaderno();
+      else {
+        ui.modo = "erros";
+        render();
+      }
+    } else {
+      iniciar();
+    }
+  });
+  $("#ir-erros").addEventListener("click", () => {
+    ui.modo = "erros";
+    render();
+  });
   $("#inicio").addEventListener("click", () => {
     ui.modo = "questoes";
     render();

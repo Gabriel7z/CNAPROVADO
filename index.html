@@ -66,6 +66,7 @@
       <nav class="modos hidden" id="modos-nav" aria-label="Modos">
         <button class="modo ativo" data-modo="plano" type="button">Plano</button>
         <button class="modo" data-modo="questoes" type="button">Questões</button>
+        <button class="modo" data-modo="erros" type="button">Erros</button>
         <button class="modo" data-modo="cards" type="button">Cards</button>
         <button class="modo" data-modo="desempenho" type="button">Desempenho</button>
         <button class="modo" data-modo="rank" type="button">Rank</button>
@@ -178,10 +179,27 @@
           <p id="pct" class="lead"></p>
           <div class="row">
             <button id="refazer" class="primary" type="button">Refazer</button>
+            <button id="ir-erros" class="ghost" type="button">Caderno de erros</button>
             <button id="inicio" class="ghost" type="button">Questões</button>
           </div>
           <h2 style="margin-top: 28px">Erros para revisar</h2>
           <div id="review" class="review"></div>
+        </section>
+
+        <section id="view-erros" class="hero hidden">
+          <p class="kicker">Revisão</p>
+          <h1>Caderno de erros</h1>
+          <p class="lead" id="erros-lead">
+            Só o que você errou e ainda não acertou de novo. Filtra por matéria
+            e tema, abre o gabarito ou treina só essas questões.
+          </p>
+          <div class="meta" id="erros-meta"></div>
+          <p class="field-label">Matéria</p>
+          <div class="plano-switch" id="erros-materias"></div>
+          <label class="inc-filtro-label" for="erros-tema">Tema</label>
+          <select id="erros-tema" class="inc-filtro"></select>
+          <div class="actions" id="erros-acoes"></div>
+          <div id="erros-lista" class="erros-lista"></div>
         </section>
 
         <section id="view-cards" class="hero hidden">
@@ -246,6 +264,7 @@
       <nav class="dock hidden" id="dock" aria-label="Atalhos">
         <button data-modo="plano" type="button">Plano</button>
         <button data-modo="questoes" type="button">Questões</button>
+        <button data-modo="erros" type="button">Erros</button>
         <button data-modo="cards" type="button">Cards</button>
         <button data-modo="desempenho" type="button">Painel</button>
         <button data-modo="rank" type="button">Rank</button>
