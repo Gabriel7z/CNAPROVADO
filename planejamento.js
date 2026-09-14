@@ -424,6 +424,75 @@ function horasDoTurno(data, carga) {
   return wd === 0 || wd === 6 ? c.fim : c.dia;
 }
 
+const REVISAO_PASSOS = [
+  { apos: 1, etiqueta: "24h" },
+  { apos: 3, etiqueta: "3 dias" },
+  { apos: 7, etiqueta: "7 dias" },
+  { apos: 15, etiqueta: "15 dias" },
+];
+
+function tituloBase(titulo) {
+  return String(titulo || "")
+    .replace(/\s+—\s+questões$/i, "")
+    .trim();
+}
+
+function maxRevisoes(horas) {
+  const h = normalizarHoras(horas);
+  if (h <= 1) return 1;
+  if (h <= 3) return 2;
+  return 3;
+}
+
+function minutosRevisao(horas, qtd) {
+  const h = normalizarHoras(horas);
+  const total = { 1: 10, 2: 16, 3: 22, 4: 30 }[h];
+  const tetoUm = { 1: 10, 2: 12, 3: 15, 4: 20 }[h];
+  const n = Math.max(1, qtd);
+  return Math.max(6, Math.min(tetoUm, Math.round(total / n)));
+}
+
+function textoRevisao(origem, minutos) {
+  const chave = materiaChave(origem.materia);
+  if (chave === "red") {
+    return `${minutos} min. Relê o texto e corta uma frase fraca.`;
+  }
+  return `${minutos} min de Anki e erros. Sem conteúdo novo.`;
+}
+
+function anexarRevisoes(dias) {
+  return dias.map((dia) => {
+    const vistos = new Set();
+    const candidatos = [];
+    REVISAO_PASSOS.forEach((passo) => {
+      const origem = dias[dia.i - passo.apos];
+      if (!origem) return;
+      const chave = materiaChave(origem.materia);
+      const baseOrigem = tituloBase(origem.titulo);
+      const baseHoje = tituloBase(dia.titulo);
+      if (chave === materiaChave(dia.materia) && baseOrigem === baseHoje) return;
+      if (passo.apos === 1 && chave === "red" && materiaChave(dia.materia) === "red") return;
+      if (vistos.has(chave)) return;
+      vistos.add(chave);
+      candidatos.push({ origem, passo, chave });
+    });
+    const teto = maxRevisoes(dia.horas);
+    const escolhidas = candidatos.slice(0, teto);
+    const min = escolhidas.length ? minutosRevisao(dia.horas, escolhidas.length) : 0;
+    const revisoes = escolhidas.map(({ origem, passo, chave }) => ({
+      iso: origem.iso,
+      materia: origem.materia,
+      titulo: tituloBase(origem.titulo),
+      etiqueta: passo.etiqueta,
+      apos: passo.apos,
+      minutos: min,
+      chave,
+      fazer: textoRevisao(origem, min),
+    }));
+    return { ...dia, revisoes };
+  });
+}
+
 function diasDoPlano(kind, carga) {
   const out = [];
   for (let i = 0; i < PLANO_DIAS; i += 1) {
@@ -443,7 +512,7 @@ function diasDoPlano(kind, carga) {
       fazer: adaptarFazer(bloco.fazer, horas, bloco.materia),
     });
   }
-  return out;
+  return anexarRevisoes(out);
 }
 
 function hojeIso() {
@@ -520,6 +589,7 @@ function celulasDoMes(ano, mes, porIso) {
 window.CNAPROVADO_PLANOS = {
   PLANOS,
   HORAS_OPCOES,
+  REVISAO_PASSOS,
   diasDoPlano,
   hojeIso,
   isoData,

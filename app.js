@@ -269,19 +269,48 @@ function htmlHorasBtns(atual, parte) {
     .join("");
 }
 
+function htmlRevisoes(d) {
+  const itens = d.revisoes || [];
+  if (!itens.length) {
+    if (d.i === 0) {
+      return `<p class="plano-revisao-vazio">Hoje é o primeiro contato. A revisão de 24h entra amanhã.</p>`;
+    }
+    return "";
+  }
+  return `<div class="plano-revisoes">
+    <p class="kicker">Revisar · curva do esquecimento</p>
+    <ul>
+      ${itens
+        .map(
+          (r) =>
+            `<li><b>${esc(r.etiqueta)}</b> ${esc(r.materia)} · ${esc(r.titulo)} — ${esc(r.fazer)}</li>`
+        )
+        .join("")}
+    </ul>
+  </div>`;
+}
+
 function htmlPlanoBloco(d, opts) {
   const feito = diaFeito(d.iso);
+  const temAdm =
+    d.materia === "D.Adm" || (d.revisoes || []).some((r) => r.chave === "adm");
   return `
     <p class="kicker">${esc(opts.kicker)}${d.carga ? ` · ${esc(d.carga)}` : ""}</p>
     <h2>${esc(d.materia)} · ${esc(d.titulo)}</h2>
     <p>${esc(d.fazer)}</p>
+    ${htmlRevisoes(d)}
     <div class="actions">
       <button class="primary" type="button" id="${opts.feitoId}">${
         feito ? "Feito ✓" : "Marcar como feito"
       }</button>
       ${
-        d.materia === "D.Adm"
+        temAdm
           ? `<button class="ghost" type="button" id="${opts.admId}">Abrir questões de D.Adm</button>`
+          : ""
+      }
+      ${
+        (d.revisoes || []).some((r) => r.chave === "adm")
+          ? `<button class="ghost" type="button" id="${opts.cardsId}">Abrir cards (revisão)</button>`
           : ""
       }
     </div>
@@ -292,6 +321,14 @@ function bindAbrirAdm(id) {
   $(`#${id}`)?.addEventListener("click", () => {
     ui.materia = "dadm";
     ui.modo = "questoes";
+    render();
+  });
+}
+
+function bindAbrirCards(id) {
+  $(`#${id}`)?.addEventListener("click", () => {
+    ui.materia = "dadm";
+    ui.modo = "cards";
     render();
   });
 }
@@ -329,14 +366,15 @@ function htmlCalendario(api, dias, hoje) {
           const eHoje = c.iso === hoje;
           const eSel = c.iso === sel;
           const feito = diaFeito(c.iso);
+          const nRev = (c.item.revisoes || []).length;
           const label = `${c.day} de ${m.nome}, ${c.item.materia}: ${c.item.titulo}${
-            feito ? ", feito" : ""
-          }${eHoje ? ", hoje" : ""}`;
+            nRev ? `, ${nRev} revisão(ões)` : ""
+          }${feito ? ", feito" : ""}${eHoje ? ", hoje" : ""}`;
           return `<button type="button" class="plano-cal-cell mat-${chave}${eHoje ? " is-hoje" : ""}${
             eSel ? " is-sel" : ""
-          }${feito ? " is-feito" : ""}" data-iso="${c.iso}" aria-label="${esc(label)}" aria-pressed="${
-            eSel || eHoje ? "true" : "false"
-          }">
+          }${feito ? " is-feito" : ""}${nRev ? " tem-revisao" : ""}" data-iso="${c.iso}" aria-label="${esc(
+            label
+          )}" aria-pressed="${eSel || eHoje ? "true" : "false"}">
             <span class="plano-cal-num">${c.day}</span>
             <span class="plano-cal-tag">${esc(curta)}</span>
             ${feito ? `<span class="plano-cal-ok" aria-hidden="true">✓</span>` : ""}
@@ -361,7 +399,7 @@ function htmlCalendario(api, dias, hoje) {
     .map(([chave, nome]) => `<span class="mat-${chave}">${nome}</span>`)
     .join("");
   return `${mesesHtml}
-    <p class="plano-cal-hint">Toque no dia para ver o que estudar.</p>
+    <p class="plano-cal-nota">Toque no dia para ver o que estudar. O pontinho no canto é revisão da curva do esquecimento.</p>
     <div class="plano-legenda" aria-label="Cores das matérias">${legenda}</div>`;
 }
 
@@ -382,16 +420,17 @@ function renderPlano() {
   $("#plano-kicker").textContent = `Mês 1 · ${meta.dono}`;
   $("#plano-titulo").textContent =
     id === "amanda" ? "Plano da Amanda" : "Plano do Gabriel";
-  $("#plano-lead").textContent = `${meta.alvo}. ${meta.materias}. 14/09 a 13/10/2026. A matéria do dia não muda: o que muda é o tamanho da tarefa.`;
+  $("#plano-lead").textContent = `${meta.alvo}. ${meta.materias}. 14/09 a 13/10/2026. A matéria do dia não muda: o que muda é o tamanho da tarefa e a revisão periódica.`;
   $("#plano-meta").innerHTML = `
     <div><b>${feitos}/${dias.length}</b><span>dias feitos</span></div>
     <div><b>${deHoje.horas}h</b><span>hoje</span></div>
-    <div><b>${carga.dia}h · ${carga.fim}h</b><span>semana · fim de semana</span></div>
+    <div><b>${deHoje.revisoes?.length || 0}</b><span>revisões hoje</span></div>
   `;
   $("#plano-hoje").innerHTML = htmlPlanoBloco(deHoje, {
     kicker: "Hoje",
     feitoId: "plano-feito-hoje",
     admId: "plano-abrir-adm",
+    cardsId: "plano-cards-hoje",
   });
   $("#plano-hoje").classList.toggle("hidden", vista === "calendario");
   $("#plano-switch").innerHTML = `
@@ -423,6 +462,7 @@ function renderPlano() {
         </header>
         <h3>${esc(d.titulo)}</h3>
         <p>${esc(d.fazer)}</p>
+        ${htmlRevisoes(d)}
         <button type="button" class="ghost plano-check">${feito ? "Desmarcar" : "Feito"}</button>
       </article>`;
     })
@@ -444,6 +484,7 @@ function renderPlano() {
       kicker,
       feitoId: "plano-feito-sel",
       admId: "plano-abrir-sel",
+      cardsId: "plano-cards-sel",
     });
   } else {
     selEl.innerHTML = "";
@@ -456,6 +497,7 @@ function renderPlano() {
     window.scrollTo(0, yNow);
   });
   bindAbrirAdm("plano-abrir-adm");
+  bindAbrirCards("plano-cards-hoje");
   $("#plano-feito-sel")?.addEventListener("click", () => {
     const yNow = window.scrollY;
     toggleDiaFeito(deSel.iso);
@@ -463,6 +505,7 @@ function renderPlano() {
     window.scrollTo(0, yNow);
   });
   bindAbrirAdm("plano-abrir-sel");
+  bindAbrirCards("plano-cards-sel");
   $$("#plano-switch [data-plano]").forEach((btn) => {
     btn.addEventListener("click", () => {
       setPlanoId(btn.dataset.plano);
