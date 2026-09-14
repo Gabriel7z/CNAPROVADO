@@ -162,12 +162,27 @@ function travarApp(on) {
   $("#dock")?.classList.toggle("hidden", !on);
 }
 
+function materiaEhTi(m) {
+  const sigla = String(m?.sigla || "").toLowerCase();
+  const nome = String(m?.nome || "").toLowerCase();
+  return m?.id === "ti" || sigla === "ti" || nome.includes("informática") || nome === "ti";
+}
+
 function renderMaterias() {
   const nav = $("#materias-nav");
   nav.innerHTML = "";
   const esconderTi = planoIdAtual() === "amanda";
-  const lista = materias().filter((m) => !(esconderTi && m.id === "ti"));
-  if (esconderTi && ui.materia === "ti") ui.materia = "dadm";
+  const vistos = new Set();
+  const lista = materias().filter((m) => {
+    if (esconderTi && materiaEhTi(m)) return false;
+    const k = String(m.sigla || m.id).toLowerCase();
+    if (vistos.has(k)) return false;
+    vistos.add(k);
+    return true;
+  });
+  if (esconderTi && materiaEhTi({ id: ui.materia, sigla: ui.materia, nome: ui.materia })) {
+    ui.materia = "dadm";
+  }
   lista.forEach((m) => {
     const btn = document.createElement("button");
     btn.className = `materia${m.id === ui.materia ? " ativa" : ""}`;
@@ -739,6 +754,7 @@ function renderPlano() {
   $$("#plano-switch [data-plano]").forEach((btn) => {
     btn.addEventListener("click", () => {
       setPlanoId(btn.dataset.plano);
+      renderMaterias();
       renderPlano();
     });
   });
