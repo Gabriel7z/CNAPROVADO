@@ -6,7 +6,7 @@ const AVATARES = ["🎯", "🦁", "🦅", "🐺", "🐉", "⚡", "📚", "⚖️
 
 const ui = {
   materia: "dadm",
-  modo: "questoes",
+  modo: "plano",
   quiz: { i: 0, respostas: [], bloqueado: false, embaralhar: false, fila: [] },
   anki: { i: 0, virado: false, fila: [] },
 };
@@ -31,6 +31,8 @@ function db() {
   if (!data.baterias) data.baterias = [];
   if (!data.anki) data.anki = {};
   if (data.perfil.mostrarRank == null) data.perfil.mostrarRank = true;
+  if (!data.planoPorEmail) data.planoPorEmail = {};
+  if (!data.planoFeito) data.planoFeito = {};
   return data;
 }
 
@@ -110,6 +112,7 @@ function aplicarTema(theme) {
 function mostrar(id) {
   [
     "view-login",
+    "view-plano",
     "view-questoes-home",
     "view-quiz",
     "view-result",
@@ -184,6 +187,124 @@ function renderChip() {
   const p = db().perfil;
   $("#chip-face").textContent = p.avatar;
   $("#chip-nome").textContent = p.nome || "Concurseiro";
+}
+
+function emailDaConta() {
+  return String(cloud()?.user?.email || "").toLowerCase();
+}
+
+function planoIdAtual() {
+  const email = emailDaConta();
+  const nome = String(db().perfil?.nome || cloud()?.perfil?.apelido || "").toLowerCase();
+  const mapa = db().planoPorEmail || {};
+  if (email && (mapa[email] === "amanda" || mapa[email] === "gabriel")) return mapa[email];
+  if (nome.includes("amanda") || email.includes("amanda")) return "amanda";
+  return "gabriel";
+}
+
+function setPlanoId(id) {
+  const email = emailDaConta();
+  if (!email) return;
+  persist((d) => {
+    d.planoPorEmail[email] = id;
+  });
+}
+
+function planoFeitoKey(iso) {
+  return `${emailDaConta()}|${iso}`;
+}
+
+function diaFeito(iso) {
+  return Boolean(db().planoFeito[planoFeitoKey(iso)]);
+}
+
+function toggleDiaFeito(iso) {
+  persist((d) => {
+    const k = planoFeitoKey(iso);
+    d.planoFeito[k] = !d.planoFeito[k];
+  });
+}
+
+function renderPlano() {
+  const api = window.CNAPROVADO_PLANOS;
+  if (!api) return;
+  const id = planoIdAtual();
+  const meta = api.PLANOS[id];
+  const dias = api.diasDoPlano(id);
+  const hoje = api.hojeIso();
+  const feitos = dias.filter((d) => diaFeito(d.iso)).length;
+  const deHoje = dias.find((d) => d.iso === hoje) || dias[0];
+
+  $("#plano-kicker").textContent = `Mês 1 · ${meta.dono}`;
+  $("#plano-titulo").textContent =
+    id === "amanda" ? "Plano da Amanda" : "Plano do Gabriel";
+  $("#plano-lead").textContent = `${meta.alvo}. ${meta.materias}. 14/09 a 13/10/2026.`;
+  $("#plano-meta").innerHTML = `
+    <div><b>${feitos}/${dias.length}</b><span>dias feitos</span></div>
+    <div><b>${deHoje.materia}</b><span>hoje</span></div>
+    <div><b>${id === "gabriel" ? "TI + redação" : "sem TI"}</b><span>fim de semana</span></div>
+  `;
+  $("#plano-hoje").innerHTML = `
+    <p class="kicker">Hoje</p>
+    <h2>${esc(deHoje.materia)} · ${esc(deHoje.titulo)}</h2>
+    <p>${esc(deHoje.fazer)}</p>
+    <div class="actions">
+      <button class="primary" type="button" id="plano-feito-hoje">${
+        diaFeito(deHoje.iso) ? "Feito ✓" : "Marcar como feito"
+      }</button>
+      ${
+        deHoje.materia === "D.Adm"
+          ? `<button class="ghost" type="button" id="plano-abrir-adm">Abrir questões de D.Adm</button>`
+          : ""
+      }
+    </div>
+  `;
+  $("#plano-switch").innerHTML = `
+    <button type="button" class="modo${id === "gabriel" ? " ativo" : ""}" data-plano="gabriel">Gabriel</button>
+    <button type="button" class="modo${id === "amanda" ? " ativo" : ""}" data-plano="amanda">Amanda</button>
+  `;
+  $("#plano-lista").innerHTML = dias
+    .map((d) => {
+      const nomeDia = d.data.toLocaleDateString("pt-BR", {
+        weekday: "short",
+        day: "2-digit",
+        month: "2-digit",
+      });
+      const eHoje = d.iso === hoje;
+      const feito = diaFeito(d.iso);
+      return `<article class="plano-dia${eHoje ? " hoje" : ""}${feito ? " feito" : ""}" data-iso="${d.iso}">
+        <header>
+          <span>${esc(nomeDia)}</span>
+          <b>${esc(d.materia)}</b>
+        </header>
+        <h3>${esc(d.titulo)}</h3>
+        <p>${esc(d.fazer)}</p>
+        <button type="button" class="ghost plano-check">${feito ? "Desmarcar" : "Feito"}</button>
+      </article>`;
+    })
+    .join("");
+
+  $("#plano-feito-hoje")?.addEventListener("click", () => {
+    toggleDiaFeito(deHoje.iso);
+    renderPlano();
+  });
+  $("#plano-abrir-adm")?.addEventListener("click", () => {
+    ui.materia = "dadm";
+    ui.modo = "questoes";
+    render();
+  });
+  $$("#plano-switch [data-plano]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      setPlanoId(btn.dataset.plano);
+      renderPlano();
+    });
+  });
+  $$("#plano-lista .plano-dia").forEach((el) => {
+    el.querySelector(".plano-check")?.addEventListener("click", () => {
+      toggleDiaFeito(el.dataset.iso);
+      renderPlano();
+    });
+  });
 }
 
 function renderQuestoesHome() {
@@ -750,7 +871,10 @@ function render() {
   renderChip();
   renderMaterias();
   renderModos();
-  if (ui.modo === "questoes") {
+  if (ui.modo === "plano") {
+    mostrar("view-plano");
+    renderPlano();
+  } else if (ui.modo === "questoes") {
     mostrar("view-questoes-home");
     renderQuestoesHome();
   } else if (ui.modo === "cards") {
