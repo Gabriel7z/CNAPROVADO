@@ -993,9 +993,12 @@ function renderQuestoesHome() {
     const aulaTxt = pack
       ? ` As questões saem da aula/playlist do YouTube (${pack.professor}). Não tem vídeo aqui: o link abre a aula.`
       : "";
+    const faixas = (pack?.aulas || [])
+      .map((a, i) => `Tópico ${i + 1} (Q${a.de}–${a.ate})`)
+      .join(" + ");
     $("#lead-materia").textContent =
-      (m.id === "dadm"
-        ? "Tópico 1 (Q1–50) + Tópico 2 (Q51–100) + Tópico 3 Direta (Q101–150) + Tópico 4 Indireta (Q151–200). Gabarito na hora e revisão dos erros no final."
+      (faixas
+        ? `${faixas}. Gabarito na hora e revisão dos erros no final.`
         : "Questões no estilo concurso, gabarito na hora e revisão dos erros no final.") +
       aulaTxt +
       extra;
