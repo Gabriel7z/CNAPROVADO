@@ -407,10 +407,13 @@ function adaptarFazer(fazer, horas, materia) {
   t = t.replace(/(\d+) palavras/g, (_, n) => `${escalaNum(n, f, 5)} palavras`);
   t = t.replace(/(\d+) conectivos/g, (_, n) => `${escalaNum(n, f, 2)} conectivos`);
   if (h === 4) {
-    t +=
-      String(materia || "").startsWith("Redação")
-        ? " Com 4h: passa o texto a limpo e corrige gramática no fim."
-        : " Com 4h: 20 min de Anki só dos erros e relê o pedaço da teoria que você marcou.";
+    if (String(materia || "").startsWith("Redação")) {
+      if (!/limpo/i.test(t)) t += " Com 4h: passa o texto a limpo e corrige gramática no fim.";
+    } else if (/anki/i.test(t)) {
+      t += " Com 4h: relê o trecho da teoria que você marcou e refaz só o que errou.";
+    } else {
+      t += " Com 4h: 20 min de Anki só dos erros e relê o pedaço da teoria que você marcou.";
+    }
   }
   return t;
 }
