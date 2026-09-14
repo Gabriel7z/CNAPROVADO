@@ -271,12 +271,12 @@ function htmlCalendario(api, dias, hoje) {
   const sel = ui.planoIsoSel;
   const meses = api.mesesDoCalendario(dias);
   const weekdays = [
-    ["Seg", "S"],
+    ["Seg", "Sg"],
     ["Ter", "T"],
     ["Qua", "Q"],
     ["Qui", "Q"],
-    ["Sex", "S"],
-    ["Sáb", "S"],
+    ["Sex", "Sx"],
+    ["Sáb", "Sb"],
     ["Dom", "D"],
   ];
   const cab = weekdays
@@ -345,8 +345,8 @@ function renderPlano() {
   const feitos = dias.filter((d) => diaFeito(d.iso)).length;
   const deHoje = dias.find((d) => d.iso === hoje) || dias[0];
   const vista = planoVistaAtual();
-  const deSel = dias.find((d) => d.iso === ui.planoIsoSel);
-  const mostrarSel = vista === "calendario" && deSel && deSel.iso !== deHoje.iso;
+  const deSel = dias.find((d) => d.iso === ui.planoIsoSel) || (vista === "calendario" ? deHoje : null);
+  const mostrarSel = Boolean(vista === "calendario" && deSel);
 
   $("#plano-kicker").textContent = `Mês 1 · ${meta.dono}`;
   $("#plano-titulo").textContent =
@@ -362,6 +362,7 @@ function renderPlano() {
     feitoId: "plano-feito-hoje",
     admId: "plano-abrir-adm",
   });
+  $("#plano-hoje").classList.toggle("hidden", vista === "calendario");
   $("#plano-switch").innerHTML = `
     <button type="button" class="modo${id === "gabriel" ? " ativo" : ""}" data-plano="gabriel">Gabriel</button>
     <button type="button" class="modo${id === "amanda" ? " ativo" : ""}" data-plano="amanda">Amanda</button>
@@ -397,11 +398,14 @@ function renderPlano() {
   const selEl = $("#plano-dia-sel");
   selEl.classList.toggle("hidden", !mostrarSel);
   if (mostrarSel) {
-    const kicker = deSel.data.toLocaleDateString("pt-BR", {
-      weekday: "long",
-      day: "2-digit",
-      month: "long",
-    });
+    const kicker =
+      deSel.iso === hoje
+        ? "Hoje"
+        : deSel.data.toLocaleDateString("pt-BR", {
+            weekday: "long",
+            day: "2-digit",
+            month: "long",
+          });
     selEl.innerHTML = htmlPlanoBloco(deSel, {
       kicker,
       feitoId: "plano-feito-sel",
@@ -435,8 +439,9 @@ function renderPlano() {
     btn.addEventListener("click", () => {
       setPlanoVista(btn.dataset.vista);
       if (btn.dataset.vista === "lista") ui.planoIsoSel = null;
+      else if (!ui.planoIsoSel) ui.planoIsoSel = hoje;
       renderPlano();
-      $("#plano-vista")?.scrollIntoView({ block: "nearest" });
+      $("#plano-vista")?.scrollIntoView({ block: "start" });
     });
   });
   $$("#plano-lista .plano-dia").forEach((el) => {
