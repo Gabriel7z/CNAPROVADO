@@ -74,11 +74,27 @@ function materiaAtual() {
 }
 
 function questoes() {
-  return questoesDaMateria(ui.materia);
+  const lista = questoesDaMateria(ui.materia);
+  const api = window.CNAPROVADO_AULAS;
+  if (!api?.questoesDoConcurso) return lista;
+  return api.questoesDoConcurso(lista, ui.materia, planoConcursoAtual());
 }
 
 function cards() {
-  return cardsDaMateria(ui.materia);
+  const id = ui.materia;
+  return questoes().map((q) => {
+    const gab =
+      q.tipo === "ce"
+        ? q.alternativas[q.correta]
+        : `${String.fromCharCode(65 + q.correta)}) ${q.alternativas[q.correta]}`;
+    return {
+      id: `${id}-q${q.id}`,
+      materia: id,
+      frente: q.enunciado,
+      verso: `Gabarito: ${gab}\n\n${q.explicacao}`,
+      tema: q.tema,
+    };
+  });
 }
 
 function letra(i) {
@@ -492,9 +508,12 @@ function incidenciaSel() {
   const api = window.CNAPROVADO_INCIDENCIA;
   if (!api) return null;
   const concursos = api.concursos();
-  let concurso = db().incidenciaConcurso;
+  let concurso = db().incidenciaConcurso || planoConcursoAtual();
   if (!concursos.some((c) => c.id === concurso)) concurso = concursos[0]?.id || "sedf";
-  const materias = api.materias(concurso);
+  let materias = api.materias(concurso);
+  if (planoIdAtual() === "amanda") {
+    materias = materias.filter((m) => m.id !== "ti");
+  }
   let materia = db().incidenciaMateria;
   if (!materias.some((m) => m.id === materia)) materia = materias[0]?.id || "pt";
   return {
@@ -520,6 +539,16 @@ function htmlIncidenciaLista(recorte, filtro) {
   const rows = recorte.topicos.filter((t) => !q || t.nome.toLowerCase().includes(q));
   if (!rows.length) {
     return `<p class="vazio">Nenhum assunto com esse filtro.</p>`;
+  }
+  if (recorte.semContagem) {
+    return rows
+      .map(
+        (t) => `<article class="inc-item">
+        <div class="inc-head"><b>${esc(t.nome)}</b></div>
+        <p>Recorte do plano — sem contagem de caderno.</p>
+      </article>`
+      )
+      .join("");
   }
   return rows
     .map((t) => {
@@ -555,7 +584,7 @@ function htmlIncidencia() {
     )
     .join("");
   const filtro = ui.incidenciaFiltro || "";
-  const prioN = recorte.topicos.filter((t) => t.prio).length;
+  const prioN = recorte.semContagem ? recorte.topicos.length : recorte.topicos.filter((t) => t.prio).length;
   return `
     <div class="plano-metodo">
       <p class="kicker">De onde vêm esses %</p>
@@ -563,7 +592,8 @@ function htmlIncidencia() {
         QConcursos e TEC não soltam API pública. Estas barras são o caderno
         histórico que o TEC publicou para a banca do concurso — não é o edital
         de 2026 e não prevê a prova. Serve para priorizar o que a banca mais
-        cobra.
+        cobra. No TCE-GO a matéria de TI é cargo específico: redes, banco de
+        dados e segurança pesam muito mais que Windows.
       </p>
     </div>
     <p class="field-label">Concurso</p>
@@ -574,8 +604,8 @@ function htmlIncidencia() {
     <input id="inc-filtro" class="inc-filtro" type="search" placeholder="ex.: interpretação, licitações" value="${esc(filtro)}" autocomplete="off" />
     <div class="meta inc-resumo">
       <div><b>${esc(recorte.concursoNome)}</b><span>${esc(recorte.banca)} · ${esc(recorte.materiaNome)}</span></div>
-      <div><b>${recorte.total.toLocaleString("pt-BR")}</b><span>questões no caderno</span></div>
-      <div><b>${prioN}</b><span>assuntos até ~70%</span></div>
+      <div><b>${recorte.semContagem ? "—" : recorte.total.toLocaleString("pt-BR")}</b><span>${recorte.semContagem ? "sem contagem" : "questões no caderno"}</span></div>
+      <div><b>${prioN}</b><span>${recorte.semContagem ? "assuntos do plano" : "assuntos até ~70%"}</span></div>
     </div>
     <p class="plano-cal-hint">${esc(recorte.recorte)}</p>
     <div class="inc-legenda" aria-label="Legenda">
@@ -591,9 +621,11 @@ function bindIncidencia() {
   $$("#inc-concursos [data-concurso]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const concurso = btn.dataset.concurso;
+      setPlanoConcurso(concurso);
       const mats = window.CNAPROVADO_INCIDENCIA?.materias(concurso) || [];
+      const visiveis = planoIdAtual() === "amanda" ? mats.filter((m) => m.id !== "ti") : mats;
       const atual = db().incidenciaMateria;
-      const materia = mats.some((m) => m.id === atual) ? atual : mats[0]?.id;
+      const materia = visiveis.some((m) => m.id === atual) ? atual : visiveis[0]?.id;
       setIncidenciaFiltro(concurso, materia);
       const y = window.scrollY;
       renderPlano();
@@ -943,20 +975,35 @@ function htmlLinkAula(href, texto) {
 function htmlFonteAula(materiaId) {
   const pack = window.CNAPROVADO_AULAS?.daMateria?.(materiaId);
   if (!pack) return "";
-  const linhas = (pack.aulas || [])
+  const concurso = planoConcursoAtual();
+  const aulas =
+    window.CNAPROVADO_AULAS?.aulasDoConcurso?.(materiaId, concurso) || pack.aulas || [];
+  const play =
+    materiaId === "ti" && concurso === "tcego" && pack.extra ? pack.extra : pack.playlist;
+  const extraPack =
+    materiaId === "ti" && concurso === "tcego"
+      ? pack.playlist
+      : materiaId === "ti"
+        ? null
+        : pack.extra;
+  const linhas = aulas
     .map((a) => {
       const n = a.de === a.ate ? `Q${a.de}` : `Q${a.de}–${a.ate}`;
-      return `<li>${esc(n)} · ${htmlLinkAula(a.url, a.titulo)}</li>`;
+      return `<li>
+        ${esc(n)} · ${htmlLinkAula(a.url, a.titulo)}
+        <button type="button" class="linkish" data-treino-de="${a.de}" data-treino-ate="${a.ate}">Treinar estas</button>
+      </li>`;
     })
     .join("");
-  const extra = pack.extra
-    ? `<p>Também serve: ${htmlLinkAula(pack.extra.url, pack.extra.titulo)}.</p>`
+  const extra = extraPack
+    ? `<p>Também serve: ${htmlLinkAula(extraPack.url, extraPack.titulo)}.</p>`
     : "";
+  const nomeConc = window.CNAPROVADO_INCIDENCIA?.concursoNome?.[concurso] || concurso;
   return `<div class="fonte-aula">
-    <p class="kicker">De onde vêm as questões</p>
+    <p class="kicker">De onde vêm as questões · ${esc(nomeConc)}</p>
     <p>${esc(pack.titulo)} · ${esc(pack.professor)}.</p>
-    <p><b>Para responder estas questões, veja a aula neste link:</b> ${htmlLinkAula(pack.playlist.url, pack.playlist.titulo)}.</p>
-    <p>O vídeo não fica no app — o link abre no YouTube.</p>
+    <p><b>Para responder estas questões, veja a aula neste link:</b> ${htmlLinkAula(play.url, play.titulo)}.</p>
+    <p>O vídeo não fica no app — o link abre no YouTube. Só entram os tópicos deste concurso.</p>
     ${extra}
     <ul>${linhas}</ul>
   </div>`;
@@ -969,20 +1016,118 @@ function htmlQuizAula(materiaId, qid) {
   return `<p class="quiz-aula">Para esta questão, veja a aula: ${htmlLinkAula(info.aula.url, info.aula.titulo)} · ${esc(info.pack.professor)}.</p>`;
 }
 
+function htmlCaiNaMateria(materiaId) {
+  const api = window.CNAPROVADO_INCIDENCIA;
+  const concurso = planoConcursoAtual();
+  const recorte = api?.recorteApp?.(concurso, materiaId);
+  const nomeConc = api?.concursoNome?.[concurso] || concurso;
+  if (!recorte) {
+    return `<div class="fonte-aula cai-materia">
+      <p class="kicker">O que mais cai · ${esc(nomeConc)}</p>
+      <p>Ainda não tem caderno de incidência para esta matéria neste concurso.</p>
+    </div>`;
+  }
+  const prio = recorte.semContagem ? recorte.topicos : recorte.topicos.filter((t) => t.prio);
+  const resto = recorte.semContagem ? [] : recorte.topicos.filter((t) => !t.prio);
+  const linhas = prio
+    .map((t) => {
+      if (recorte.semContagem) {
+        return `<li>${esc(t.nome)}</li>`;
+      }
+      return `<li><b>${esc(t.nome)}</b> · ${fmtPct(t.pct)} · ${t.q} no caderno</li>`;
+    })
+    .join("");
+  const extra = resto.length
+    ? `<p>${resto.length} assunto${resto.length === 1 ? "" : "s"} menor${resto.length === 1 ? "" : "es"} ficam na lista completa.</p>`
+    : "";
+  const fonte = recorte.fonteUrl
+    ? `<p>Fonte: <a href="${esc(recorte.fonteUrl)}" target="_blank" rel="noopener noreferrer">TEC · priorização</a>.</p>`
+    : "";
+  return `<div class="fonte-aula cai-materia">
+    <p class="kicker">O que mais cai em ${esc(recorte.materiaNome)} · ${esc(nomeConc)} · ${esc(recorte.banca)}</p>
+    <p>${esc(recorte.recorte)}</p>
+    <ul>${linhas}</ul>
+    ${extra}
+    ${fonte}
+    <p><button type="button" class="linkish" id="abrir-o-que-cai">Ver a lista completa em O que cai</button></p>
+  </div>`;
+}
+
+function htmlSwitchConcurso(ativoId) {
+  const api = window.CNAPROVADO_PLANOS;
+  return Object.values(api?.CONCURSOS || {})
+    .map(
+      (c) =>
+        `<button type="button" class="modo${c.id === ativoId ? " ativo" : ""}" data-concurso="${esc(c.id)}">${esc(c.nome)}</button>`
+    )
+    .join("");
+}
+
+function bindQuestoesHome() {
+  $$("#qs-concurso [data-concurso]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      setPlanoConcurso(btn.dataset.concurso);
+      const y = window.scrollY;
+      render();
+      window.scrollTo(0, y);
+    });
+  });
+  $$("#fonte-aula [data-treino-de]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      iniciarFaixa(Number(btn.dataset.treinoDe), Number(btn.dataset.treinoAte));
+    });
+  });
+  $("#abrir-o-que-cai")?.addEventListener("click", () => {
+    const api = window.CNAPROVADO_INCIDENCIA;
+    persist((d) => {
+      d.planoVista = "cai";
+      d.incidenciaConcurso = planoConcursoAtual();
+      d.incidenciaMateria = api?.materiaDaApp?.(ui.materia) || ui.materia;
+    });
+    ui.modo = "plano";
+    render();
+  });
+}
+
+function iniciarFaixa(de, ate) {
+  if (!logado()) {
+    render();
+    return;
+  }
+  const qs = questoes().filter((q) => q.id >= de && q.id <= ate);
+  if (!qs.length) return;
+  ui.quiz.fonte = "materia";
+  ui.quiz.embaralhar = Boolean($("#embaralhar")?.checked);
+  ui.quiz.i = 0;
+  ui.quiz.respostas = [];
+  ui.quiz.bloqueado = false;
+  montarFila(qs.map((q) => ({ materia: ui.materia, qid: q.id })));
+  mostrar("view-quiz");
+  renderQuestao();
+}
+
 function renderQuestoesHome() {
   const m = materiaAtual();
   const qs = questoes();
   const cs = cards();
   const pack = window.CNAPROVADO_AULAS?.daMateria?.(m.id);
-  $("#kicker-materia").textContent = m.nome;
+  const concurso = planoConcursoAtual();
+  const aulas =
+    window.CNAPROVADO_AULAS?.aulasDoConcurso?.(m.id, concurso) || pack?.aulas || [];
+  const nomeConc = window.CNAPROVADO_INCIDENCIA?.concursoNome?.[concurso] || concurso;
+  $("#kicker-materia").textContent = `${m.nome} · ${nomeConc}`;
   $("#titulo-materia").textContent = pack?.titulo || m.nome;
   $("#qtd").textContent = String(qs.length);
   $("#meta-cards").textContent = String(cs.length);
+  const switchEl = $("#qs-concurso");
+  if (switchEl) switchEl.innerHTML = htmlSwitchConcurso(concurso);
+  const caiEl = $("#cai-materia");
+  if (caiEl) caiEl.innerHTML = htmlCaiNaMateria(m.id);
   const box = $("#fonte-aula");
   if (box) box.innerHTML = htmlFonteAula(m.id);
   if (!qs.length) {
     $("#lead-materia").textContent =
-      "Ainda não tem questões nesta aba. Você pode estudar pelos cards quando houver, ou vamos incluindo as baterias conforme o estudo avançar.";
+      "Ainda não tem questões nesta aba para este concurso. Troca o concurso em cima ou espera a próxima bateria.";
     $("#comecar").classList.add("hidden");
   } else {
     const nErros = cadernoItens().filter((it) => it.materia === m.id).length;
@@ -993,17 +1138,18 @@ function renderQuestoesHome() {
     const aulaTxt = pack
       ? ` As questões saem da aula/playlist do YouTube (${pack.professor}). Não tem vídeo aqui: o link abre a aula.`
       : "";
-    const faixas = (pack?.aulas || [])
-      .map((a, i) => `Tópico ${i + 1} (Q${a.de}–${a.ate})`)
+    const faixas = aulas
+      .map((a) => `${a.titulo.split("—")[0].trim()} (Q${a.de}–${a.ate})`)
       .join(" + ");
     $("#lead-materia").textContent =
       (faixas
-        ? `${faixas}. Gabarito na hora e revisão dos erros no final.`
+        ? `${nomeConc}: ${faixas}. Gabarito na hora e revisão dos erros no final.`
         : "Questões no estilo concurso, gabarito na hora e revisão dos erros no final.") +
       aulaTxt +
       extra;
     $("#comecar").classList.remove("hidden");
   }
+  bindQuestoesHome();
 }
 
 function chaveErro(materia, qid) {

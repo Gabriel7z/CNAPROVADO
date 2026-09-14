@@ -139,6 +139,7 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=TehKbjBoEzU",
         de: 1,
         ate: 50,
+        concursos: ["sedf", "pmdf"],
       },
       {
         id: "net",
@@ -146,6 +147,7 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=FwFyQUFokmY",
         de: 51,
         ate: 100,
+        concursos: ["sedf", "pmdf", "tcego"],
       },
       {
         id: "osi",
@@ -153,6 +155,7 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=WO1uGJRqrwI",
         de: 101,
         ate: 150,
+        concursos: ["tcego"],
       },
       {
         id: "tcp",
@@ -160,6 +163,7 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=bH29oltn8Cw",
         de: 151,
         ate: 200,
+        concursos: ["tcego"],
       },
     ],
   },
@@ -177,8 +181,24 @@ function aulaDaQuestao(materiaId, qid) {
   return { pack, aula };
 }
 
+function aulasDoConcurso(materiaId, concurso) {
+  const pack = aulaDaMateria(materiaId);
+  if (!pack) return [];
+  return (pack.aulas || []).filter((a) => !a.concursos || a.concursos.includes(concurso));
+}
+
+function questoesDoConcurso(lista, materiaId, concurso) {
+  const aulas = aulasDoConcurso(materiaId, concurso);
+  if (!aulas.length) return lista || [];
+  const todas = aulaDaMateria(materiaId)?.aulas || [];
+  if (aulas.length === todas.length) return lista || [];
+  return (lista || []).filter((q) => aulas.some((a) => q.id >= a.de && q.id <= a.ate));
+}
+
 window.CNAPROVADO_AULAS = {
   lista: AULAS,
   daMateria: aulaDaMateria,
   daQuestao: aulaDaQuestao,
+  aulasDoConcurso,
+  questoesDoConcurso,
 };

@@ -31,7 +31,7 @@
         document.documentElement.setAttribute("data-theme", t);
       } catch (e) {}
     </script>
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=201" />
   </head>
   <body>
     <div class="wrap app-shell">
@@ -154,6 +154,9 @@
               Embaralhar ordem
             </label>
           </div>
+          <p class="field-label">Ver só um concurso</p>
+          <div class="plano-switch" id="qs-concurso" aria-label="SEDF, PM DF ou TCE-GO"></div>
+          <div id="cai-materia"></div>
           <div id="fonte-aula"></div>
           <div class="actions">
             <button id="comecar" class="primary" type="button">Começar</button>
@@ -320,14 +323,14 @@
     <script src="questoes-pt.js?v=200"></script>
     <script src="questoes-dc.js?v=200"></script>
     <script src="questoes-ti.js?v=200"></script>
-    <script src="aulas.js?v=200"></script>
+    <script src="aulas.js?v=201"></script>
     <script src="planejamento.js"></script>
-    <script src="incidencia.js"></script>
+    <script src="incidencia.js?v=201"></script>
     <script src="redacao.js"></script>
     <script src="supabase-config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js"></script>
     <script src="cloud.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-    <script src="app.js?v=200"></script>
+    <script src="app.js?v=201"></script>
   </body>
 </html>

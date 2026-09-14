@@ -168,6 +168,62 @@ const INCIDENCIA = [
     ],
   },
   {
+    id: "tcego-ti",
+    concurso: "tcego",
+    concursoNome: "TCE-GO",
+    materia: "ti",
+    materiaNome: "TI / Informática",
+    banca: "FCC",
+    recorte:
+      "717 questões FCC da área de Gestão e Controle, somando os cadernos de TI do TEC (TCE-GO 2022, cargo de TI). Não é Windows/Office: o peso está em redes, banco de dados e segurança.",
+    fonteUrl:
+      "https://www.tecconcursos.com.br/blog/noticias/analista-de-controle-externo-tce-go-2022-tecnologia-da-informacao-priorizacao-de-assuntos-tce-go-2022/",
+    topicos: [
+      ["Redes de computadores (protocolos, OSI, TCP/IP, Ethernet)", 144],
+      ["Banco de dados e SQL (modelagem, SGBD)", 143],
+      ["Segurança da informação (auditoria, ameaças, redes)", 143],
+      ["Gestão e governança de TI (projetos, CMMI, PETI)", 83],
+      ["Desenvolvimento de sistemas (Java, HTML, JS)", 70],
+      ["Engenharia de software (ciclo de vida, UML, requisitos)", 67],
+      ["Sistemas operacionais (Linux, processos, deadlock)", 38],
+      ["Organização e arquitetura de computadores", 29],
+    ],
+  },
+  {
+    id: "sedf-const",
+    concurso: "sedf",
+    concursoNome: "SEDF",
+    materia: "const",
+    materiaNome: "D.Const",
+    banca: "Quadrix",
+    recorte: "Recorte do plano SEDF. Não há caderno TEC com contagem nesta matéria para o cargo.",
+    fonteUrl: "https://www.tecconcursos.com.br/blog/noticias/concurso-sedf-2022-priorizacao-de-assuntos/",
+    semContagem: true,
+    topicos: [
+      ["Princípios fundamentais", 0],
+      ["Organização do Estado", 0],
+      ["Administração Pública na CF", 0],
+      ["Educação na CF (arts. 205 a 214)", 0],
+    ],
+  },
+  {
+    id: "pmdf-ti",
+    concurso: "pmdf",
+    concursoNome: "PMDF",
+    materia: "ti",
+    materiaNome: "TI / Informática",
+    banca: "Cebraspe",
+    recorte: "Recorte do plano PM DF (informática Cebraspe). Sem caderno TEC com contagem neste cargo.",
+    fonteUrl: "https://www.tecconcursos.com.br/blog/noticias/concurso-pm-df-priorizacao-de-assuntos/",
+    semContagem: true,
+    topicos: [
+      ["Informática básica (hardware, software, SO)", 0],
+      ["Internet e navegação segura", 0],
+      ["Segurança da informação", 0],
+      ["Pacote Office e nuvem", 0],
+    ],
+  },
+  {
     id: "pmdf-pt",
     concurso: "pmdf",
     concursoNome: "PMDF",
@@ -245,17 +301,24 @@ const INCIDENCIA = [
 ];
 
 function incidenciaComPct(item) {
+  const semContagem = Boolean(item.semContagem) || item.topicos.every((t) => !t[1]);
   const total = item.topicos.reduce((s, t) => s + t[1], 0);
   let acc = 0;
   let cruzou70 = false;
   const topicos = item.topicos.map(([nome, q]) => {
     const pct = total ? Math.round((1000 * q) / total) / 10 : 0;
-    acc = Math.min(100, Math.round((acc + pct) * 10) / 10);
-    const prio = !cruzou70;
-    if (acc >= 70) cruzou70 = true;
+    acc = total ? Math.min(100, Math.round((acc + pct) * 10) / 10) : 0;
+    const prio = !semContagem && !cruzou70;
+    if (!semContagem && acc >= 70) cruzou70 = true;
     return { nome, q, pct, acc, prio };
   });
-  return { ...item, total, topicos };
+  return { ...item, total, topicos, semContagem };
+}
+
+function materiaIncidenciaId(appId) {
+  if (appId === "dadm") return "adm";
+  if (appId === "dc") return "const";
+  return appId;
 }
 
 function incidenciaConcursos() {
@@ -361,12 +424,17 @@ const AFINIDADE_ALIAS = [
   [/remedios constitucionais/, "remedios"],
   [/defesa do estado/, "defesa-estado"],
   [/educacao na cf/, "educacao-cf"],
-  [/windows|sistemas operacionais|informatica basica/, "so-arquivos"],
+  [/windows|informatica basica/, "so-arquivos"],
   [/microsoft office|broffice|libreoffice|pacote office/, "office"],
   [/navegadores|internet e navegacao|conceitos de internet|servicos de internet|correio eletronico/, "internet"],
-  [/ameacas|malware|seguranca da informacao|seguranca e lgpd/, "seguranca"],
-  [/redes|protocolos de redes/, "redes"],
-  [/banco de dados|sql/, "sql"],
+  [/ameacas|malware|seguranca da informacao|seguranca e lgpd|auditoria de sistemas/, "seguranca"],
+  [/redes|protocolos de redes|modelos de referencia/, "redes"],
+  [/banco de dados|linguagem sql|modelagem de dados/, "sql"],
+  [/governanca|cmmi|gestao de projetos|planejamento estrategico de ti/, "governanca"],
+  [/engenharia de software|ciclo de vida|uml/, "eng-soft"],
+  [/desenvolvimento de sistemas|java|html|javascript/, "dev"],
+  [/sistemas operacionais|linux|deadlock/, "linux"],
+  [/organizacao e arquitetura de computadores|arquiteturas paralelas/, "arquitetura"],
   [/dissertacao/, "dissertacao"],
 ];
 
@@ -411,6 +479,11 @@ const AFINIDADE_ROTULO = {
   seguranca: "Segurança da informação",
   redes: "Redes e protocolos",
   sql: "Banco de dados e SQL",
+  governanca: "Gestão e governança de TI",
+  "eng-soft": "Engenharia de software",
+  dev: "Desenvolvimento de sistemas",
+  linux: "Sistemas operacionais (Linux)",
+  arquitetura: "Arquitetura de computadores",
   dissertacao: "Dissertação (tema do concurso)",
 };
 
@@ -554,6 +627,8 @@ window.CNAPROVADO_INCIDENCIA = {
   concursos: incidenciaConcursos,
   materias: incidenciaMaterias,
   recorte: incidenciaRecorte,
+  recorteApp: (concurso, appId) => incidenciaRecorte(concurso, materiaIncidenciaId(appId)),
+  materiaDaApp: materiaIncidenciaId,
   afinidade: agruparAfinidade,
   materiasAfinidade: MATERIAS_AFINIDADE,
   concursoNome: CONCURSO_NOME,
