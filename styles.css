@@ -483,7 +483,8 @@ button:active {
   margin-bottom: 16px;
 }
 
-.field input {
+.field input,
+.field textarea {
   font: inherit;
   font-size: 16px;
   padding: 12px 14px;
@@ -493,6 +494,12 @@ button:active {
   color: var(--ink);
   width: 100%;
   max-width: 100%;
+}
+
+.field textarea {
+  min-height: 220px;
+  resize: vertical;
+  line-height: 1.55;
 }
 
 .field-label {
@@ -1239,6 +1246,65 @@ select.inc-filtro {
 
 #erros-acoes .primary {
   min-height: 44px;
+}
+
+.redacao-proposta {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin: 0 0 18px;
+  background: var(--chip);
+}
+
+.redacao-proposta p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.redacao-proposta .kicker {
+  margin-bottom: 6px;
+}
+
+.redacao-timer {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px 16px 8px;
+  margin: 0 0 18px;
+  background: var(--card);
+}
+
+.redacao-relogio {
+  font-weight: 800;
+  font-size: clamp(2.4rem, 8vw, 3.4rem);
+  letter-spacing: -0.04em;
+  margin: 0 0 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.redacao-timer.is-aperta .redacao-relogio {
+  color: #c2410c;
+}
+
+.redacao-timer.is-fim .redacao-relogio {
+  color: var(--bad);
+}
+
+#redacao-timer-acoes,
+#redacao-acoes {
+  justify-content: flex-start;
+}
+
+.redacao-check {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 18px;
+}
+
+.redacao-check-item {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--chip);
 }
 
 .plano-legenda {

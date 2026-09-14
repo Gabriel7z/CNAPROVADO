@@ -12,6 +12,8 @@ const ui = {
   errosMateria: "todas",
   errosTema: "todos",
   errosAberto: null,
+  redacaoKey: "",
+  redacaoTick: { running: false, endsAt: 0, remain: 3600, minutos: 60 },
   quiz: { i: 0, respostas: [], bloqueado: false, embaralhar: false, fila: [], fonte: "materia" },
   anki: { i: 0, virado: false, fila: [] },
 };
@@ -49,6 +51,7 @@ function db() {
   if (!data.incidenciaConcurso) data.incidenciaConcurso = "sedf";
   if (!data.incidenciaMateria) data.incidenciaMateria = "pt";
   if (!data.errosArquivados) data.errosArquivados = {};
+  if (!data.redacaoPorChave) data.redacaoPorChave = {};
   return data;
 }
 
@@ -133,6 +136,7 @@ function mostrar(id) {
     "view-quiz",
     "view-result",
     "view-erros",
+    "view-redacao",
     "view-cards",
     "view-desempenho",
     "view-rank",
@@ -307,6 +311,7 @@ function htmlPlanoBloco(d, opts) {
   const feito = diaFeito(d.iso);
   const temAdm =
     d.materia === "D.Adm" || (d.revisoes || []).some((r) => r.chave === "adm");
+  const temRed = String(d.materia || "").startsWith("Redação");
   return `
     <p class="kicker">${esc(opts.kicker)}${d.carga ? ` · ${esc(d.carga)}` : ""}</p>
     <h2>${esc(d.materia)} · ${esc(d.titulo)}</h2>
@@ -316,6 +321,11 @@ function htmlPlanoBloco(d, opts) {
       <button class="primary" type="button" id="${opts.feitoId}">${
         feito ? "Feito ✓" : "Marcar como feito"
       }</button>
+      ${
+        temRed
+          ? `<button class="ghost" type="button" id="${opts.redId}">Escrever agora</button>`
+          : ""
+      }
       ${
         temAdm
           ? `<button class="ghost" type="button" id="${opts.admId}">Abrir questões de D.Adm</button>`
@@ -334,6 +344,14 @@ function bindAbrirAdm(id) {
   $(`#${id}`)?.addEventListener("click", () => {
     ui.materia = "dadm";
     ui.modo = "questoes";
+    render();
+  });
+}
+
+function bindAbrirRedacao(id, iso) {
+  $(`#${id}`)?.addEventListener("click", () => {
+    ui.modo = "redacao";
+    if (iso) ui.redacaoKey = redacaoChave("plano", iso);
     render();
   });
 }
@@ -585,6 +603,7 @@ function renderPlano() {
     feitoId: "plano-feito-hoje",
     admId: "plano-abrir-adm",
     cardsId: "plano-cards-hoje",
+    redId: "plano-red-hoje",
   });
   $("#plano-hoje").classList.toggle("hidden", vista !== "lista");
   $("#plano-switch").innerHTML = `
@@ -642,6 +661,7 @@ function renderPlano() {
       feitoId: "plano-feito-sel",
       admId: "plano-abrir-sel",
       cardsId: "plano-cards-sel",
+      redId: "plano-red-sel",
     });
   } else {
     selEl.innerHTML = "";
@@ -655,6 +675,7 @@ function renderPlano() {
   });
   bindAbrirAdm("plano-abrir-adm");
   bindAbrirCards("plano-cards-hoje");
+  bindAbrirRedacao("plano-red-hoje", deHoje.iso);
   $("#plano-feito-sel")?.addEventListener("click", () => {
     const yNow = window.scrollY;
     toggleDiaFeito(deSel.iso);
@@ -663,6 +684,7 @@ function renderPlano() {
   });
   bindAbrirAdm("plano-abrir-sel");
   bindAbrirCards("plano-cards-sel");
+  bindAbrirRedacao("plano-red-sel", deSel?.iso);
   $$("#plano-switch [data-plano]").forEach((btn) => {
     btn.addEventListener("click", () => {
       setPlanoId(btn.dataset.plano);
@@ -1436,6 +1458,272 @@ async function renderRank() {
     </div>`;
 }
 
+function redacaoChave(tipo, id) {
+  return `${emailDaConta() || "local"}|${tipo}|${id}`;
+}
+
+function parseRedacaoKey(chave) {
+  const p = String(chave || "").split("|");
+  return { tipo: p[1] || "livre", id: p.slice(2).join("|") };
+}
+
+function listaTemasRedacao() {
+  const api = window.CNAPROVADO_PLANOS;
+  const red = window.CNAPROVADO_REDACAO;
+  const dias = api?.diasDoPlano(planoIdAtual(), planoCargaAtual()) || [];
+  const hoje = api?.hojeIso?.() || "";
+  const plano = dias
+    .filter((d) => String(d.materia).startsWith("Redação"))
+    .map((d) => ({
+      key: redacaoChave("plano", d.iso),
+      label: `${d.data.toLocaleDateString("pt-BR", {
+        weekday: "short",
+        day: "2-digit",
+        month: "2-digit",
+      })} · ${d.titulo}`,
+      titulo: d.titulo,
+      proposta: d.fazer,
+      iso: d.iso,
+      minutos: red.minutosDoFazer(d.fazer, d.titulo),
+      eHoje: d.iso === hoje,
+    }));
+  const extras = (red?.EXTRAS || []).map((t) => ({
+    key: redacaoChave("livre", t.id),
+    label: `${t.banca} · ${t.titulo}`,
+    titulo: t.titulo,
+    proposta: t.proposta,
+    iso: null,
+    minutos: 60,
+    eHoje: false,
+  }));
+  return {
+    hoje,
+    diaHoje: dias.find((d) => d.iso === hoje) || null,
+    itens: [...plano, ...extras],
+  };
+}
+
+function rascunhoRedacao(chave) {
+  return (
+    (db().redacaoPorChave || {})[chave] || {
+      texto: "",
+      checks: {},
+      minutos: 60,
+    }
+  );
+}
+
+function patchRascunhoRedacao(patch) {
+  const chave = ui.redacaoKey;
+  if (!chave) return;
+  persist((d) => {
+    const cur = d.redacaoPorChave[chave] || { texto: "", checks: {}, minutos: 60 };
+    d.redacaoPorChave[chave] = {
+      ...cur,
+      ...patch,
+      checks: patch.checks ? patch.checks : cur.checks,
+    };
+  });
+}
+
+function remainRedacao() {
+  const t = ui.redacaoTick;
+  if (t.running && t.endsAt) return Math.max(0, Math.ceil((t.endsAt - Date.now()) / 1000));
+  return Math.max(0, t.remain || 0);
+}
+
+function pintarTimerRedacao() {
+  const red = window.CNAPROVADO_REDACAO;
+  const left = remainRedacao();
+  const el = $("#redacao-relogio");
+  const box = $("#redacao-timer-box");
+  if (el) el.textContent = red.relogio(left);
+  box?.classList.toggle("is-fim", left === 0);
+  box?.classList.toggle("is-aperta", left > 0 && left <= 5 * 60);
+  const start = $("#redacao-start");
+  const pause = $("#redacao-pause");
+  if (start) start.textContent = ui.redacaoTick.running ? "Rodando…" : left === 0 ? "Recomeçar" : "Começar";
+  if (pause) pause.disabled = !ui.redacaoTick.running;
+}
+
+function aplicarMinutosRedacao(min, resetClock) {
+  const m = window.CNAPROVADO_REDACAO.MINUTOS.includes(min) ? min : 60;
+  ui.redacaoTick.minutos = m;
+  if (resetClock && !ui.redacaoTick.running) {
+    ui.redacaoTick.remain = m * 60;
+    ui.redacaoTick.endsAt = 0;
+  }
+  patchRascunhoRedacao({ minutos: m });
+  $$("#redacao-minutos [data-min]").forEach((btn) => {
+    btn.classList.toggle("ativo", Number(btn.dataset.min) === m);
+  });
+  pintarTimerRedacao();
+}
+
+function startTimerRedacao() {
+  const t = ui.redacaoTick;
+  if (t.running) return;
+  if (remainRedacao() <= 0) t.remain = (t.minutos || 60) * 60;
+  t.endsAt = Date.now() + remainRedacao() * 1000;
+  t.running = true;
+  pintarTimerRedacao();
+}
+
+function pauseTimerRedacao() {
+  const t = ui.redacaoTick;
+  if (!t.running) return;
+  t.remain = remainRedacao();
+  t.running = false;
+  t.endsAt = 0;
+  pintarTimerRedacao();
+}
+
+function resetTimerRedacao() {
+  const t = ui.redacaoTick;
+  t.running = false;
+  t.endsAt = 0;
+  t.remain = (t.minutos || 60) * 60;
+  pintarTimerRedacao();
+}
+
+function garantirClockRedacao() {
+  if (window.__redacaoClock) return;
+  window.__redacaoClock = setInterval(() => {
+    if (!ui.redacaoTick.running) return;
+    if (remainRedacao() <= 0) {
+      ui.redacaoTick.running = false;
+      ui.redacaoTick.remain = 0;
+      ui.redacaoTick.endsAt = 0;
+    }
+    if (ui.modo === "redacao") pintarTimerRedacao();
+  }, 250);
+}
+
+function pintarContagemRedacao() {
+  const c = window.CNAPROVADO_REDACAO.contagem($("#redacao-texto")?.value || "");
+  const el = $("#redacao-contagem");
+  if (el) {
+    el.textContent = `${c.palavras} palavras · ${c.linhas} linhas no bloco · ≈ ${c.est} linhas de prova (70 caracteres)`;
+  }
+}
+
+function htmlCheckRedacao(checks) {
+  return (window.CNAPROVADO_REDACAO.CHECKLIST || [])
+    .map((c) => {
+      const on = Boolean(checks?.[c.id]);
+      return `<label class="check redacao-check-item">
+        <input type="checkbox" data-check="${esc(c.id)}" ${on ? "checked" : ""} />
+        ${esc(c.label)}
+      </label>`;
+    })
+    .join("");
+}
+
+function carregarRascunhoNaTela(item) {
+  let r = rascunhoRedacao(item.key);
+  if (!r.texto && item.iso) {
+    const sab = window.CNAPROVADO_REDACAO.sabadoDe(item.iso);
+    if (sab) {
+      const prev = rascunhoRedacao(redacaoChave("plano", sab));
+      if (prev.texto) r = { ...r, texto: prev.texto };
+    }
+  }
+  const ta = $("#redacao-texto");
+  if (ta) ta.value = r.texto || "";
+  $("#redacao-check").innerHTML = htmlCheckRedacao(r.checks);
+  const min = r.minutos || item.minutos || 60;
+  if (!ui.redacaoTick.running) {
+    ui.redacaoTick.minutos = min;
+    ui.redacaoTick.remain = min * 60;
+    ui.redacaoTick.endsAt = 0;
+  }
+  pintarContagemRedacao();
+}
+
+function renderRedacao() {
+  const red = window.CNAPROVADO_REDACAO;
+  if (!red) return;
+  garantirClockRedacao();
+  const pack = listaTemasRedacao();
+  const sel = $("#redacao-tema");
+  sel.innerHTML = pack.itens
+    .map((t) => `<option value="${esc(t.key)}">${esc(t.label)}</option>`)
+    .join("");
+  let chave = ui.redacaoKey;
+  if (!pack.itens.some((t) => t.key === chave)) {
+    chave = pack.itens.find((t) => t.eHoje)?.key || pack.itens[0]?.key || "";
+    ui.redacaoKey = chave;
+  }
+  sel.value = chave;
+  const item = pack.itens.find((t) => t.key === chave) || pack.itens[0];
+  const hojeRed = String(pack.diaHoje?.materia || "").startsWith("Redação");
+  $("#redacao-kicker").textContent = hojeRed ? "Hoje · fim de semana" : "Treino de redação";
+  $("#redacao-lead").textContent = hojeRed
+    ? "Hoje o plano é escrever. Liga o cronômetro, marca o checklist e não precisa de professor no app — só não pular."
+    : "Hoje o plano não é redação, mas você pode treinar mesmo assim. Sábado e domingo o tema do plano aparece na lista.";
+  $("#redacao-proposta").innerHTML = item
+    ? `<p class="kicker">${esc(item.titulo)}</p><p>${esc(item.proposta)}</p>`
+    : "";
+  const trocou = ui._redacaoMontada !== chave;
+  ui.redacaoKey = chave;
+  if (trocou) carregarRascunhoNaTela(item);
+  ui._redacaoMontada = chave;
+  $("#redacao-minutos").innerHTML = (red.MINUTOS || [20, 40, 60])
+    .map(
+      (m) =>
+        `<button type="button" class="modo${ui.redacaoTick.minutos === m ? " ativo" : ""}" data-min="${m}">${m} min</button>`
+    )
+    .join("");
+  $$("#redacao-minutos [data-min]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      if (ui.redacaoTick.running) return;
+      aplicarMinutosRedacao(Number(btn.dataset.min), true);
+    });
+  });
+  const podeFeito = item?.iso && item.iso === pack.hoje;
+  $("#redacao-feito").textContent = podeFeito
+    ? diaFeito(item.iso)
+      ? "Dia marcado ✓"
+      : "Marcar o dia como feito"
+    : "Tema livre — o rascunho já salva sozinho";
+  $("#redacao-feito").disabled = !podeFeito;
+  pintarTimerRedacao();
+  pintarContagemRedacao();
+}
+
+function bindRedacaoOnce() {
+  $("#redacao-tema")?.addEventListener("change", (e) => {
+    patchRascunhoRedacao({ texto: $("#redacao-texto")?.value || "" });
+    ui.redacaoKey = e.target.value;
+    ui._redacaoMontada = "";
+    pauseTimerRedacao();
+    renderRedacao();
+  });
+  $("#redacao-texto")?.addEventListener("input", () => {
+    pintarContagemRedacao();
+    const txt = $("#redacao-texto").value;
+    clearTimeout(window.__redacaoSave);
+    window.__redacaoSave = setTimeout(() => patchRascunhoRedacao({ texto: txt }), 350);
+  });
+  $("#redacao-check")?.addEventListener("change", (e) => {
+    const id = e.target?.dataset?.check;
+    if (!id) return;
+    const checks = { ...(rascunhoRedacao(ui.redacaoKey).checks || {}) };
+    checks[id] = Boolean(e.target.checked);
+    patchRascunhoRedacao({ checks });
+  });
+  $("#redacao-start")?.addEventListener("click", startTimerRedacao);
+  $("#redacao-pause")?.addEventListener("click", pauseTimerRedacao);
+  $("#redacao-reset")?.addEventListener("click", resetTimerRedacao);
+  $("#redacao-feito")?.addEventListener("click", () => {
+    const item = listaTemasRedacao().itens.find((t) => t.key === ui.redacaoKey);
+    if (!item?.iso) return;
+    if (!diaFeito(item.iso)) toggleDiaFeito(item.iso);
+    patchRascunhoRedacao({ texto: $("#redacao-texto")?.value || "" });
+    renderRedacao();
+  });
+}
+
 function render() {
   if (!logado()) {
     travarApp(false);
@@ -1462,6 +1750,9 @@ function render() {
   } else if (ui.modo === "cards") {
     mostrar("view-cards");
     renderCards();
+  } else if (ui.modo === "redacao") {
+    mostrar("view-redacao");
+    renderRedacao();
   } else if (ui.modo === "desempenho") {
     mostrar("view-desempenho");
     renderDesempenho();
@@ -1510,6 +1801,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     render();
   });
   $("#salvar-perfil").addEventListener("click", salvarPerfil);
+  bindRedacaoOnce();
+  garantirClockRedacao();
   try {
     await cloud()?.iniciar();
     render();

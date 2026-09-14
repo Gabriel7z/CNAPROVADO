@@ -68,6 +68,7 @@
         <button class="modo" data-modo="questoes" type="button">Questões</button>
         <button class="modo" data-modo="erros" type="button">Erros</button>
         <button class="modo" data-modo="cards" type="button">Cards</button>
+        <button class="modo" data-modo="redacao" type="button">Redação</button>
         <button class="modo" data-modo="desempenho" type="button">Desempenho</button>
         <button class="modo" data-modo="rank" type="button">Rank</button>
         <button class="modo" data-modo="perfil" type="button">Conta</button>
@@ -202,6 +203,43 @@
           <div id="erros-lista" class="erros-lista"></div>
         </section>
 
+        <section id="view-redacao" class="hero hidden">
+          <p class="kicker" id="redacao-kicker">Fim de semana</p>
+          <h1>Redação</h1>
+          <p class="lead" id="redacao-lead">
+            Tema, uma hora no relógio, checklist e o texto. O app não corrige
+            como professor — serve para não pular o sábado e o domingo.
+          </p>
+          <p class="field-label">Tema</p>
+          <select id="redacao-tema" class="inc-filtro"></select>
+          <div class="redacao-proposta" id="redacao-proposta"></div>
+          <div class="redacao-timer" id="redacao-timer-box">
+            <p class="kicker">Cronômetro</p>
+            <p class="redacao-relogio" id="redacao-relogio">60:00</p>
+            <p class="field-label">Tempo</p>
+            <div class="plano-switch" id="redacao-minutos"></div>
+            <div class="actions" id="redacao-timer-acoes">
+              <button type="button" class="primary" id="redacao-start">Começar</button>
+              <button type="button" class="ghost" id="redacao-pause">Pausar</button>
+              <button type="button" class="ghost" id="redacao-reset">Zerar</button>
+            </div>
+          </div>
+          <p class="field-label">Checklist</p>
+          <div id="redacao-check" class="redacao-check"></div>
+          <label class="field">Seu texto
+            <textarea
+              id="redacao-texto"
+              rows="14"
+              maxlength="12000"
+              placeholder="Escreve ou cola aqui. 20–30 linhas. O rascunho fica salvo neste aparelho."
+            ></textarea>
+          </label>
+          <p class="hint" id="redacao-contagem"></p>
+          <div class="actions" id="redacao-acoes">
+            <button type="button" class="primary" id="redacao-feito">Marcar o dia como feito</button>
+          </div>
+        </section>
+
         <section id="view-cards" class="hero hidden">
           <p class="kicker">Revisão espaçada</p>
           <h1>Cards estilo Anki</h1>
@@ -266,6 +304,7 @@
         <button data-modo="questoes" type="button">Questões</button>
         <button data-modo="erros" type="button">Erros</button>
         <button data-modo="cards" type="button">Cards</button>
+        <button data-modo="redacao" type="button">Redação</button>
         <button data-modo="desempenho" type="button">Painel</button>
         <button data-modo="rank" type="button">Rank</button>
         <button data-modo="perfil" type="button">Conta</button>
@@ -274,6 +313,7 @@
     <script src="questoes.js"></script>
     <script src="planejamento.js"></script>
     <script src="incidencia.js"></script>
+    <script src="redacao.js"></script>
     <script src="supabase-config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js"></script>
     <script src="cloud.js"></script>
