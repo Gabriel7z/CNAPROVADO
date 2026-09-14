@@ -327,19 +327,120 @@ function semanalAmanda(semana) {
   };
 }
 
-function diasDoPlano(kind) {
+const HORAS_OPCOES = [1, 2, 3, 4];
+
+function normalizarHoras(n) {
+  const h = Number(n);
+  if (h <= 1) return 1;
+  if (h <= 2) return 2;
+  if (h <= 3) return 3;
+  return 4;
+}
+
+function cargaPadrao() {
+  return { dia: 2, fim: 2 };
+}
+
+function normalizarCarga(carga) {
+  const base = cargaPadrao();
+  const c = carga && typeof carga === "object" ? carga : {};
+  return {
+    dia: normalizarHoras(c.dia ?? c.horas ?? base.dia),
+    fim: normalizarHoras(c.fim ?? c.horas ?? base.fim),
+  };
+}
+
+function fatorCarga(horas) {
+  if (horas <= 1) return 0.4;
+  if (horas <= 2) return 0.7;
+  return 1;
+}
+
+function escalaNum(n, fator, min) {
+  return Math.max(min, Math.round(Number(n) * fator));
+}
+
+function rotuloHoras(horas) {
+  return {
+    1: "1h · versão curta",
+    2: "2h · dia típico",
+    3: "3h · plano cheio",
+    4: "4h · cheio + revisão",
+  }[horas];
+}
+
+function dicaCarga(carga) {
+  const c = normalizarCarga(carga);
+  const partes = [];
+  if (c.dia === 1) partes.push("Na semana o dia fica curto: menos questão e aula mais objetiva.");
+  else if (c.dia === 2) partes.push("Na semana cabe teoria + um bloco de questões.");
+  else if (c.dia === 3) partes.push("Na semana o plano vai cheio, no ritmo em que o mês 1 foi montado.");
+  else partes.push("Na semana entra o plano cheio e ainda revisão dos erros.");
+  if (c.fim === 1) partes.push("No fim de semana a redação vira rascunho curto.");
+  else if (c.fim === 2) partes.push("No fim de semana dá para escrever um texto enxuto.");
+  else if (c.fim === 3) partes.push("No fim de semana a dissertação fica no tamanho de prova.");
+  else partes.push("No fim de semana sobra tempo para passar o texto a limpo.");
+  return partes.join(" ");
+}
+
+function adaptarFazer(fazer, horas, materia) {
+  const h = normalizarHoras(horas);
+  const f = fatorCarga(h);
+  let t = String(fazer || "");
+  t = t.replace(/Q(\d+)[–-](\d+)/g, (_, a, b) => {
+    const de = Number(a);
+    const ate = Number(b);
+    const n = Math.max(8, Math.round((ate - de + 1) * f));
+    return `Q${de}–${de + n - 1}`;
+  });
+  t = t.replace(/(\d+)–(\d+) linhas/g, (_, a, b) => {
+    return `${escalaNum(a, f, 8)}–${escalaNum(b, f, 12)} linhas`;
+  });
+  t = t.replace(/(\d+) itens/g, (_, n) => `${escalaNum(n, f, 6)} itens`);
+  t = t.replace(/(\d+) textos?( curtos?)?/g, (_, n, curtos) => {
+    const x = h <= 1 ? 1 : Number(n);
+    if (x === 1) return curtos ? "1 texto curto" : "1 texto";
+    return `${x} textos${curtos ? " curtos" : ""}`;
+  });
+  t = t.replace(/(\d+) min/g, (_, n) => `${escalaNum(n, f, 10)} min`);
+  t = t.replace(/(\d+) frases/g, (_, n) => `${escalaNum(n, f, 2)} frases`);
+  t = t.replace(/(\d+) palavras/g, (_, n) => `${escalaNum(n, f, 5)} palavras`);
+  t = t.replace(/(\d+) conectivos/g, (_, n) => `${escalaNum(n, f, 2)} conectivos`);
+  if (h === 1) {
+    t += " Se o relógio apertar, fecha só o essencial e deixa o resto para o domingo.";
+  }
+  if (h === 4) {
+    t +=
+      String(materia || "").startsWith("Redação")
+        ? " Com 4h: passa o texto a limpo e corrige gramática no fim."
+        : " Com 4h: 20 min de Anki só dos erros e relê o pedaço da teoria que você marcou.";
+  }
+  return t;
+}
+
+function horasDoTurno(data, carga) {
+  const c = normalizarCarga(carga);
+  const wd = data.getDay();
+  return wd === 0 || wd === 6 ? c.fim : c.dia;
+}
+
+function diasDoPlano(kind, carga) {
   const out = [];
   for (let i = 0; i < PLANO_DIAS; i += 1) {
     const d = dataDoPlano(i);
     const semana = Math.min(Math.floor(i / 7), 3);
     const mapa = kind === "amanda" ? semanalAmanda(semana) : semanalGabriel(semana);
     const bloco = mapa[d.getDay()];
+    const horas = horasDoTurno(d, carga);
     out.push({
       i,
       iso: isoData(d),
       data: d,
       semana: semana + 1,
       ...bloco,
+      horas,
+      carga: rotuloHoras(horas),
+      fazer: adaptarFazer(bloco.fazer, horas, bloco.materia),
     });
   }
   return out;
@@ -418,6 +519,7 @@ function celulasDoMes(ano, mes, porIso) {
 
 window.CNAPROVADO_PLANOS = {
   PLANOS,
+  HORAS_OPCOES,
   diasDoPlano,
   hojeIso,
   isoData,
@@ -425,4 +527,10 @@ window.CNAPROVADO_PLANOS = {
   materiaCurta,
   mesesDoCalendario,
   celulasDoMes,
+  normalizarHoras,
+  normalizarCarga,
+  cargaPadrao,
+  rotuloHoras,
+  dicaCarga,
+  adaptarFazer,
 };

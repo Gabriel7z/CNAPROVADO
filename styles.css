@@ -730,11 +730,31 @@ button:active {
   font-size: 0.8rem;
 }
 
-.plano-switch {
+.plano-carga-box {
+  margin: 0 0 18px;
+}
+
+.plano-carga-row {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
   gap: 8px;
-  margin: 0 0 18px;
+  margin: 0 0 10px;
+}
+
+.plano-carga-row > span {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.plano-carga-row .plano-switch {
+  margin: 0;
+}
+
+.plano-carga-box .plano-cal-hint {
+  margin-top: 4px;
 }
 
 #view-plano .field-label {
@@ -1135,6 +1155,22 @@ button:active {
 
   .plano-dia header {
     flex-wrap: wrap;
+  }
+
+  .plano-carga-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .plano-carga-row .plano-switch {
+    width: 100%;
+  }
+
+  .plano-carga-row .modo {
+    flex: 1;
+    text-align: center;
+    padding-left: 10px;
+    padding-right: 10px;
   }
 
   .plano-cal-weekdays .wd-l {

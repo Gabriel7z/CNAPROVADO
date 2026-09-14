@@ -37,6 +37,7 @@ function db() {
   if (data.planoVista !== "calendario" && data.planoVista !== "lista") {
     data.planoVista = "lista";
   }
+  if (!data.planoHorasPorEmail) data.planoHorasPorEmail = {};
   return data;
 }
 
@@ -239,10 +240,39 @@ function setPlanoVista(vista) {
   });
 }
 
+function planoCargaAtual() {
+  const api = window.CNAPROVADO_PLANOS;
+  const email = emailDaConta();
+  const mapa = db().planoHorasPorEmail || {};
+  const salvo = email ? mapa[email] : db().planoHoras;
+  return api?.normalizarCarga(salvo) || { dia: 2, fim: 2 };
+}
+
+function setPlanoCarga(parte, horas) {
+  const api = window.CNAPROVADO_PLANOS;
+  const n = api?.normalizarHoras(horas) || 2;
+  const email = emailDaConta();
+  persist((d) => {
+    const atual = api?.normalizarCarga(email ? d.planoHorasPorEmail[email] : d.planoHoras);
+    const prox = { ...atual, [parte]: n };
+    if (email) d.planoHorasPorEmail[email] = prox;
+    else d.planoHoras = prox;
+  });
+}
+
+function htmlHorasBtns(atual, parte) {
+  return (window.CNAPROVADO_PLANOS?.HORAS_OPCOES || [1, 2, 3, 4])
+    .map(
+      (h) =>
+        `<button type="button" class="modo${atual === h ? " ativo" : ""}" data-carga="${parte}" data-horas="${h}">${h}h</button>`
+    )
+    .join("");
+}
+
 function htmlPlanoBloco(d, opts) {
   const feito = diaFeito(d.iso);
   return `
-    <p class="kicker">${esc(opts.kicker)}</p>
+    <p class="kicker">${esc(opts.kicker)}${d.carga ? ` · ${esc(d.carga)}` : ""}</p>
     <h2>${esc(d.materia)} · ${esc(d.titulo)}</h2>
     <p>${esc(d.fazer)}</p>
     <div class="actions">
@@ -340,7 +370,8 @@ function renderPlano() {
   if (!api) return;
   const id = planoIdAtual();
   const meta = api.PLANOS[id];
-  const dias = api.diasDoPlano(id);
+  const carga = planoCargaAtual();
+  const dias = api.diasDoPlano(id, carga);
   const hoje = api.hojeIso();
   const feitos = dias.filter((d) => diaFeito(d.iso)).length;
   const deHoje = dias.find((d) => d.iso === hoje) || dias[0];
@@ -351,11 +382,11 @@ function renderPlano() {
   $("#plano-kicker").textContent = `Mês 1 · ${meta.dono}`;
   $("#plano-titulo").textContent =
     id === "amanda" ? "Plano da Amanda" : "Plano do Gabriel";
-  $("#plano-lead").textContent = `${meta.alvo}. ${meta.materias}. 14/09 a 13/10/2026.`;
+  $("#plano-lead").textContent = `${meta.alvo}. ${meta.materias}. 14/09 a 13/10/2026. A matéria do dia não muda: o que muda é o tamanho da tarefa.`;
   $("#plano-meta").innerHTML = `
     <div><b>${feitos}/${dias.length}</b><span>dias feitos</span></div>
-    <div><b>${deHoje.materia}</b><span>hoje</span></div>
-    <div><b>${id === "gabriel" ? "TI + redação" : "sem TI"}</b><span>fim de semana</span></div>
+    <div><b>${deHoje.horas}h</b><span>hoje</span></div>
+    <div><b>${carga.dia}h · ${carga.fim}h</b><span>semana · fim de semana</span></div>
   `;
   $("#plano-hoje").innerHTML = htmlPlanoBloco(deHoje, {
     kicker: "Hoje",
@@ -367,6 +398,9 @@ function renderPlano() {
     <button type="button" class="modo${id === "gabriel" ? " ativo" : ""}" data-plano="gabriel">Gabriel</button>
     <button type="button" class="modo${id === "amanda" ? " ativo" : ""}" data-plano="amanda">Amanda</button>
   `;
+  $("#plano-horas-dia").innerHTML = htmlHorasBtns(carga.dia, "dia");
+  $("#plano-horas-fim").innerHTML = htmlHorasBtns(carga.fim, "fim");
+  $("#plano-horas-hint").textContent = api.dicaCarga(carga);
   $("#plano-vista").innerHTML = `
     <button type="button" class="modo${vista === "lista" ? " ativo" : ""}" data-vista="lista">Lista</button>
     <button type="button" class="modo${vista === "calendario" ? " ativo" : ""}" data-vista="calendario">Calendário</button>
@@ -385,7 +419,7 @@ function renderPlano() {
       return `<article class="plano-dia${eHoje ? " hoje" : ""}${feito ? " feito" : ""}" data-iso="${d.iso}">
         <header>
           <span>${esc(nomeDia)}</span>
-          <b>${esc(d.materia)}</b>
+          <b>${esc(d.materia)} · ${d.horas}h</b>
         </header>
         <h3>${esc(d.titulo)}</h3>
         <p>${esc(d.fazer)}</p>
@@ -432,6 +466,12 @@ function renderPlano() {
   $$("#plano-switch [data-plano]").forEach((btn) => {
     btn.addEventListener("click", () => {
       setPlanoId(btn.dataset.plano);
+      renderPlano();
+    });
+  });
+  $$("#plano-horas-dia [data-horas], #plano-horas-fim [data-horas]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      setPlanoCarga(btn.dataset.carga, Number(btn.dataset.horas));
       renderPlano();
     });
   });
