@@ -2358,7 +2358,11 @@ function questoesDaMateria(id) {
   if (id === "dadm") return QUESTOES;
   if (id === "pt") return typeof QUESTOES_PT !== "undefined" ? QUESTOES_PT : [];
   if (id === "dc") return typeof QUESTOES_DC !== "undefined" ? QUESTOES_DC : [];
-  if (id === "ti") return typeof QUESTOES_TI !== "undefined" ? QUESTOES_TI : [];
+  if (id === "ti") {
+    const base = typeof QUESTOES_TI !== "undefined" ? QUESTOES_TI : [];
+    const sql = typeof QUESTOES_TI_SQL !== "undefined" ? QUESTOES_TI_SQL : [];
+    return base.concat(sql);
+  }
   return [];
 }
 

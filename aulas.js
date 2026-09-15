@@ -123,7 +123,7 @@ const AULAS = {
   ti: {
     id: "ti",
     professor: "Emannuelle Gouveia · Bóson Treinamentos",
-    titulo: "Tópicos 1 a 4 — Informática, segurança, OSI e TCP/IP",
+    titulo: "Tópicos 1 a 6 — Informática, segurança, OSI, TCP/IP e SQL",
     playlist: {
       titulo: "Playlist Informática · Emannuelle (SEDF / PM DF)",
       url: "https://www.youtube.com/playlist?list=PL70rxKg7qWNXFurIGfLdUQ7zTlSMi3fe1",
@@ -131,6 +131,10 @@ const AULAS = {
     extra: {
       titulo: "Playlist Redes · Bóson (TCE-GO TI avançado)",
       url: "https://www.youtube.com/playlist?list=PLaygF2VSJVIh9t1eWJfOdrNIqZAjvb5Q1",
+    },
+    extra2: {
+      titulo: "Playlist Bancos de Dados / MySQL · Bóson (SQL TCE-GO)",
+      url: "https://www.youtube.com/playlist?list=PLucm8g_ezqNrWAQH2B_0AnrFY5dJcgOLR",
     },
     aulas: [
       {
@@ -163,6 +167,22 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=bH29oltn8Cw",
         de: 151,
         ate: 200,
+        concursos: ["tcego"],
+      },
+      {
+        id: "sqlsel",
+        titulo: "Tópico 5 — SQL: SELECT (Bóson, aula 12)",
+        url: "https://www.youtube.com/watch?v=5sTFJHOSDvg",
+        de: 201,
+        ate: 250,
+        concursos: ["tcego"],
+      },
+      {
+        id: "sqlord",
+        titulo: "Tópico 6 — SQL: ORDER BY, JOIN e consultas (Bóson, aula 13)",
+        url: "https://www.youtube.com/watch?v=qAtiTGjxrcA",
+        de: 251,
+        ate: 300,
         concursos: ["tcego"],
       },
     ],

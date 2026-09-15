@@ -178,7 +178,7 @@ const CICLOS = {
     ],
     ti: [
       bloco("TI", "Redes e protocolos", "TCE-GO TI: TCP/IP, OSI, IP, DNS, HTTP. 20 itens."),
-      bloco("TI", "Banco de dados e SQL", "SELECT, JOIN, PK/FK, normalização. 15 questões SQL. Modela 3 tabelas no papel."),
+      bloco("TI", "Banco de dados e SQL", "TCE-GO: Q201–300 no app (Bóson aulas 12–13). SELECT, WHERE, ORDER BY, JOIN, PK/FK, GROUP BY. Modela 3 tabelas no papel."),
       bloco("TI", "Segurança e LGPD", "CIA, backup, malware, minimização de dados. 15 itens."),
       bloco("TI", "Dev, Git e governança", "HTML/CSS/JS, REST/JSON, Git. COBIT/ITIL só conceito. 15 itens."),
     ],

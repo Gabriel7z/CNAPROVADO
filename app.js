@@ -981,12 +981,13 @@ function htmlFonteAula(materiaId) {
     window.CNAPROVADO_AULAS?.aulasDoConcurso?.(materiaId, concurso) || pack.aulas || [];
   const play =
     materiaId === "ti" && concurso === "tcego" && pack.extra ? pack.extra : pack.playlist;
-  const extraPack =
-    materiaId === "ti" && concurso === "tcego"
-      ? pack.playlist
-      : materiaId === "ti"
-        ? null
-        : pack.extra;
+  const extras = [];
+  if (materiaId === "ti" && concurso === "tcego") {
+    if (pack.playlist) extras.push(pack.playlist);
+    if (pack.extra2) extras.push(pack.extra2);
+  } else if (materiaId !== "ti" && pack.extra) {
+    extras.push(pack.extra);
+  }
   const linhas = aulas
     .map((a) => {
       const n = a.de === a.ate ? `Q${a.de}` : `Q${a.de}–${a.ate}`;
@@ -996,9 +997,9 @@ function htmlFonteAula(materiaId) {
       </li>`;
     })
     .join("");
-  const extra = extraPack
-    ? `<p>Também serve: ${htmlLinkAula(extraPack.url, extraPack.titulo)}.</p>`
-    : "";
+  const extra = extras
+    .map((p) => `<p>Também serve: ${htmlLinkAula(p.url, p.titulo)}.</p>`)
+    .join("");
   const nomeConc = window.CNAPROVADO_INCIDENCIA?.concursoNome?.[concurso] || concurso;
   return `<div class="fonte-aula">
     <p class="kicker">De onde vêm as questões · ${esc(nomeConc)}</p>
