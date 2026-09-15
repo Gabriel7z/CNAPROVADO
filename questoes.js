@@ -2357,11 +2357,16 @@ const MATERIAS_BASE = [
 function questoesDaMateria(id) {
   if (id === "dadm") return QUESTOES;
   if (id === "pt") return typeof QUESTOES_PT !== "undefined" ? QUESTOES_PT : [];
-  if (id === "dc") return typeof QUESTOES_DC !== "undefined" ? QUESTOES_DC : [];
+  if (id === "dc") {
+    const base = typeof QUESTOES_DC !== "undefined" ? QUESTOES_DC : [];
+    const leg = typeof QUESTOES_DC_LEG !== "undefined" ? QUESTOES_DC_LEG : [];
+    return base.concat(leg);
+  }
   if (id === "ti") {
     const base = typeof QUESTOES_TI !== "undefined" ? QUESTOES_TI : [];
     const sql = typeof QUESTOES_TI_SQL !== "undefined" ? QUESTOES_TI_SQL : [];
-    return base.concat(sql);
+    const seg = typeof QUESTOES_TI_SEG !== "undefined" ? QUESTOES_TI_SEG : [];
+    return base.concat(sql, seg);
   }
   return [];
 }

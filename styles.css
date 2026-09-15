@@ -418,7 +418,56 @@ button:active {
 }
 
 .fonte-aula li {
-  margin: 0 0 6px;
+  margin: 0 0 12px;
+}
+
+.fonte-aula .fonte-fora {
+  margin-top: 4px;
+}
+
+.aula-compat {
+  margin: 6px 0 0;
+}
+
+.aula-compat .afin-chips {
+  margin: 0;
+  align-items: center;
+}
+
+.aula-compat-par {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--muted);
+  margin-right: 2px;
+}
+
+.aula-compat-nota {
+  margin: 4px 0 0 !important;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.aula-fora {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--muted);
+  margin-left: 6px;
+}
+
+.aula-compat .afin-chip.on.neste {
+  background: color-mix(in srgb, var(--ok) 18%, var(--card));
+  border-color: transparent;
+  color: var(--ok);
+}
+
+.aula-compat .afin-chip.on.parcial {
+  background: color-mix(in srgb, #f59e0b 18%, var(--card));
+  border-color: transparent;
+  color: #d97706;
+}
+
+[data-theme="dark"] .aula-compat .afin-chip.on.parcial {
+  color: #fbbf24;
 }
 
 .concurso-bar {

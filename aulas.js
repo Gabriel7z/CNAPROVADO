@@ -79,8 +79,13 @@ const AULAS = {
   },
   dc: {
     id: "dc",
-    professor: "JC Concursos",
-    titulo: "Tópicos 1 a 4 — Princípios, art. 1º e dignidade",
+    professor: "JC Concursos · Leonardo Saraiva",
+    titulo: "Tópicos 1 a 6 — Princípios, Poderes, Legislativo e TCs",
+    titulos: {
+      sedf: "Tópicos 1 a 4 — Princípios, art. 1º e dignidade",
+      pmdf: "Tópicos 1 a 5 — Princípios, art. 1º, dignidade e Poderes",
+      tcego: "Tópicos 1 a 6 — Princípios, Poderes, Legislativo e TCs",
+    },
     playlist: {
       titulo: "Curso grátis de Direito Constitucional",
       url: "https://www.youtube.com/playlist?list=PL-4cMc9KcAt6b_i89TrsxE4-GOhjEDrvm",
@@ -96,6 +101,7 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=vEZVP-N10lY",
         de: 1,
         ate: 50,
+        compat: "Vale nos 3: princípios e LIMPE caem em qualquer banca.",
       },
       {
         id: "art1a",
@@ -103,6 +109,7 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=tgmj0YerDAo",
         de: 51,
         ate: 100,
+        compat: "Vale nos 3: fundamentos da República (art. 1º).",
       },
       {
         id: "art1b",
@@ -110,6 +117,7 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=V2LVrbO7Tmc",
         de: 101,
         ate: 150,
+        compat: "Vale nos 3: fundamentos I a V e democracia.",
       },
       {
         id: "dig",
@@ -117,17 +125,38 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=pM5dADX4Atk",
         de: 151,
         ate: 200,
+        compat: "Vale nos 3. Na PM DF cruza com o art. 5º.",
+      },
+      {
+        id: "poderes",
+        titulo: "Tópico 5 — Três Poderes e Legislativo (JC, videoaula 15)",
+        url: "https://www.youtube.com/watch?v=q0VLmhjCJas",
+        de: 201,
+        ate: 250,
+        concursos: ["tcego", "pmdf"],
+        vale: ["tcego", "pmdf"],
+        compat: "TCE-GO pesa Legislativo (arts. 44 a 75). PM DF cobra organização dos Poderes. SEDF não puxa este recorte.",
+      },
+      {
+        id: "tcs",
+        titulo: "Tópico 6 — Fiscalização e TCs (arts. 70 a 75)",
+        url: "https://www.youtube.com/watch?v=yXxnop01Ulc",
+        de: 251,
+        ate: 300,
+        concursos: ["tcego"],
+        vale: ["tcego"],
+        compat: "Arts. 70–75, TCU e TCE: só TCE-GO. Não entra na SEDF nem na PM DF.",
       },
     ],
   },
   ti: {
     id: "ti",
     professor: "Emannuelle Gouveia · Bóson Treinamentos",
-    titulo: "Tópicos 1 a 6 — Informática, segurança, OSI, TCP/IP e SQL",
+    titulo: "Tópicos 1 a 8 — Informática, segurança, redes, SQL e criptografia",
     titulos: {
-      sedf: "Tópicos 1 e 2 — Windows, internet e segurança",
-      pmdf: "Tópicos 1 e 2 — Windows, internet e segurança",
-      tcego: "Tópicos 2 a 6 — Segurança, OSI, TCP/IP e SQL",
+      sedf: "Tópicos 1, 2 e 7 — Windows, internet e CIA",
+      pmdf: "Tópicos 1, 2 e 7 — Windows, internet e CIA",
+      tcego: "Tópicos 2 a 8 — Segurança, OSI, TCP/IP, SQL e criptografia",
     },
     playlist: {
       titulo: "Playlist Informática · Emannuelle (SEDF / PM DF)",
@@ -141,6 +170,10 @@ const AULAS = {
       titulo: "Playlist Bancos de Dados / MySQL · Bóson (SQL TCE-GO)",
       url: "https://www.youtube.com/playlist?list=PLucm8g_ezqNrWAQH2B_0AnrFY5dJcgOLR",
     },
+    extra3: {
+      titulo: "Criptografia · Bóson (segurança TCE-GO)",
+      url: "https://www.youtube.com/watch?v=cWld3rMD7Wk",
+    },
     aulas: [
       {
         id: "win",
@@ -149,6 +182,8 @@ const AULAS = {
         de: 1,
         ate: 50,
         concursos: ["sedf", "pmdf"],
+        vale: ["sedf", "pmdf"],
+        compat: "SEDF/Quadrix e PM DF. Não cai no TCE-GO TI (cargo de redes/SQL, não Windows).",
       },
       {
         id: "net",
@@ -157,6 +192,8 @@ const AULAS = {
         de: 51,
         ate: 100,
         concursos: ["sedf", "pmdf", "tcego"],
+        vale: ["sedf", "pmdf", "tcego"],
+        compat: "Vale nos 3: navegador, HTTPS, malware, senha, LGPD. No TCE-GO é o básico antes da segurança FCC.",
       },
       {
         id: "osi",
@@ -165,6 +202,8 @@ const AULAS = {
         de: 101,
         ate: 150,
         concursos: ["tcego"],
+        vale: ["tcego"],
+        compat: "Só TCE-GO. SEDF e PM DF não cobram modelo OSI.",
       },
       {
         id: "tcp",
@@ -173,6 +212,8 @@ const AULAS = {
         de: 151,
         ate: 200,
         concursos: ["tcego"],
+        vale: ["tcego"],
+        compat: "Só TCE-GO (TCP/IP, portas, IPv6). SEDF/PM DF ficam no recorte da aula 2.",
       },
       {
         id: "sqlsel",
@@ -181,6 +222,8 @@ const AULAS = {
         de: 201,
         ate: 250,
         concursos: ["tcego"],
+        vale: ["tcego"],
+        compat: "SQL do TCE-GO. SEDF e PM DF não cobram SELECT/JOIN.",
       },
       {
         id: "sqlord",
@@ -189,6 +232,28 @@ const AULAS = {
         de: 251,
         ate: 300,
         concursos: ["tcego"],
+        vale: ["tcego"],
+        compat: "SQL do TCE-GO. Não entra na SEDF nem na PM DF.",
+      },
+      {
+        id: "segcia",
+        titulo: "Tópico 7 — Segurança: CIA, ameaças e política (Bóson)",
+        url: "https://www.youtube.com/watch?v=cWld3rMD7Wk",
+        de: 301,
+        ate: 350,
+        concursos: ["sedf", "pmdf", "tcego"],
+        vale: ["sedf", "pmdf", "tcego"],
+        compat: "Vale nos 3: confidencialidade, integridade, disponibilidade e ameaças. O TCE-GO cobra mais fundo.",
+      },
+      {
+        id: "segcry",
+        titulo: "Tópico 8 — Criptografia FCC: simétrica, assimétrica e hash (Bóson, aula 02)",
+        url: "https://www.youtube.com/watch?v=UJ6uSV1KREM",
+        de: 351,
+        ate: 400,
+        concursos: ["tcego"],
+        vale: ["tcego"],
+        compat: "Criptografia, certificado e auditoria: peso de TI no TCE-GO. SEDF/PM DF já viram o básico (HTTPS/senha) na aula 2.",
       },
     ],
   },
@@ -235,12 +300,33 @@ function tituloDoConcurso(materiaId, concurso) {
   return (pack.titulos && pack.titulos[concurso]) || pack.titulo;
 }
 
+function valeDaAula(aula) {
+  if (aula?.vale?.length) return aula.vale;
+  if (aula?.concursos?.length) return aula.concursos;
+  return ["sedf", "pmdf", "tcego"];
+}
+
+function concursosDaAula(aula) {
+  if (aula?.concursos?.length) return aula.concursos;
+  return ["sedf", "pmdf", "tcego"];
+}
+
+function aulasForaDoConcurso(materiaId, concurso) {
+  const pack = aulaDaMateria(materiaId);
+  if (!pack) return [];
+  const ids = new Set(aulasDoConcurso(materiaId, concurso).map((a) => a.id));
+  return (pack.aulas || []).filter((a) => !ids.has(a.id));
+}
+
 window.CNAPROVADO_AULAS = {
   lista: AULAS,
   daMateria: aulaDaMateria,
   daQuestao: aulaDaQuestao,
   aulasDoConcurso,
+  aulasForaDoConcurso,
   questoesDoConcurso,
   questaoDoConcurso,
   tituloDoConcurso,
+  valeDaAula,
+  concursosDaAula,
 };

@@ -973,30 +973,63 @@ function htmlLinkAula(href, texto) {
   return `<a class="aula-link" href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(texto)}</a>`;
 }
 
+function htmlAulaCompat(aula) {
+  const api = window.CNAPROVADO_INCIDENCIA;
+  const ordem = api?.concursoOrdem || ["sedf", "pmdf", "tcego"];
+  const questoesEm = window.CNAPROVADO_AULAS?.concursosDaAula?.(aula) || ordem;
+  const vale = window.CNAPROVADO_AULAS?.valeDaAula?.(aula) || questoesEm;
+  const n = vale.length;
+  const par = n === 3 ? "Vale nos 3" : n === 2 ? "Vale em 2" : "Só de um concurso";
+  const chips = ordem
+    .map((id) => {
+      const nome = api?.concursoNome?.[id] || id;
+      let cls = "afin-chip";
+      if (questoesEm.includes(id)) cls += " on neste";
+      else if (vale.includes(id)) cls += " on parcial";
+      return `<span class="${cls}">${esc(nome)}</span>`;
+    })
+    .join("");
+  const nota = aula.compat ? `<p class="aula-compat-nota">${esc(aula.compat)}</p>` : "";
+  return `<div class="aula-compat n${n}">
+    <div class="afin-chips"><span class="aula-compat-par">${esc(par)}</span>${chips}</div>
+    ${nota}
+  </div>`;
+}
+
+function htmlLinhaAula(a, treinar) {
+  const n = a.de === a.ate ? `Q${a.de}` : `Q${a.de}–${a.ate}`;
+  const btn = treinar
+    ? `<button type="button" class="linkish" data-treino-de="${a.de}" data-treino-ate="${a.ate}">Treinar estas</button>`
+    : `<span class="aula-fora">Fora deste filtro</span>`;
+  return `<li>
+    ${esc(n)} · ${htmlLinkAula(a.url, a.titulo)}
+    ${btn}
+    ${htmlAulaCompat(a)}
+  </li>`;
+}
+
 function htmlFonteAula(materiaId) {
   const pack = window.CNAPROVADO_AULAS?.daMateria?.(materiaId);
   if (!pack) return "";
   const concurso = planoConcursoAtual();
   const aulas =
     window.CNAPROVADO_AULAS?.aulasDoConcurso?.(materiaId, concurso) || pack.aulas || [];
+  const fora = window.CNAPROVADO_AULAS?.aulasForaDoConcurso?.(materiaId, concurso) || [];
   const play =
     materiaId === "ti" && concurso === "tcego" && pack.extra ? pack.extra : pack.playlist;
   const extras = [];
   if (materiaId === "ti" && concurso === "tcego") {
     if (pack.playlist) extras.push(pack.playlist);
     if (pack.extra2) extras.push(pack.extra2);
+    if (pack.extra3) extras.push(pack.extra3);
   } else if (materiaId !== "ti" && pack.extra) {
     extras.push(pack.extra);
   }
-  const linhas = aulas
-    .map((a) => {
-      const n = a.de === a.ate ? `Q${a.de}` : `Q${a.de}–${a.ate}`;
-      return `<li>
-        ${esc(n)} · ${htmlLinkAula(a.url, a.titulo)}
-        <button type="button" class="linkish" data-treino-de="${a.de}" data-treino-ate="${a.ate}">Treinar estas</button>
-      </li>`;
-    })
-    .join("");
+  const linhas = aulas.map((a) => htmlLinhaAula(a, true)).join("");
+  const linhasFora = fora.length
+    ? `<p class="kicker">Não entra neste concurso — para você ver a compatibilidade</p>
+       <ul class="fonte-fora">${fora.map((a) => htmlLinhaAula(a, false)).join("")}</ul>`
+    : "";
   const extra = extras
     .map((p) => `<p>Também serve: ${htmlLinkAula(p.url, p.titulo)}.</p>`)
     .join("");
@@ -1007,9 +1040,10 @@ function htmlFonteAula(materiaId) {
     <p class="kicker">De onde vêm as questões · ${esc(nomeConc)}</p>
     <p>${esc(tituloPack)} · ${esc(pack.professor)}.</p>
     <p><b>Para responder estas questões, veja a aula neste link:</b> ${htmlLinkAula(play.url, play.titulo)}.</p>
-    <p>O vídeo não fica no app — o link abre no YouTube. Só entram os tópicos deste concurso.</p>
+    <p>O vídeo não fica no app — o link abre no YouTube. Chip verde = questões neste filtro. Cinza = não cai nesse concurso.</p>
     ${extra}
     <ul>${linhas}</ul>
+    ${linhasFora}
   </div>`;
 }
 
@@ -1017,7 +1051,8 @@ function htmlQuizAula(materiaId, qid) {
   const api = window.CNAPROVADO_AULAS;
   const info = api?.daQuestao?.(materiaId, qid);
   if (!info?.aula) return "";
-  return `<p class="quiz-aula">Para esta questão, veja a aula: ${htmlLinkAula(info.aula.url, info.aula.titulo)} · ${esc(info.pack.professor)}.</p>`;
+  return `<p class="quiz-aula">Para esta questão, veja a aula: ${htmlLinkAula(info.aula.url, info.aula.titulo)} · ${esc(info.pack.professor)}.</p>
+    ${htmlAulaCompat(info.aula)}`;
 }
 
 function htmlCaiNaMateria(materiaId) {

@@ -118,7 +118,7 @@ const CICLOS = {
       bloco("D.Const", "Direitos e garantias fundamentais", "Art. 5º — o que mais cai na PMDF. 15 itens Cebraspe."),
       bloco("D.Const", "Defesa do Estado e da sociedade", "Arts. 136 a 144 (GLO, PM, segurança pública). 15 itens."),
       bloco("D.Const", "Organização do Estado", "União, Estados, DF, Municípios. 12 itens."),
-      bloco("D.Const", "Organização dos Poderes", "Executivo, Legislativo, Judiciário — visão PM. 12 itens."),
+      bloco("D.Const", "Organização dos Poderes", "PM DF: Q201–250 no app (Três Poderes / Legislativo). Cruza com o TCE-GO. Arts. 70–75 (TCs) não entram neste filtro."),
     ],
     pt: [
       bloco("Português", "Interpretação Cebraspe", "2 textos + 12 itens. O erro costuma estar no detalhe do enunciado."),
@@ -159,7 +159,7 @@ const CICLOS = {
       bloco("D.Adm", "Organização e controle", "Direta/indireta + controle (TCE). Cruza com arts. 70 a 75 da CF."),
     ],
     consti: [
-      bloco("D.Const", "Poder Legislativo e TCs", "Arts. 44 a 75 — o que mais cai na FCC do TCE. 15 itens. Fiscalização e TCU/TCE."),
+      bloco("D.Const", "Poder Legislativo e TCs", "TCE-GO: Q201–300 no app. Tópico 5 (Poderes) também vale na PM DF. Tópico 6 (arts. 70–75 / TCs) é só TCE-GO."),
       bloco("D.Const", "Poder Judiciário", "Órgãos, garantias, súmula. 12 itens FCC."),
       bloco("D.Const", "Art. 5º e remédios", "Direitos individuais + habeas corpus, mandado de segurança. 15 itens."),
       bloco("D.Const", "Administração Pública na CF", "Arts. 37 a 43. Cruza com o D.Adm de controle."),
@@ -179,7 +179,7 @@ const CICLOS = {
     ti: [
       bloco("TI", "Redes e protocolos", "TCE-GO TI: TCP/IP, OSI, IP, DNS, HTTP. 20 itens."),
       bloco("TI", "Banco de dados e SQL", "TCE-GO: Q201–300 no app (Bóson aulas 12–13). SELECT, WHERE, ORDER BY, JOIN, PK/FK, GROUP BY. Modela 3 tabelas no papel."),
-      bloco("TI", "Segurança e LGPD", "CIA, backup, malware, minimização de dados. 15 itens."),
+      bloco("TI", "Segurança e LGPD", "TCE-GO: Q301–400 no app (CIA + criptografia Bóson). Vale nos 3 no tópico 7; o tópico 8 (hash/PKI) é só TCE-GO."),
       bloco("TI", "Dev, Git e governança", "HTML/CSS/JS, REST/JSON, Git. COBIT/ITIL só conceito. 15 itens."),
     ],
     redSab: [

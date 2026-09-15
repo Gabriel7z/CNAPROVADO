@@ -370,7 +370,7 @@ const MATERIAS_AFINIDADE = [
     nome: "TI",
     concursos: ["sedf", "pmdf", "tcego"],
     soGabriel: true,
-    nota: "No nome vale nos 3, mas o conteúdo quase não se mistura: SEDF = Windows/Office; PM DF = informática Cebraspe; TCE-GO = redes/SQL.",
+    nota: "CIA e internet valem nos 3. Windows é SEDF/PM DF. Redes, SQL e criptografia FCC são TCE-GO.",
   },
   {
     id: "red",
