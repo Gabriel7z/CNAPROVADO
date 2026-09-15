@@ -23,10 +23,27 @@ const PLANOS = {
   },
 };
 
+function listaConcursos(arg) {
+  const ordem = ["sedf", "pmdf", "tcego"];
+  const raw = Array.isArray(arg) ? arg : arg == null || arg === "" ? [] : [arg];
+  const ids = ordem.filter((id) =>
+    raw.some((c) => String(c || "").toLowerCase() === id)
+  );
+  return ids.length ? ids : ["sedf"];
+}
+
+function chaveConcursos(arg) {
+  return listaConcursos(arg).join("+");
+}
+
+function nomesConcursos(arg) {
+  return listaConcursos(arg)
+    .map((id) => CONCURSOS[id]?.nome || id)
+    .join(" · ");
+}
+
 function normalizarConcurso(id) {
-  const k = String(id || "").toLowerCase();
-  if (k === "pmdf" || k === "tcego" || k === "sedf") return k;
-  return "sedf";
+  return listaConcursos(id)[0];
 }
 
 function normalizarPessoa(id) {
@@ -35,12 +52,20 @@ function normalizarPessoa(id) {
 
 function metaPlano(pessoa, concurso) {
   const p = normalizarPessoa(pessoa);
-  const c = CONCURSOS[normalizarConcurso(concurso)];
+  const ids = listaConcursos(concurso);
+  const c = CONCURSOS[ids[0]];
   const base = PLANOS[p];
+  const alvo =
+    ids.length === 1
+      ? p === "gabriel"
+        ? `${c.nome} · ${c.cargo} · ${c.banca}`
+        : `${c.nome} · ${c.banca}`
+      : nomesConcursos(ids);
   return {
     ...base,
-    concurso: c.id,
-    alvo: p === "gabriel" ? `${c.nome} · ${c.cargo} · ${c.banca}` : `${c.nome} · ${c.banca}`,
+    concurso: ids[0],
+    concursos: ids,
+    alvo,
     materias: base.materias,
   };
 }
@@ -398,22 +423,43 @@ function anexarRevisoes(dias) {
   });
 }
 
+function fundirBlocosDoDia(pessoa, concursos, semana, weekday) {
+  const ids = listaConcursos(concursos);
+  const blocos = ids.map((id) => {
+    const mapa = semanalPessoa(pessoa, id, semana);
+    return { ...mapa[weekday], concurso: id };
+  });
+  const base = blocos[0];
+  if (!base) return { materia: "Estudo", titulo: "Plano", fazer: "" };
+  if (blocos.length === 1) return base;
+  const nomes = nomesConcursos(ids);
+  const titulos = [...new Set(blocos.map((b) => b.titulo))];
+  const fazer = blocos
+    .map((b) => `${CONCURSOS[b.concurso].nome}: ${b.fazer}`)
+    .join(" Também — ");
+  return {
+    materia: base.materia,
+    titulo: titulos.length === 1 ? titulos[0] : titulos.join(" · "),
+    fazer: `Marcou ${nomes}. ${fazer}`,
+  };
+}
+
 function diasDoPlano(kind, carga, concurso) {
   const pessoa = normalizarPessoa(kind);
-  concurso = normalizarConcurso(concurso);
+  const concursos = listaConcursos(concurso);
   const out = [];
   for (let i = 0; i < PLANO_DIAS; i += 1) {
     const d = dataDoPlano(i);
     const semana = Math.min(Math.floor(i / 7), 3);
-    const mapa = semanalPessoa(pessoa, concurso, semana);
-    const bloco = mapa[d.getDay()];
+    const bloco = fundirBlocosDoDia(pessoa, concursos, semana, d.getDay());
     const horas = horasDoTurno(d, carga);
     out.push({
       i,
       iso: isoData(d),
       data: d,
       semana: semana + 1,
-      concurso,
+      concurso: concursos[0],
+      concursos,
       ...bloco,
       horas,
       carga: rotuloHoras(horas),
@@ -510,6 +556,9 @@ window.CNAPROVADO_PLANOS = {
   normalizarHoras,
   normalizarCarga,
   normalizarConcurso,
+  listaConcursos,
+  chaveConcursos,
+  nomesConcursos,
   normalizarPessoa,
   metaPlano,
   cargaPadrao,

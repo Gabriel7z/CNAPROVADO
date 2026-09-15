@@ -479,7 +479,26 @@ button:active {
 }
 
 .concurso-bar .plano-switch {
-  margin-bottom: 0;
+  margin-bottom: 6px;
+}
+
+.concurso-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.plano-switch .modo.is-unico {
+  cursor: default;
+}
+
+.cai-stack {
+  display: grid;
+  gap: 12px;
+}
+
+.cai-materia + .cai-materia {
+  margin-top: 0;
 }
 
 .plano-conc-dup {
@@ -1219,11 +1238,12 @@ button:active {
   font-size: 0.9rem;
 }
 
-.afin-mat.n3 {
+.afin-mat.n3,
+.afin-mat.n-todos {
   border-color: color-mix(in srgb, var(--ok) 55%, var(--line));
 }
 
-.afin-mat.n2 {
+.afin-mat.n2:not(.n-todos) {
   border-color: color-mix(in srgb, #f59e0b 55%, var(--line));
 }
 
@@ -1263,11 +1283,12 @@ button:active {
   font-size: 1rem;
 }
 
-.afin-item.n3 {
+.afin-item.n3,
+.afin-item.n-todos {
   border-color: color-mix(in srgb, var(--ok) 50%, var(--line));
 }
 
-.afin-item.n2 {
+.afin-item.n2:not(.n-todos) {
   border-color: color-mix(in srgb, #f59e0b 50%, var(--line));
 }
 
@@ -1287,19 +1308,20 @@ button:active {
   color: var(--muted);
 }
 
-.afin-item.n3 .afin-chip.on {
+.afin-item.n3 .afin-chip.on,
+.afin-item.n-todos .afin-chip.on {
   background: color-mix(in srgb, var(--ok) 18%, var(--card));
   border-color: transparent;
   color: var(--ok);
 }
 
-.afin-item.n2 .afin-chip.on {
+.afin-item.n2:not(.n-todos) .afin-chip.on {
   background: color-mix(in srgb, #f59e0b 18%, var(--card));
   border-color: transparent;
   color: #d97706;
 }
 
-[data-theme="dark"] .afin-item.n2 .afin-chip.on {
+[data-theme="dark"] .afin-item.n2:not(.n-todos) .afin-chip.on {
   color: #fbbf24;
 }
 
@@ -1314,6 +1336,14 @@ button:active {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
   font-size: 0.8rem;
+}
+
+.afin-pcts.n1 {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.afin-pcts.n2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .afin-pcts span {

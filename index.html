@@ -31,7 +31,7 @@
         document.documentElement.setAttribute("data-theme", t);
       } catch (e) {}
     </script>
-    <link rel="stylesheet" href="styles.css?v=205" />
+        <link rel="stylesheet" href="styles.css?v=206" />
   </head>
   <body>
     <div class="wrap app-shell">
@@ -75,8 +75,9 @@
       </nav>
 
       <div class="concurso-bar hidden" id="concurso-bar">
-        <p class="field-label">Ver só um concurso</p>
-        <div class="plano-switch" id="filtro-concurso" aria-label="SEDF, PM DF ou TCE-GO"></div>
+        <p class="field-label">Vou estudar</p>
+        <div class="plano-switch" id="filtro-concurso" aria-label="Marca SEDF, PM DF e TCE-GO"></div>
+        <p class="concurso-hint" id="filtro-concurso-hint">Marca um, dois ou os três. Aí a afinidade mostra o cruzamento e o cronograma fecha nesse recorte.</p>
       </div>
 
       <main class="card">
@@ -107,8 +108,8 @@
             <div class="plano-hoje" id="plano-hoje"></div>
           <p class="field-label">De quem é este plano</p>
           <div class="plano-switch" id="plano-switch"></div>
-          <p class="field-label plano-conc-dup">Plano individual — um concurso por vez</p>
-          <div class="plano-switch plano-conc-dup" id="plano-concurso" aria-label="SEDF, PM DF ou TCE-GO"></div>
+          <p class="field-label plano-conc-dup">Vou estudar — marca os concursos</p>
+          <div class="plano-switch plano-conc-dup" id="plano-concurso" aria-label="SEDF, PM DF e TCE-GO"></div>
             <p class="field-label">Quanto tempo você tem</p>
             <div class="plano-carga-box">
               <div class="plano-carga-row">
@@ -331,14 +332,14 @@
     <script src="questoes-ti.js?v=200"></script>
     <script src="questoes-ti-sql.js?v=204"></script>
     <script src="questoes-ti-seg.js?v=205"></script>
-    <script src="aulas.js?v=205"></script>
-    <script src="planejamento.js?v=205"></script>
-    <script src="incidencia.js?v=205"></script>
+    <script src="aulas.js?v=206"></script>
+    <script src="planejamento.js?v=206"></script>
+    <script src="incidencia.js?v=206"></script>
     <script src="redacao.js"></script>
     <script src="supabase-config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js"></script>
     <script src="cloud.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-    <script src="app.js?v=205"></script>
+    <script src="app.js?v=206"></script>
   </body>
 </html>

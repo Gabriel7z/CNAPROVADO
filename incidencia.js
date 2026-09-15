@@ -567,9 +567,14 @@ function agruparAfinidade(opts) {
   const pessoa = opts?.pessoa === "amanda" ? "amanda" : "gabriel";
   const materiaFiltro = opts?.materia && opts.materia !== "todas" ? opts.materia : "";
   const q = slugTexto(opts?.filtro || "");
+  const escolhidos = CONCURSO_ORDEM.filter((id) =>
+    (opts?.concursos || CONCURSO_ORDEM).some((c) => String(c || "").toLowerCase() === id)
+  );
+  const alvo = escolhidos.length ? escolhidos : CONCURSO_ORDEM;
   const rows = fontesAfinidade().filter((r) => {
     if (pessoa === "amanda" && r.materia === "ti") return false;
     if (materiaFiltro && r.materia !== materiaFiltro) return false;
+    if (!alvo.includes(r.concurso)) return false;
     return true;
   });
   const mapa = new Map();
@@ -593,7 +598,7 @@ function agruparAfinidade(opts) {
   });
   const assuntos = [...mapa.values()]
     .map((item) => {
-      const concursos = CONCURSO_ORDEM.filter((c) => item.porConcurso[c]);
+      const concursos = alvo.filter((c) => item.porConcurso[c]);
       return {
         ...item,
         concursos,
@@ -607,17 +612,26 @@ function agruparAfinidade(opts) {
     })
     .sort((a, b) => b.n - a.n || a.materiaNome.localeCompare(b.materiaNome, "pt-BR") || a.nome.localeCompare(b.nome, "pt-BR"));
 
-  const materias = MATERIAS_AFINIDADE.filter((m) => !(pessoa === "amanda" && m.soGabriel)).map((m) => ({
-    ...m,
-    n: m.concursos.length,
-    par: parConcursos(m.concursos),
-  }));
+  const nMax = alvo.length;
+  const materias = MATERIAS_AFINIDADE.filter((m) => !(pessoa === "amanda" && m.soGabriel)).map((m) => {
+    const concursos = m.concursos.filter((c) => alvo.includes(c));
+    return {
+      ...m,
+      concursos,
+      n: concursos.length,
+      par: parConcursos(concursos),
+    };
+  });
 
   return {
     materias,
-    nos3: assuntos.filter((a) => a.n === 3),
-    nos2: assuntos.filter((a) => a.n === 2),
+    escolhidos: alvo,
+    nMax,
+    nosTodos: assuntos.filter((a) => nMax > 1 && a.n === nMax),
+    nos2: assuntos.filter((a) => nMax === 3 && a.n === 2),
+    nosParcial: assuntos.filter((a) => a.n > 1 && a.n < nMax),
     nos1: assuntos.filter((a) => a.n === 1),
+    nos3: assuntos.filter((a) => a.n === 3),
     assuntos,
   };
 }

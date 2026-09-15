@@ -271,10 +271,18 @@ function aulaDaQuestao(materiaId, qid) {
   return { pack, aula };
 }
 
+function listaIdsConcurso(concursos) {
+  const ordem = ["sedf", "pmdf", "tcego"];
+  const raw = Array.isArray(concursos) ? concursos : concursos == null || concursos === "" ? [] : [concursos];
+  const ids = ordem.filter((id) => raw.some((c) => String(c || "").toLowerCase() === id));
+  return ids.length ? ids : ["sedf"];
+}
+
 function aulasDoConcurso(materiaId, concurso) {
   const pack = aulaDaMateria(materiaId);
   if (!pack) return [];
-  return (pack.aulas || []).filter((a) => !a.concursos || a.concursos.includes(concurso));
+  const ids = listaIdsConcurso(concurso);
+  return (pack.aulas || []).filter((a) => !a.concursos || a.concursos.some((c) => ids.includes(c)));
 }
 
 function questoesDoConcurso(lista, materiaId, concurso) {
@@ -297,7 +305,10 @@ function questaoDoConcurso(materiaId, qid, concurso) {
 function tituloDoConcurso(materiaId, concurso) {
   const pack = aulaDaMateria(materiaId);
   if (!pack) return "";
-  return (pack.titulos && pack.titulos[concurso]) || pack.titulo;
+  const ids = listaIdsConcurso(concurso);
+  if (ids.length === 1) return (pack.titulos && pack.titulos[ids[0]]) || pack.titulo;
+  const unicos = [...new Set(ids.map((id) => (pack.titulos && pack.titulos[id]) || pack.titulo))];
+  return unicos.length === 1 ? unicos[0] : pack.titulo;
 }
 
 function valeDaAula(aula) {
