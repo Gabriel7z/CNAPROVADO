@@ -1001,9 +1001,11 @@ function htmlFonteAula(materiaId) {
     .map((p) => `<p>Também serve: ${htmlLinkAula(p.url, p.titulo)}.</p>`)
     .join("");
   const nomeConc = window.CNAPROVADO_INCIDENCIA?.concursoNome?.[concurso] || concurso;
+  const tituloPack =
+    window.CNAPROVADO_AULAS?.tituloDoConcurso?.(materiaId, concurso) || pack.titulo;
   return `<div class="fonte-aula">
     <p class="kicker">De onde vêm as questões · ${esc(nomeConc)}</p>
-    <p>${esc(pack.titulo)} · ${esc(pack.professor)}.</p>
+    <p>${esc(tituloPack)} · ${esc(pack.professor)}.</p>
     <p><b>Para responder estas questões, veja a aula neste link:</b> ${htmlLinkAula(play.url, play.titulo)}.</p>
     <p>O vídeo não fica no app — o link abre no YouTube. Só entram os tópicos deste concurso.</p>
     ${extra}
@@ -1143,7 +1145,8 @@ function renderQuestoesHome() {
     window.CNAPROVADO_AULAS?.aulasDoConcurso?.(m.id, concurso) || pack?.aulas || [];
   const nomeConc = nomeConcursoAtual();
   $("#kicker-materia").textContent = `${m.nome} · ${nomeConc}`;
-  $("#titulo-materia").textContent = pack?.titulo || m.nome;
+  $("#titulo-materia").textContent =
+    window.CNAPROVADO_AULAS?.tituloDoConcurso?.(m.id, concurso) || pack?.titulo || m.nome;
   $("#qtd").textContent = String(qs.length);
   $("#meta-cards").textContent = String(cs.length);
   const caiEl = $("#cai-materia");

@@ -124,6 +124,11 @@ const AULAS = {
     id: "ti",
     professor: "Emannuelle Gouveia · Bóson Treinamentos",
     titulo: "Tópicos 1 a 6 — Informática, segurança, OSI, TCP/IP e SQL",
+    titulos: {
+      sedf: "Tópicos 1 e 2 — Windows, internet e segurança",
+      pmdf: "Tópicos 1 e 2 — Windows, internet e segurança",
+      tcego: "Tópicos 2 a 6 — Segurança, OSI, TCP/IP e SQL",
+    },
     playlist: {
       titulo: "Playlist Informática · Emannuelle (SEDF / PM DF)",
       url: "https://www.youtube.com/playlist?list=PL70rxKg7qWNXFurIGfLdUQ7zTlSMi3fe1",
@@ -224,6 +229,12 @@ function questaoDoConcurso(materiaId, qid, concurso) {
   return aulas.some((a) => n >= a.de && n <= a.ate);
 }
 
+function tituloDoConcurso(materiaId, concurso) {
+  const pack = aulaDaMateria(materiaId);
+  if (!pack) return "";
+  return (pack.titulos && pack.titulos[concurso]) || pack.titulo;
+}
+
 window.CNAPROVADO_AULAS = {
   lista: AULAS,
   daMateria: aulaDaMateria,
@@ -231,4 +242,5 @@ window.CNAPROVADO_AULAS = {
   aulasDoConcurso,
   questoesDoConcurso,
   questaoDoConcurso,
+  tituloDoConcurso,
 };
