@@ -538,6 +538,134 @@ button:active {
   margin-bottom: 14px;
 }
 
+#materias-nav.is-grupos,
+#materias-nav:not(.is-grupos) {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.materias-grupo-lab {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.materias-grupo-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.edital-mapa {
+  margin: 0 0 18px;
+}
+
+.edital-aviso {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.edital-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.edital-card {
+  border: 1.5px solid var(--line);
+  border-radius: 16px;
+  padding: 14px 16px;
+  min-width: 0;
+}
+
+.edital-card h3 {
+  margin: 4px 0 8px;
+  font-size: 1.05rem;
+}
+
+.edital-grupo {
+  margin: 10px 0 0;
+}
+
+.edital-grupo .field-label {
+  margin-bottom: 4px;
+}
+
+.edital-lead {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.edital-chips,
+.edital-grupo .plano-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  align-items: center;
+}
+
+.edital-chip,
+.edital-extra,
+.edital-tag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: 1px solid var(--line);
+}
+
+.edital-chip.is-gerais,
+.edital-tag.is-gerais {
+  background: color-mix(in srgb, var(--ok) 16%, var(--card));
+  border-color: color-mix(in srgb, var(--ok) 45%, var(--line));
+}
+
+.edital-chip.is-complementares,
+.edital-tag.is-complementares {
+  background: color-mix(in srgb, #6366f1 16%, var(--card));
+  border-color: color-mix(in srgb, #6366f1 45%, var(--line));
+}
+
+.edital-chip.is-especificos,
+.edital-tag.is-especificos {
+  background: color-mix(in srgb, #f59e0b 18%, var(--card));
+  border-color: color-mix(in srgb, #f59e0b 50%, var(--line));
+}
+
+.edital-chip.is-discursiva,
+.edital-tag.is-discursiva {
+  background: color-mix(in srgb, var(--primary) 14%, var(--card));
+}
+
+.edital-chip.is-fora,
+.edital-tag.is-fora,
+.edital-extra {
+  color: var(--muted);
+  font-weight: 600;
+  border-style: dashed;
+}
+
+.afin-mat .edital-chips,
+.afin-item .edital-chips {
+  margin: 0 0 8px;
+}
+
+@media (min-width: 900px) {
+  .edital-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 .materia,
 .modo,
 .add-materia {

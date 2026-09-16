@@ -192,33 +192,107 @@ function materiaEhTi(m) {
   return m?.id === "ti" || sigla === "ti" || nome.includes("informática") || nome === "ti";
 }
 
-function renderMaterias() {
-  const nav = $("#materias-nav");
-  nav.innerHTML = "";
+function materiasVisiveis() {
   const esconderTi = planoIdAtual() === "amanda";
   const vistos = new Set();
-  const lista = materias().filter((m) => {
+  return materias().filter((m) => {
     if (esconderTi && materiaEhTi(m)) return false;
     const k = String(m.sigla || m.id).toLowerCase();
     if (vistos.has(k)) return false;
     vistos.add(k);
     return true;
   });
+}
+
+function htmlBotaoMateria(m) {
+  const btn = document.createElement("button");
+  btn.className = `materia${m.id === ui.materia ? " ativa" : ""}`;
+  btn.type = "button";
+  btn.textContent = m.sigla || m.nome;
+  btn.addEventListener("click", () => {
+    ui.materia = m.id;
+    ui.modo = "questoes";
+    render();
+  });
+  return btn;
+}
+
+function renderMaterias() {
+  const nav = $("#materias-nav");
+  nav.innerHTML = "";
+  const esconderTi = planoIdAtual() === "amanda";
   if (esconderTi && materiaEhTi({ id: ui.materia, sigla: ui.materia, nome: ui.materia })) {
     ui.materia = "dadm";
   }
-  lista.forEach((m) => {
-    const btn = document.createElement("button");
-    btn.className = `materia${m.id === ui.materia ? " ativa" : ""}`;
-    btn.type = "button";
-    btn.textContent = m.sigla || m.nome;
-    btn.addEventListener("click", () => {
-      ui.materia = m.id;
-      ui.modo = "questoes";
-      render();
+  const lista = materiasVisiveis();
+  const concursos = planoConcursosAtuais();
+  const mapa = window.CNAPROVADO_PLANOS?.blocoProvaDoConcurso?.(concursos[0], planoIdAtual());
+  const porApp = Object.fromEntries(lista.map((m) => [m.id, m]));
+  if (concursos.length === 1 && mapa?.grupos?.length) {
+    nav.classList.add("is-grupos");
+    mapa.grupos.forEach((g) => {
+      const mats = [];
+      const vistos = new Set();
+      g.itens.forEach((it) => {
+        if (!it.nav) return;
+        const m = porApp[it.appId];
+        if (!m || vistos.has(m.id)) return;
+        vistos.add(m.id);
+        mats.push(m);
+      });
+      if (!mats.length && !g.extras.length) return;
+      const wrap = document.createElement("div");
+      wrap.className = `materias-grupo bloco-${g.id}`;
+      const lab = document.createElement("p");
+      lab.className = "materias-grupo-lab";
+      lab.textContent = g.titulo;
+      wrap.appendChild(lab);
+      const row = document.createElement("div");
+      row.className = "materias-grupo-row";
+      mats.forEach((m) => row.appendChild(htmlBotaoMateria(m)));
+      g.extras.forEach((nome) => {
+        const span = document.createElement("span");
+        span.className = "edital-extra";
+        span.textContent = nome;
+        row.appendChild(span);
+      });
+      wrap.appendChild(row);
+      nav.appendChild(wrap);
     });
-    nav.appendChild(btn);
-  });
+    lista
+      .filter((m) => !mapa.grupos.some((g) => g.itens.some((it) => it.appId === m.id && it.nav)))
+      .forEach((m) => {
+        const wrap = document.createElement("div");
+        wrap.className = "materias-grupo";
+        const lab = document.createElement("p");
+        lab.className = "materias-grupo-lab";
+        lab.textContent = "Outras";
+        wrap.appendChild(lab);
+        const row = document.createElement("div");
+        row.className = "materias-grupo-row";
+        row.appendChild(htmlBotaoMateria(m));
+        wrap.appendChild(row);
+        nav.appendChild(wrap);
+      });
+    const addGrupo = document.createElement("button");
+    addGrupo.className = "add-materia";
+    addGrupo.type = "button";
+    addGrupo.textContent = "+ Matéria";
+    addGrupo.addEventListener("click", novaMateria);
+    nav.appendChild(addGrupo);
+    return;
+  }
+  nav.classList.remove("is-grupos");
+  if (concursos.length > 1) {
+    const lab = document.createElement("p");
+    lab.className = "materias-grupo-lab";
+    lab.textContent = "A mesma matéria muda de bloco em cada concurso — o mapa está no Plano.";
+    nav.appendChild(lab);
+  }
+  const row = document.createElement("div");
+  row.className = "materias-grupo-row";
+  lista.forEach((m) => row.appendChild(htmlBotaoMateria(m)));
+  nav.appendChild(row);
   const add = document.createElement("button");
   add.className = "add-materia";
   add.type = "button";
@@ -553,6 +627,87 @@ function fmtPct(n) {
   return `${s}%`;
 }
 
+function htmlMapaEdital() {
+  const api = window.CNAPROVADO_PLANOS;
+  const cards = api?.mapaProva?.(planoIdAtual(), planoConcursosAtuais()) || [];
+  if (!cards.length) return "";
+  const aviso =
+    planoConcursosAtuais().length > 1
+      ? `<p class="edital-aviso">A mesma matéria muda de bloco. TI na SEDF é informática de gerais; no TCE-GO do Gabriel é específico. Na Amanda o específico do TCE é Controle, sem TI.</p>`
+      : "";
+  const html = cards
+    .map((c) => {
+      const grupos = c.grupos
+        .map((g) => {
+          const chips = [
+            ...g.itens.map((it) => `<span class="edital-chip is-${esc(g.id)}">${esc(it.nome)}</span>`),
+            ...g.extras.map((n) => `<span class="edital-extra">${esc(n)}</span>`),
+          ].join("");
+          return `<div class="edital-grupo bloco-${esc(g.id)}">
+            <p class="field-label">${esc(g.titulo)}</p>
+            <p class="edital-lead">${esc(g.lead)}</p>
+            <div class="edital-chips">${chips}</div>
+          </div>`;
+        })
+        .join("");
+      return `<article class="edital-card">
+        <p class="kicker">${esc(c.nome)} · ${esc(c.banca)}</p>
+        <h3>${esc(c.cargo)}</h3>
+        <p class="edital-lead">${esc(c.prova)}</p>
+        ${grupos}
+      </article>`;
+    })
+    .join("");
+  return `<p class="field-label">Conhecimentos gerais e específicos</p>
+    ${aviso}
+    <div class="edital-grid">${html}</div>`;
+}
+
+function htmlTagsBlocoMateria(materiaId) {
+  const api = window.CNAPROVADO_PLANOS;
+  return planoConcursosAtuais()
+    .map((id) => {
+      const g = api?.blocoDaMateria?.(id, materiaId, planoIdAtual());
+      const nome = api?.CONCURSOS?.[id]?.nome || id;
+      if (!g) return `<span class="edital-tag">${esc(nome)}</span>`;
+      return `<span class="edital-tag is-${esc(g.id)}">${esc(nome)} · ${esc(g.curto)}</span>`;
+    })
+    .join("");
+}
+
+function htmlMateriasIncidencia(concurso, materias, materiaAtiva) {
+  const mapa = window.CNAPROVADO_PLANOS?.blocoProvaDoConcurso?.(concurso, planoIdAtual());
+  const porId = Object.fromEntries((materias || []).map((m) => [m.id, m]));
+  const usados = new Set();
+  const btn = (m) =>
+    `<button type="button" class="modo${m.id === materiaAtiva ? " ativo" : ""}" data-materia="${esc(m.id)}">${esc(m.nome)}</button>`;
+  const grupos = (mapa?.grupos || [])
+    .map((g) => {
+      const mats = [];
+      g.itens.forEach((it) => {
+        const m = porId[it.id];
+        if (m && !usados.has(m.id)) {
+          usados.add(m.id);
+          mats.push(m);
+        }
+      });
+      if (!mats.length && !g.extras.length) return "";
+      const extras = g.extras.map((n) => `<span class="edital-extra">${esc(n)}</span>`).join("");
+      return `<div class="edital-grupo bloco-${esc(g.id)}">
+        <p class="field-label">${esc(g.titulo)}</p>
+        <p class="edital-lead">${esc(g.lead)}</p>
+        <div class="plano-switch">${mats.map(btn).join("")}${extras}</div>
+      </div>`;
+    })
+    .filter(Boolean)
+    .join("");
+  const resto = (materias || []).filter((m) => !usados.has(m.id));
+  const restoHtml = resto.length
+    ? `<div class="edital-grupo"><p class="field-label">Outras</p><div class="plano-switch">${resto.map(btn).join("")}</div></div>`
+    : "";
+  return grupos + restoHtml;
+}
+
 function incidenciaSel() {
   const api = window.CNAPROVADO_INCIDENCIA;
   if (!api) return null;
@@ -626,14 +781,11 @@ function htmlIncidencia() {
         `<button type="button" class="modo${c.id === concurso ? " ativo" : ""}" data-concurso="${esc(c.id)}">${esc(c.nome)}</button>`
     )
     .join("");
-  const matBtns = materias
-    .map(
-      (m) =>
-        `<button type="button" class="modo${m.id === materia ? " ativo" : ""}" data-materia="${esc(m.id)}">${esc(m.nome)}</button>`
-    )
-    .join("");
+  const matBlocos = htmlMateriasIncidencia(concurso, materias, materia);
   const filtro = ui.incidenciaFiltro || "";
   const prioN = recorte.semContagem ? recorte.topicos.length : recorte.topicos.filter((t) => t.prio).length;
+  const bloco = window.CNAPROVADO_PLANOS?.blocoDaMateria?.(concurso, materia, planoIdAtual());
+  const blocoTxt = bloco ? `${bloco.titulo}` : recorte.materiaNome;
   return `
     <div class="plano-metodo">
       <p class="kicker">De onde vêm esses %</p>
@@ -641,18 +793,18 @@ function htmlIncidencia() {
         QConcursos e TEC não soltam API pública. Estas barras são o caderno
         histórico que o TEC publicou para a banca do concurso — não é o edital
         de 2026 e não prevê a prova. Serve para priorizar o que a banca mais
-        cobra. No TCE-GO a matéria de TI é cargo específico: redes, banco de
-        dados e segurança pesam muito mais que Windows.
+        cobra. As matérias estão separadas em gerais e específicos de cada
+        concurso. No TCE-GO a TI do Gabriel é cargo específico; na SEDF a
+        informática do caderno é geral (Windows/Office).
       </p>
     </div>
     <p class="field-label">Concurso</p>
     <div class="plano-switch" id="inc-concursos">${concBtns}</div>
-    <p class="field-label">Matéria</p>
-    <div class="plano-switch" id="inc-materias">${matBtns}</div>
+    <div id="inc-materias">${matBlocos}</div>
     <label class="inc-filtro-label" for="inc-filtro">Filtrar assunto</label>
     <input id="inc-filtro" class="inc-filtro" type="search" placeholder="ex.: interpretação, licitações" value="${esc(filtro)}" autocomplete="off" />
     <div class="meta inc-resumo">
-      <div><b>${esc(recorte.concursoNome)}</b><span>${esc(recorte.banca)} · ${esc(recorte.materiaNome)}</span></div>
+      <div><b>${esc(recorte.concursoNome)}</b><span>${esc(recorte.banca)} · ${esc(blocoTxt)}</span></div>
       <div><b>${recorte.semContagem ? "—" : recorte.total.toLocaleString("pt-BR")}</b><span>${recorte.semContagem ? "sem contagem" : "questões no caderno"}</span></div>
       <div><b>${prioN}</b><span>${recorte.semContagem ? "assuntos do plano" : "assuntos até ~70%"}</span></div>
     </div>
@@ -735,6 +887,11 @@ function renderPlano() {
       concursos.length === 1
         ? `${meta.materias}. Marca em cima os concursos que você vai estudar (pode SEDF + TCE-GO, por exemplo). Aí a afinidade cruza e o calendário fecha nesse recorte. No Gmail do Gabriel entra TI na sexta; na Amanda não entra TI. 14/09 a 13/10/2026. As horas só mudam o tamanho da tarefa.`
         : `${meta.materias}. Cronograma dos ${concursos.length} concursos marcados (${nomes}): no mesmo dia entra o recorte de cada um. Aba Afinidade mostra o cruzamento. No Gmail do Gabriel entra TI na sexta; na Amanda não entra TI. 14/09 a 13/10/2026.`;
+  }
+  const elMapa = $("#plano-edital");
+  if (elMapa) {
+    elMapa.innerHTML = htmlMapaEdital();
+    elMapa.classList.toggle("hidden", vista === "cai" || vista === "afin");
   }
   $("#plano-meta").innerHTML = `
     <div><b>${feitos}/${dias.length}</b><span>dias feitos</span></div>
@@ -845,6 +1002,7 @@ function renderPlano() {
       ui._redacaoMontada = "";
       const y = window.scrollY;
       renderFiltroConcurso();
+      renderMaterias();
       renderPlano();
       window.scrollTo(0, y);
     });
@@ -919,6 +1077,7 @@ function htmlAfinAssunto(item, alvo) {
   return `<article class="afin-item n${item.n}${todos ? " n-todos" : ""}">
     <header>
       <p class="kicker">${esc(item.materiaNome)} · ${esc(item.par)}</p>
+      <div class="edital-chips">${htmlTagsBlocoMateria(item.materia)}</div>
       <h3>${esc(item.nome)}</h3>
     </header>
     <div class="afin-chips">${htmlAfinChips(item.concursos, ordem)}</div>
@@ -969,6 +1128,7 @@ function htmlAfinidade() {
       return `<article class="afin-mat n${m.n}${todos ? " n-todos" : ""}">
         <p class="kicker">${esc(m.par)}</p>
         <h3>${esc(m.nome)}</h3>
+        <div class="edital-chips">${htmlTagsBlocoMateria(m.id)}</div>
         <p>${esc(m.nota)}</p>
       </article>`;
     })
@@ -1173,8 +1333,10 @@ function htmlCaiBloco(materiaId, concurso) {
   const fonte = recorte.fonteUrl
     ? `<p>Fonte: <a href="${esc(recorte.fonteUrl)}" target="_blank" rel="noopener noreferrer">TEC · priorização</a>.</p>`
     : "";
+  const bloco = window.CNAPROVADO_PLANOS?.blocoDaMateria?.(concurso, materiaId, planoIdAtual());
+  const blocoTxt = bloco ? ` · ${bloco.titulo}` : "";
   return `<div class="fonte-aula cai-materia">
-    <p class="kicker">O que mais cai em ${esc(recorte.materiaNome)} · ${esc(nomeConc)} · ${esc(recorte.banca)}</p>
+    <p class="kicker">O que mais cai em ${esc(recorte.materiaNome)} · ${esc(nomeConc)}${esc(blocoTxt)} · ${esc(recorte.banca)}</p>
     <p>${esc(recorte.recorte)}</p>
     <ul>${linhas}</ul>
     ${extra}

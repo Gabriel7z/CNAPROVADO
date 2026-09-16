@@ -6,8 +6,200 @@ const EMAIL_GABRIEL = "ggabriel.ferreira.099@gmail.com";
 const CONCURSOS = {
   sedf: { id: "sedf", nome: "SEDF", banca: "Quadrix", cargo: "Gestor TI" },
   pmdf: { id: "pmdf", nome: "PM DF", banca: "Cebraspe", cargo: "área policial" },
-  tcego: { id: "tcego", nome: "TCE-GO", banca: "FCC", cargo: "TI" },
+  tcego: { id: "tcego", nome: "TCE-GO", banca: "FCC", cargo: "ACE TI" },
 };
+
+const MATERIA_APP = { adm: "dadm", const: "dc", pt: "pt", ti: "ti", red: "red" };
+const APP_MATERIA = { dadm: "adm", dc: "const", pt: "pt", ti: "ti", red: "red" };
+
+const BLOCO_TITULO = {
+  gerais: "Conhecimentos gerais",
+  complementares: "Conhecimentos complementares",
+  especificos: "Conhecimentos específicos",
+  discursiva: "Discursiva",
+  fora: "Fora deste edital",
+};
+
+const BLOCO_CURTO = {
+  gerais: "Gerais",
+  complementares: "Complementares",
+  especificos: "Específicos",
+  discursiva: "Discursiva",
+  fora: "Fora",
+};
+
+const BLOCOS_PROVA = {
+  sedf: {
+    prova: "Quadrix 2022: 40 básicos + 30 complementares + 50 específicos + dissertação.",
+    grupos: [
+      {
+        id: "gerais",
+        lead: "Básicos da prova. Informática aqui é Windows/Office, não redes.",
+        itens: [
+          { id: "pt", nome: "Português" },
+          { id: "adm", nome: "D.Adm" },
+          { id: "ti", nome: "Informática básica", soGabriel: true },
+        ],
+      },
+      {
+        id: "complementares",
+        lead: "Bloco do meio da SEDF. Educação na CF entra aqui.",
+        itens: [{ id: "const", nome: "D.Const" }],
+      },
+      {
+        id: "especificos",
+        soGabriel: true,
+        lead: "Cargo Gestor TI. No app o peso de redes, SQL e segurança está no recorte TCE-GO.",
+        itens: [],
+        extras: ["Redes e infraestrutura", "Banco de dados", "Segurança da informação", "Governança de TI"],
+      },
+      {
+        id: "discursiva",
+        lead: "Dissertação de atualidades, 20–30 linhas.",
+        itens: [{ id: "red", nome: "Redação", soNav: false }],
+      },
+    ],
+  },
+  pmdf: {
+    prova: "CFO Cebraspe: 40 gerais + 40 específicos + discursiva.",
+    grupos: [
+      {
+        id: "gerais",
+        lead: "Português. Inglês, RLM e direitos humanos também caem; ainda sem bateria no app.",
+        itens: [{ id: "pt", nome: "Português" }],
+        extras: ["Inglês", "Raciocínio lógico", "Direitos humanos"],
+      },
+      {
+        id: "especificos",
+        lead: "D.Const e D.Adm. Penal e penal militar ainda sem bateria no app.",
+        itens: [
+          { id: "const", nome: "D.Const" },
+          { id: "adm", nome: "D.Adm" },
+        ],
+        extras: ["Penal e processual", "Penal militar"],
+      },
+      {
+        id: "fora",
+        lead: "Informática não cai no CFO 2025. No plano do Gabriel ainda aparece como recorte antigo.",
+        itens: [{ id: "ti", nome: "TI / Informática", soGabriel: true }],
+      },
+      {
+        id: "discursiva",
+        lead: "Questão discursiva dos específicos (segurança e direitos).",
+        itens: [{ id: "red", nome: "Redação", soNav: false }],
+      },
+    ],
+  },
+  tcego: {
+    provaGabriel: "ACE TI · FCC: 60 gerais + 40 específicos (30 de TI).",
+    provaAmanda: "ACE Controle · FCC: 60 gerais + 40 específicos (controle, auditoria, orçamento).",
+    grupos: [
+      {
+        id: "gerais",
+        lead: "Português, D.Const e D.Adm. Financeiro, contabilidade e legislação de Goiás também são gerais no edital (ainda sem bateria).",
+        itens: [
+          { id: "pt", nome: "Português" },
+          { id: "const", nome: "D.Const" },
+          { id: "adm", nome: "D.Adm" },
+        ],
+        extras: ["Direito financeiro", "Contabilidade pública", "Legislação de Goiás"],
+      },
+      {
+        id: "especificos",
+        leadGabriel: "30 questões de TI (redes, SQL, segurança) e um pouco de controle/orçamento.",
+        leadAmanda: "Controle externo, auditoria, orçamento. Licitação também pesa neste bloco.",
+        itens: [{ id: "ti", nome: "TI (redes, SQL, segurança)", soGabriel: true }],
+        extrasGabriel: ["Controle e auditoria (poucas questões)"],
+        extrasAmanda: ["Controle externo", "Auditoria", "Orçamento público", "Licitações e contratos"],
+      },
+      {
+        id: "discursiva",
+        lead: "Estudo de caso, não dissertação ENEM.",
+        itens: [{ id: "red", nome: "Redação", soNav: false }],
+      },
+    ],
+  },
+};
+
+function materiaParaApp(id) {
+  return MATERIA_APP[id] || id;
+}
+
+function materiaDoApp(appId) {
+  return APP_MATERIA[appId] || appId;
+}
+
+function cargoDoConcurso(id, pessoa) {
+  const c = CONCURSOS[id];
+  if (!c) return id;
+  if (id === "tcego") return pessoa === "amanda" ? "ACE · Controle Externo" : "ACE · TI";
+  return c.cargo;
+}
+
+function gruposDoConcurso(concurso, pessoa) {
+  const p = normalizarPessoa(pessoa);
+  const def = BLOCOS_PROVA[concurso];
+  if (!def) return [];
+  return (def.grupos || [])
+    .map((g) => {
+      if (g.soGabriel && p === "amanda") return null;
+      const itens = (g.itens || [])
+        .filter((it) => !(it.soGabriel && p === "amanda"))
+        .map((it) => ({
+          ...it,
+          appId: materiaParaApp(it.id),
+          nav: it.soNav !== false && it.id !== "red",
+        }));
+      const extras =
+        p === "amanda" ? g.extrasAmanda || g.extras || [] : g.extrasGabriel || g.extras || [];
+      const lead = p === "amanda" ? g.leadAmanda || g.lead : g.leadGabriel || g.lead;
+      if (!itens.length && !extras.length) return null;
+      return {
+        id: g.id,
+        titulo: BLOCO_TITULO[g.id] || g.id,
+        curto: BLOCO_CURTO[g.id] || g.id,
+        lead: lead || "",
+        itens,
+        extras,
+      };
+    })
+    .filter(Boolean);
+}
+
+function provaDoConcurso(concurso, pessoa) {
+  const def = BLOCOS_PROVA[concurso];
+  if (!def) return "";
+  const p = normalizarPessoa(pessoa);
+  if (p === "amanda") return def.provaAmanda || def.prova || "";
+  return def.provaGabriel || def.prova || "";
+}
+
+function blocoProvaDoConcurso(concurso, pessoa) {
+  const c = CONCURSOS[concurso];
+  if (!c) return null;
+  const p = normalizarPessoa(pessoa);
+  return {
+    id: concurso,
+    nome: c.nome,
+    banca: c.banca,
+    cargo: cargoDoConcurso(concurso, p),
+    prova: provaDoConcurso(concurso, p),
+    grupos: gruposDoConcurso(concurso, p),
+  };
+}
+
+function mapaProva(pessoa, concursos) {
+  return listaConcursos(concursos).map((id) => blocoProvaDoConcurso(id, pessoa)).filter(Boolean);
+}
+
+function blocoDaMateria(concurso, materia, pessoa) {
+  const mid = materiaDoApp(materia);
+  const grupos = gruposDoConcurso(concurso, pessoa);
+  for (const g of grupos) {
+    if (g.itens.some((it) => it.id === mid || it.appId === materia)) return g;
+  }
+  return null;
+}
 
 const PLANOS = {
   gabriel: {
@@ -57,9 +249,7 @@ function metaPlano(pessoa, concurso) {
   const base = PLANOS[p];
   const alvo =
     ids.length === 1
-      ? p === "gabriel"
-        ? `${c.nome} · ${c.cargo} · ${c.banca}`
-        : `${c.nome} · ${c.banca}`
+      ? `${c.nome} · ${cargoDoConcurso(ids[0], p)} · ${c.banca}`
       : nomesConcursos(ids);
   return {
     ...base,
@@ -543,6 +733,14 @@ function celulasDoMes(ano, mes, porIso) {
 window.CNAPROVADO_PLANOS = {
   PLANOS,
   CONCURSOS,
+  BLOCOS_PROVA,
+  BLOCO_TITULO,
+  materiaParaApp,
+  materiaDoApp,
+  cargoDoConcurso,
+  blocoProvaDoConcurso,
+  mapaProva,
+  blocoDaMateria,
   EMAIL_GABRIEL,
   HORAS_OPCOES,
   REVISAO_PASSOS,
