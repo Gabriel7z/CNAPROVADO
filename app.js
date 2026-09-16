@@ -657,7 +657,9 @@ function htmlIncCamadaEdital(lei) {
 }
 
 function htmlIncLinhasDisciplina(prova, destaque) {
-  const rows = prova.editalOficial || prova.disciplinas || [];
+  const rows = [...(prova.editalOficial || prova.disciplinas || [])].sort(
+    (a, b) => (b.q || 0) - (a.q || 0) || String(a.nome).localeCompare(String(b.nome), "pt-BR")
+  );
   return `<ul class="inc-prova-lista">${rows
     .map((d) => {
       const on = d.materia === destaque || (prova.agrupa?.[destaque] || []).includes(d.materia);

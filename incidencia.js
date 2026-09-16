@@ -302,10 +302,13 @@ const INCIDENCIA = [
 
 function incidenciaComPct(item) {
   const semContagem = Boolean(item.semContagem) || item.topicos.every((t) => !t[1]);
-  const total = item.topicos.reduce((s, t) => s + t[1], 0);
+  const ordenados = [...item.topicos].sort(
+    (a, b) => (b[1] || 0) - (a[1] || 0) || String(a[0]).localeCompare(String(b[0]), "pt-BR")
+  );
+  const total = ordenados.reduce((s, t) => s + t[1], 0);
   let acc = 0;
   let cruzou70 = false;
-  const topicos = item.topicos.map(([nome, q]) => {
+  const topicos = ordenados.map(([nome, q]) => {
     const pct = total ? Math.round((1000 * q) / total) / 10 : 0;
     acc = total ? Math.min(100, Math.round((acc + pct) * 10) / 10) : 0;
     const prio = !semContagem && !cruzou70;
@@ -563,6 +566,15 @@ function parConcursos(ids) {
   return nomes[0] || "";
 }
 
+function pctAfinRank(item, alvo) {
+  const ids = (alvo && alvo.length ? alvo : Object.keys(item.porConcurso || {})).filter(Boolean);
+  const nums = ids
+    .map((id) => item.porConcurso[id]?.pct)
+    .filter((p) => p != null && Number.isFinite(p));
+  if (!nums.length) return -1;
+  return Math.max(...nums);
+}
+
 function agruparAfinidade(opts) {
   const pessoa = opts?.pessoa === "amanda" ? "amanda" : "gabriel";
   const materiaFiltro = opts?.materia && opts.materia !== "todas" ? opts.materia : "";
@@ -610,7 +622,13 @@ function agruparAfinidade(opts) {
       if (!q) return true;
       return slugTexto(`${item.nome} ${item.materiaNome} ${item.par}`).includes(q);
     })
-    .sort((a, b) => b.n - a.n || a.materiaNome.localeCompare(b.materiaNome, "pt-BR") || a.nome.localeCompare(b.nome, "pt-BR"));
+    .sort(
+      (a, b) =>
+        b.n - a.n ||
+        pctAfinRank(b, alvo) - pctAfinRank(a, alvo) ||
+        a.materiaNome.localeCompare(b.materiaNome, "pt-BR") ||
+        a.nome.localeCompare(b.nome, "pt-BR")
+    );
 
   const nMax = alvo.length;
   const materias = MATERIAS_AFINIDADE.filter((m) => !(pessoa === "amanda" && m.soGabriel)).map((m) => {
