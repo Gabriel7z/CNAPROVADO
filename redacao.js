@@ -313,6 +313,53 @@ function redacaoSabadoDe(iso) {
   return `${dt.getFullYear()}-${mm}-${dd}`;
 }
 
+async function redacaoChamarServidor(pedido) {
+  const cloud = window.CNAPROVADO_CLOUD;
+  if (!cloud?.logado?.() || !cloud.client?.functions) {
+    const err = new Error("Faça login para usar o avaliador do servidor.");
+    err.codigo = "nao-logado";
+    throw err;
+  }
+  const { data, error } = await cloud.client.functions.invoke("avaliar-redacao", {
+    body: { sistema: pedido.sistema, usuario: pedido.usuario },
+  });
+  if (error) {
+    const msg = String(error.message || error);
+    const err = new Error(msg);
+    err.codigo = /not found|404|failed to send|functions/i.test(msg) ? "sem-funcao" : "api";
+    throw err;
+  }
+  if (data?.error) {
+    const err = new Error(String(data.error));
+    err.codigo = "api";
+    throw err;
+  }
+  const parecer = redacaoParseParecer(JSON.stringify(data || {}));
+  if (!parecer) {
+    const err = new Error("O servidor não devolveu um parecer.");
+    err.codigo = "api";
+    throw err;
+  }
+  return {
+    ...parecer,
+    modelo: data.modelo || "servidor",
+    aviso: data.aviso || "Parecer de treino com a rubrica do cargo. Não é correção da banca.",
+    origem: "servidor",
+  };
+}
+
+async function redacaoAvaliar(pedido) {
+  try {
+    return await redacaoChamarServidor(pedido);
+  } catch (e) {
+    const key = redacaoLerChaveGemini();
+    if (key) {
+      const local = await redacaoChamarGemini(pedido, key);
+      return { ...local, origem: "local" };
+    }
+    throw e;
+  }
+}
 window.CNAPROVADO_REDACAO = {
   CHECKLIST: REDACAO_CHECKLIST,
   EXTRAS: REDACAO_EXTRAS,
@@ -330,4 +377,6 @@ window.CNAPROVADO_REDACAO = {
   montarPedido: redacaoMontarPedido,
   parseParecer: redacaoParseParecer,
   chamarGemini: redacaoChamarGemini,
+  chamarServidor: redacaoChamarServidor,
+  avaliar: redacaoAvaliar,
 };

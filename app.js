@@ -2026,14 +2026,22 @@ function renderPerfil() {
   const hint = $("#gemini-key-hint");
   const k = window.CNAPROVADO_REDACAO?.lerChave?.() || "";
   if (input && input !== document.activeElement) input.value = k;
-  if (hint) hint.textContent = k ? "Chave salva neste aparelho." : "Sem chave ainda. O Avaliar não chama o modelo.";
+  if (hint) {
+    hint.textContent = k
+      ? "Chave extra neste aparelho (opcional). Sem ela, o Avaliar usa a chave do CNAPROVADO no servidor."
+      : "Padrão: chave do CNAPROVADO no servidor. Este campo só se você quiser usar outra conta Gemini.";
+  }
 }
 
 function salvarGeminiKey() {
   window.CNAPROVADO_REDACAO?.salvarChave?.($("#gemini-key")?.value || "");
   const hint = $("#gemini-key-hint");
   const k = window.CNAPROVADO_REDACAO?.lerChave?.() || "";
-  if (hint) hint.textContent = k ? "Chave salva neste aparelho." : "Chave apagada.";
+  if (hint) {
+    hint.textContent = k
+      ? "Chave extra neste aparelho (opcional)."
+      : "Chave extra apagada. O Avaliar volta a usar a do servidor.";
+  }
 }
 
 function salvarPerfil() {
@@ -2432,20 +2440,6 @@ async function avaliarRedacaoAtual() {
     proposta: item?.proposta,
     texto,
   });
-  const key = red.lerChave();
-  if (!key) {
-    guardar({
-      acertou: [],
-      errou: [],
-      faltou: [
-        "Cola uma chave Gemini grátis em Conta (Google AI Studio → Get API key). Fica só neste aparelho e não sobe para a nuvem.",
-      ],
-      aviso: "Sem chave o texto não vai para modelo nenhum.",
-      rotulo: pedido.rotulo,
-      em: agora(),
-    });
-    return;
-  }
   ui.redacaoAvaliando = true;
   const btn = $("#redacao-avaliar");
   if (btn) {
@@ -2453,17 +2447,24 @@ async function avaliarRedacaoAtual() {
     btn.textContent = "Avaliando…";
   }
   try {
-    const parecer = await red.chamarGemini(pedido, key);
+    const parecer = await red.avaliar(pedido);
     guardar({
       ...parecer,
       rotulo: pedido.rotulo,
       em: agora(),
     });
   } catch (e) {
+    const codigo = e.codigo || "";
+    const faltou =
+      codigo === "nao-logado"
+        ? ["Entra na conta. O avaliador padrão usa a chave do CNAPROVADO no servidor."]
+        : codigo === "sem-funcao"
+          ? ["O avaliador do servidor ainda não está ligado. Enquanto isso, cola uma chave Gemini em Conta (opcional)."]
+          : ["Se persistir, cola uma chave Gemini em Conta ou tenta de novo em alguns minutos."];
     guardar({
       acertou: [],
       errou: [`Não deu para avaliar: ${e.message || e}`],
-      faltou: ["Confere a chave em Conta. Gera outra no AI Studio se essa estiver inválida."],
+      faltou,
       aviso: "O texto não foi corrigido.",
       rotulo: pedido.rotulo,
       em: agora(),

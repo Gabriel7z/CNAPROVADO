@@ -31,7 +31,7 @@
         document.documentElement.setAttribute("data-theme", t);
       } catch (e) {}
     </script>
-        <link rel="stylesheet" href="styles.css?v=212" />
+        <link rel="stylesheet" href="styles.css?v=213" />
   </head>
   <body>
     <div class="wrap app-shell">
@@ -221,9 +221,8 @@
           <p class="kicker" id="redacao-kicker">Fim de semana</p>
           <h1>Redação</h1>
           <p class="lead" id="redacao-lead">
-            Escreve ou cola o texto, depois avalia com a rubrica do cargo:
-            SEDF dissertação, TCE estudo de caso, PM DF segurança. Não é
-            correção da banca.
+            Escreve ou cola o texto, depois avalia com a rubrica do cargo.
+            Logado, o Avaliar usa a chave do CNAPROVADO. Não é correção da banca.
           </p>
           <p class="field-label">Tema</p>
           <select id="redacao-tema" class="inc-filtro"></select>
@@ -317,9 +316,9 @@
           </div>
           <h2 class="chart-title">Avaliador de redação</h2>
           <p class="lead">
-            Chave grátis do Gemini (Google AI Studio → Get API key). Fica só neste
-            aparelho. O texto da redação vai para o Gemini na hora de avaliar;
-            não sobe para o Supabase.
+            Quem está logado avalia com a chave do CNAPROVADO no servidor.
+            Não precisa colar nada. O campo abaixo é opcional, só se você
+            quiser usar outra conta Gemini neste aparelho.
           </p>
           <label class="field">Chave Gemini
             <input id="gemini-key" type="password" autocomplete="off" placeholder="AIza…" />
@@ -353,11 +352,11 @@
     <script src="aulas.js?v=207"></script>
     <script src="planejamento.js?v=211"></script>
     <script src="incidencia.js?v=206"></script>
-    <script src="redacao.js?v=212"></script>
+    <script src="redacao.js?v=213"></script>
     <script src="supabase-config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js"></script>
     <script src="cloud.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-    <script src="app.js?v=212"></script>
+    <script src="app.js?v=213"></script>
   </body>
 </html>
