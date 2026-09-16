@@ -636,6 +636,529 @@ function agruparAfinidade(opts) {
   };
 }
 
+const FONTES_CONCURSO = {
+  sedf: {
+    concurso: "sedf",
+    nome: "SEDF",
+    bancaHistorica: "Quadrix",
+    edital: {
+      ano: 2022,
+      banca: "Quadrix",
+      cargo: "Gestor em Políticas Públicas — TI (cargo 477)",
+      n: 120,
+      tipo: "objetiva C/E",
+      fonte: "Edital nº 31/2022, quadro da prova (item 13.1) e Anexo IV",
+      fonteUrl: "https://www.economia.df.gov.br/2022-magisterio-publico-e-assistencia-a-educacao",
+      blocos: [
+        { nome: "Conhecimentos básicos", q: 40 },
+        { nome: "Conhecimentos complementares", q: 30 },
+        { nome: "Conhecimentos específicos", q: 50 },
+      ],
+      discursiva: "1 dissertação de atualidades (não entra na objetiva)",
+      materias: {
+        pt: {
+          noEdital: true,
+          bloco: "Básicos (40 itens do bloco, sem n próprio por matéria)",
+          programa: [
+            "Interpretação de textos",
+            "Tipologia e gênero textual",
+            "Ortografia",
+            "Coesão e coerência",
+            "Morfologia",
+            "Sintaxe",
+            "Pontuação",
+            "Concordância",
+            "Regência",
+            "Colocação pronominal",
+            "Reescrita de frases",
+            "Semântica",
+          ],
+          fora: [],
+        },
+        adm: {
+          noEdital: true,
+          bloco: "Básicos (40 itens do bloco, sem n próprio por matéria)",
+          programa: [
+            "Estado, governo e administração (conceito e princípios)",
+            "Organização administrativa",
+            "Administração direta e indireta",
+            "Agentes públicos",
+            "Poderes administrativos",
+            "Atos administrativos",
+            "Controle da Administração",
+            "Responsabilidade civil do Estado",
+            "LC 840/2011",
+          ],
+          fora: ["Licitações (14.133)", "Contratos administrativos", "Improbidade administrativa", "Processo administrativo (9.784)", "Serviços públicos"],
+        },
+        const: {
+          noEdital: true,
+          bloco: "Complementares · Legislação (30 itens do bloco, sem n próprio)",
+          nota: "Não era D.Const completo. O edital puxa CF arts. 205 a 214, LODF, LDB, ECA e normas de educação.",
+          programa: ["Educação na CF (arts. 205 a 214)", "Lei Orgânica do DF", "LDB, ECA e inclusão"],
+          fora: ["Defesa do Estado (arts. 136 a 144)", "Organização dos Poderes como disciplina própria de TC"],
+        },
+        ti: {
+          noEdital: true,
+          bloco: "Básicos (informática) + específicos TI (50 itens)",
+          programa: [
+            "Segurança da informação e backup",
+            "Windows, arquivos e Google (básicos)",
+            "Internet e navegação",
+            "Desenvolvimento de sistemas",
+            "Banco de dados e SQL",
+            "Arquitetura de software",
+            "Engenharia de software",
+            "Segurança, redes, suporte e governança de TI",
+          ],
+          fora: [],
+        },
+        red: {
+          noEdital: true,
+          bloco: "Prova discursiva",
+          nota: "1 dissertação de atualidades. Não tem n na objetiva.",
+          programa: ["Dissertação (tema do concurso)"],
+          fora: [],
+        },
+      },
+    },
+    provas: [
+      {
+        id: "gestor-ti",
+        cargo: "Gestor TI",
+        ano: 2022,
+        banca: "Quadrix",
+        n: 120,
+        classificados: 85,
+        fonte: "Questões Estratégicas — classificação desta prova (não é o edital)",
+        fonteUrl: "https://www.questoesestrategicas.com.br/provas/ver/sedf-gestor-tecnologia-da-informacao-quadrix-2022",
+        aviso: "QE rotulou 85 dos 120 itens. Os 35 que faltam não entram no %. Pedagogia 20 neste cargo provavelmente é legislação educacional dos complementares — o edital do Gestor não tem o bloco pedagógico do professor.",
+        disciplinas: [
+          { materia: "ped", nome: "Pedagogia / educação (rótulo QE)", q: 20 },
+          { materia: "pt", nome: "Português", q: 15 },
+          { materia: "const", nome: "D.Const (rótulo QE)", q: 10 },
+          { materia: "ti", nome: "Informática básica", q: 9 },
+          { materia: "df", nome: "História e geografia do DF", q: 9 },
+          { materia: "dev", nome: "Programação", q: 6 },
+          { materia: "sql", nome: "Banco de dados", q: 5 },
+          { materia: "adm", nome: "D.Adm", q: 4 },
+          { materia: "leg", nome: "Legislação estadual", q: 3 },
+          { materia: "arch", nome: "Arquitetura de software", q: 2 },
+          { materia: "eng", nome: "Engenharia de software", q: 2 },
+        ],
+        agrupa: {
+          ti: ["ti", "dev", "sql", "arch", "eng"],
+        },
+      },
+    ],
+  },
+  pmdf: {
+    concurso: "pmdf",
+    nome: "PM DF",
+    bancaHistorica: "Cebraspe (caderno) · última prova AOCP",
+    edital: {
+      ano: 2023,
+      banca: "Instituto AOCP",
+      cargo: "Soldado QPPMC",
+      n: 80,
+      tipo: "objetiva A–E",
+      fonte: "Edital PMDF 2023 — quadro da objetiva (40 gerais + 40 específicos)",
+      fonteUrl: "https://blog.grancursosonline.com.br/concurso-pmdf-2023-raio-x-disciplinas/",
+      blocos: [
+        { nome: "Língua Portuguesa", q: 10 },
+        { nome: "Língua Inglesa", q: 4 },
+        { nome: "Matemática e raciocínio lógico", q: 9 },
+        { nome: "Atualidades", q: 7 },
+        { nome: "Legislação aplicada à PMDF", q: 10 },
+        { nome: "Conhecimentos específicos (7 disciplinas, sem n próprio)", q: 40 },
+      ],
+      discursiva: "Redação à parte da objetiva",
+      materias: {
+        pt: {
+          noEdital: true,
+          bloco: "Gerais · 10 questões oficiais",
+          nEdital: 10,
+          programa: [
+            "Interpretação de textos",
+            "Coesão e coerência",
+            "Ortografia",
+            "Morfologia",
+            "Sintaxe",
+            "Concordância",
+            "Regência",
+            "Pontuação",
+          ],
+          fora: [],
+        },
+        adm: {
+          noEdital: true,
+          bloco: "Específicos (40 itens do bloco, sem n próprio por matéria)",
+          programa: [
+            "Regime jurídico administrativo",
+            "Poderes e deveres da Administração",
+            "Organização administrativa",
+            "Atos administrativos",
+            "Responsabilidade civil do Estado",
+            "Improbidade administrativa",
+            "Processo administrativo",
+            "Licitações e contratos (Lei 14.133)",
+            "Serviços públicos",
+            "Agentes públicos",
+            "Controle da Administração",
+            "Bens públicos",
+            "Acesso à informação",
+          ],
+          fora: [],
+        },
+        const: {
+          noEdital: true,
+          bloco: "Específicos · Constitucional e Direitos Humanos (sem n próprio)",
+          programa: [
+            "Princípios fundamentais",
+            "Direitos fundamentais (art. 5º)",
+            "Organização do Estado",
+            "Administração Pública na CF",
+            "Organização dos Poderes",
+            "Remédios constitucionais",
+            "Defesa do Estado (arts. 136 a 144)",
+          ],
+          fora: [],
+        },
+        ti: {
+          noEdital: false,
+          bloco: "Fora do último edital de Soldado",
+          nota: "Informática não estava na prova de Soldado 2023 (AOCP). O caderno Cebraspe é tendência de área policial, não desta prova.",
+          programa: [],
+          fora: ["SO, Windows e arquivos", "Pacote Office", "Internet, navegador e e-mail", "Segurança da informação", "Redes e protocolos"],
+        },
+        red: {
+          noEdital: true,
+          bloco: "Redação (fora da objetiva)",
+          programa: ["Dissertação (tema do concurso)"],
+          fora: [],
+        },
+      },
+    },
+    provas: [
+      {
+        id: "soldado-2023",
+        cargo: "Soldado",
+        ano: 2023,
+        banca: "Instituto AOCP",
+        n: 80,
+        classificados: 80,
+        fonte: "Questões Estratégicas — classificação desta prova (não é o edital)",
+        fonteUrl: "https://www.questoesestrategicas.com.br/provas/ver/pm-df-soldado-da-policia-militar-instituto-aocp-2023",
+        aviso: "Edital mandou 10 de português; nesta classificação saíram 8 de PT + 2 de redação oficial. D.Const 3 + Direitos Humanos 3. Informática: 0. A banca desta prova foi AOCP, não Cebraspe.",
+        disciplinas: [
+          { materia: "leg", nome: "Legislação estadual / PMDF", q: 10 },
+          { materia: "pt", nome: "Português", q: 8 },
+          { materia: "mat", nome: "Matemática", q: 6 },
+          { materia: "pppm", nome: "Processual penal militar", q: 6 },
+          { materia: "penmil", nome: "Penal militar", q: 6 },
+          { materia: "procpen", nome: "Processual penal", q: 6 },
+          { materia: "penal", nome: "Direito penal", q: 6 },
+          { materia: "df", nome: "História e geografia", q: 5 },
+          { materia: "adm", nome: "D.Adm", q: 5 },
+          { materia: "crim", nome: "Criminologia", q: 4 },
+          { materia: "ing", nome: "Inglês", q: 4 },
+          { materia: "const", nome: "D.Const", q: 3 },
+          { materia: "dh", nome: "Direitos humanos", q: 3 },
+          { materia: "rl", nome: "Raciocínio lógico", q: 3 },
+          { materia: "atual", nome: "Atualidades", q: 2 },
+          { materia: "redof", nome: "Redação oficial", q: 2 },
+          { materia: "legfed", nome: "Legislação federal", q: 1 },
+        ],
+        agrupa: {
+          const: ["const", "dh"],
+          pt: ["pt", "redof"],
+        },
+      },
+    ],
+  },
+  tcego: {
+    concurso: "tcego",
+    nome: "TCE-GO",
+    bancaHistorica: "FCC",
+    edital: {
+      ano: 2022,
+      banca: "FCC",
+      cargo: "Analista de Controle Externo — especialidade TI",
+      n: 100,
+      tipo: "objetiva A–E",
+      fonte: "Edital TCE-GO 01/2022 e retificação 02/2022 (quadro oficial de n por disciplina)",
+      fonteUrl: "https://portal.tce.go.gov.br/documents/20181/670590/EDITAL%2002-2022%20-%20RETIFICA%C3%87%C3%83O%20DO%20EDITAL%2001-2022%20-%20DO/5a856003-6a75-4c35-83fc-7cdf8ccfa356",
+      blocos: [
+        { nome: "Língua Portuguesa", q: 25, peso: 1 },
+        { nome: "Noções de D.Const", q: 10, peso: 1 },
+        { nome: "Noções de D.Adm", q: 10, peso: 1 },
+        { nome: "Noções de D.Financeiro", q: 8, peso: 1 },
+        { nome: "Legislação de Goiás", q: 7, peso: 1 },
+        { nome: "Orçamento público", q: 2, peso: 2 },
+        { nome: "Controle externo", q: 2, peso: 2 },
+        { nome: "Técnicas de auditoria", q: 6, peso: 2 },
+        { nome: "Tecnologia da Informação", q: 30, peso: 2 },
+      ],
+      discursiva: "2 estudos de caso (específicos II)",
+      materias: {
+        pt: {
+          noEdital: true,
+          bloco: "Gerais · 25 questões oficiais (peso 1)",
+          nEdital: 25,
+          programa: [
+            "Interpretação de textos",
+            "Ortografia",
+            "Pontuação",
+            "Morfologia",
+            "Sintaxe",
+            "Coesão e coerência",
+            "Concordância",
+            "Regência",
+            "Vozes (ativa/passiva)",
+            "Tipos de discurso",
+            "Reescrita de frases",
+          ],
+          fora: [],
+        },
+        adm: {
+          noEdital: true,
+          bloco: "Gerais · 10 noções oficiais (peso 1). Licitações está no programa das noções, sem n separado neste cargo.",
+          nEdital: 10,
+          nota: "No cargo Controle Externo havia +8 de Licitações nos específicos (peso 2). No cargo TI isso não existe.",
+          programa: [
+            "Regime jurídico administrativo",
+            "Controle da Administração",
+            "Agentes públicos",
+            "Processo administrativo",
+            "Poderes e deveres da Administração",
+            "Intervenção na propriedade",
+            "Responsabilidade civil do Estado",
+            "Improbidade administrativa",
+            "Serviços públicos",
+            "Organização administrativa",
+            "Acesso à informação",
+            "Licitações e contratos (8.666 e 14.133)",
+            "Pregão",
+          ],
+          fora: [],
+        },
+        const: {
+          noEdital: true,
+          bloco: "Gerais · 10 noções oficiais (peso 1)",
+          nEdital: 10,
+          programa: [
+            "Princípios fundamentais",
+            "Direitos fundamentais (art. 5º)",
+            "Organização do Estado",
+            "Administração Pública na CF",
+            "Organização dos Poderes",
+            "Finanças públicas",
+            "Constituição do Estado de Goiás",
+          ],
+          fora: ["Educação na CF", "Defesa do Estado (arts. 136 a 144)"],
+        },
+        ti: {
+          noEdital: true,
+          bloco: "Específicos · 30 questões oficiais (peso 2)",
+          nEdital: 30,
+          programa: [
+            "Arquitetura de computadores",
+            "Sistemas operacionais (Windows e Linux)",
+            "Redes e protocolos",
+            "Banco de dados e SQL",
+            "Engenharia de software",
+            "Desenvolvimento de sistemas",
+            "Segurança da informação",
+            "Gestão e governança de TI",
+          ],
+          fora: ["Pacote Office como núcleo da prova"],
+        },
+        red: {
+          noEdital: true,
+          bloco: "Discursiva · 2 estudos de caso",
+          programa: ["Dissertação (tema do concurso)"],
+          fora: [],
+        },
+      },
+    },
+    provas: [
+      {
+        id: "ace-ti",
+        cargo: "ACE · TI",
+        ano: 2022,
+        banca: "FCC",
+        n: 100,
+        classificados: null,
+        fonte: "Retificação do edital — n oficial por disciplina. Sem classificação tópico a tópico desta prova.",
+        fonteUrl: "https://lsensino.com.br/noticia/concurso-tce-go-retificacao-e-divulgada/",
+        aviso: "Aqui o n é o do edital (oficial). Não fatiamos as 10 de D.Adm nem as 30 de TI por assunto — n=1 prova não segura % de tópico.",
+        soEdital: true,
+        editalCargo: {
+          cargo: "Analista de Controle Externo — especialidade TI",
+          n: 100,
+          nPorMateria: { pt: 25, const: 10, adm: 10, ti: 30 },
+        },
+        disciplinas: [
+          { materia: "pt", nome: "Português", q: 25 },
+          { materia: "const", nome: "D.Const", q: 10 },
+          { materia: "adm", nome: "D.Adm", q: 10 },
+          { materia: "fin", nome: "D.Financeiro", q: 8 },
+          { materia: "leg", nome: "Legislação de Goiás", q: 7 },
+          { materia: "aud", nome: "Técnicas de auditoria", q: 6 },
+          { materia: "orc", nome: "Orçamento público", q: 2 },
+          { materia: "controle", nome: "Controle externo", q: 2 },
+          { materia: "ti", nome: "Tecnologia da Informação", q: 30 },
+        ],
+      },
+      {
+        id: "ace-controle",
+        cargo: "ACE · Controle Externo",
+        ano: 2022,
+        banca: "FCC",
+        n: 100,
+        classificados: 100,
+        fonte: "Edital (n oficial) + Questões Estratégicas (classificação da prova)",
+        fonteUrl: "https://www.questoesestrategicas.com.br/provas/ver/tce-go-analista-de-controle-externo-controle-externo-fcc-2022",
+        aviso: "Edital: D.Adm 10 + Licitações 8 = 18. QE rotulou 19 como D.Adm e 8 como D.Const (edital mandava 10). São duas contas, as duas com fonte.",
+        agrupa: { adm: ["adm", "lic"], const: ["const"] },
+        editalCargo: {
+          cargo: "Analista de Controle Externo — Controle Externo",
+          n: 100,
+          nPorMateria: { pt: 25, const: 10, adm: 18, ti: null },
+          noEdital: { ti: false },
+          blocoPorMateria: {
+            adm: "10 noções (peso 1) + 8 licitações nos específicos (peso 2) = 18 oficiais",
+            ti: "Fora dos específicos deste cargo — TI era especialidade à parte",
+          },
+          notaPorMateria: {
+            adm: "Licitações tinha n próprio neste cargo. No cargo TI as licitações só entram nas 10 noções, sem n separado.",
+            ti: "Este cargo não tinha 30 de TI. Isso é do ACE TI.",
+          },
+        },
+        disciplinas: [
+          { materia: "pt", nome: "Português", q: 25 },
+          { materia: "adm", nome: "D.Adm (rótulo QE, inclui licitação)", q: 19 },
+          { materia: "leg", nome: "Legislação estadual", q: 14 },
+          { materia: "orc", nome: "AFO / orçamento", q: 9 },
+          { materia: "aud", nome: "Auditoria", q: 9 },
+          { materia: "const", nome: "D.Const (rótulo QE)", q: 8 },
+          { materia: "contab", nome: "Contabilidade pública", q: 7 },
+          { materia: "tc", nome: "Legislação dos TCs", q: 6 },
+          { materia: "trib", nome: "D.Tributário", q: 1 },
+          { materia: "eleit", nome: "D.Eleitoral", q: 1 },
+          { materia: "tc2", nome: "Legislação dos TCs (resto)", q: 1 },
+        ],
+        editalOficial: [
+          { materia: "pt", nome: "Português", q: 25 },
+          { materia: "const", nome: "D.Const", q: 10 },
+          { materia: "adm", nome: "D.Adm (noções)", q: 10 },
+          { materia: "lic", nome: "Licitações e contratos", q: 8 },
+          { materia: "fin", nome: "D.Financeiro", q: 8 },
+          { materia: "leg", nome: "Legislação de Goiás", q: 7 },
+          { materia: "orc", nome: "Orçamento público", q: 10 },
+          { materia: "controle", nome: "Controle externo", q: 9 },
+          { materia: "aud", nome: "Técnicas de auditoria", q: 10 },
+          { materia: "prev", nome: "Previdência", q: 3 },
+        ],
+      },
+    ],
+  },
+};
+
+function fontesDoConcurso(concurso) {
+  return FONTES_CONCURSO[concurso] || null;
+}
+
+function provaPrincipal(concurso, opts) {
+  const f = fontesDoConcurso(concurso);
+  if (!f?.provas?.length) return null;
+  const pessoa = opts?.pessoa === "amanda" ? "amanda" : "gabriel";
+  if (concurso === "tcego") {
+    if (opts?.materia === "ti") return f.provas.find((p) => p.id === "ace-ti") || f.provas[0];
+    if (pessoa === "amanda") return f.provas.find((p) => p.id === "ace-controle") || f.provas[0];
+    return f.provas.find((p) => p.id === "ace-ti") || f.provas[0];
+  }
+  return f.provas[0];
+}
+
+function qDaDisciplina(prova, materia) {
+  if (!prova) return { q: 0, nomes: [], ausente: true };
+  const ids = new Set([materia, ...((prova.agrupa && prova.agrupa[materia]) || [])]);
+  const rows = (prova.disciplinas || []).filter((d) => ids.has(d.materia));
+  const q = rows.reduce((s, r) => s + r.q, 0);
+  return {
+    q,
+    nomes: rows.map((r) => r.nome),
+    ausente: !rows.length,
+  };
+}
+
+function pctProva(q, n) {
+  if (!n) return 0;
+  return Math.round((1000 * q) / n) / 10;
+}
+
+function leituraMateria(concurso, materia, opts) {
+  const f = fontesDoConcurso(concurso);
+  const recorte = incidenciaRecorte(concurso, materia);
+  if (!f) {
+    return { concurso, materia, recorte, edital: null, prova: null };
+  }
+  const prova = provaPrincipal(concurso, { ...opts, materia });
+  const edBase = f.edital || null;
+  const overlay = prova?.editalCargo || null;
+  const edMatBase = edBase?.materias?.[materia] || null;
+  const nEdital =
+    overlay?.nPorMateria && Object.prototype.hasOwnProperty.call(overlay.nPorMateria, materia)
+      ? overlay.nPorMateria[materia]
+      : edMatBase?.nEdital;
+  const noEdital =
+    overlay?.noEdital && Object.prototype.hasOwnProperty.call(overlay.noEdital, materia)
+      ? overlay.noEdital[materia]
+      : edMatBase?.noEdital;
+  const edMat = edMatBase
+    ? {
+        ...edMatBase,
+        nEdital: nEdital,
+        noEdital: noEdital,
+        bloco: (overlay?.blocoPorMateria && overlay.blocoPorMateria[materia]) || edMatBase.bloco,
+        nota: overlay?.notaPorMateria?.[materia] || edMatBase.nota,
+      }
+    : null;
+  const conta = qDaDisciplina(prova, materia);
+  const nBase = prova?.classificados || prova?.n || 0;
+  return {
+    concurso,
+    nome: f.nome,
+    materia,
+    recorte,
+    edital: edBase
+      ? {
+          ...edBase,
+          cargo: overlay?.cargo || edBase.cargo,
+          n: overlay?.n || edBase.n,
+          materia: edMat,
+        }
+      : null,
+    prova: prova
+      ? {
+          ...prova,
+          qMateria: conta.q,
+          nomesMateria: conta.nomes,
+          ausente: conta.ausente,
+          pct: !conta.ausente && nBase ? pctProva(conta.q, prova.n) : null,
+          nRotulo: prova.classificados && prova.classificados !== prova.n ? `${prova.classificados}/${prova.n} rotulados` : `${prova.n} questões`,
+        }
+      : null,
+    outrasProvas: (f.provas || []).filter((p) => p !== prova),
+  };
+}
+
+function cruzarMateria(materia, concursos, opts) {
+  const ids = (concursos && concursos.length ? concursos : CONCURSO_ORDEM).filter((id) => FONTES_CONCURSO[id]);
+  return ids.map((id) => leituraMateria(id, materia, opts));
+}
+
 window.CNAPROVADO_INCIDENCIA = {
   lista: INCIDENCIA,
   concursos: incidenciaConcursos,
@@ -647,4 +1170,8 @@ window.CNAPROVADO_INCIDENCIA = {
   materiasAfinidade: MATERIAS_AFINIDADE,
   concursoNome: CONCURSO_NOME,
   concursoOrdem: CONCURSO_ORDEM,
+  fontes: FONTES_CONCURSO,
+  leitura: leituraMateria,
+  cruzar: cruzarMateria,
+  provaPrincipal,
 };
