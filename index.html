@@ -31,7 +31,7 @@
         document.documentElement.setAttribute("data-theme", t);
       } catch (e) {}
     </script>
-        <link rel="stylesheet" href="styles.css?v=207" />
+        <link rel="stylesheet" href="styles.css?v=210" />
   </head>
   <body>
     <div class="wrap app-shell">
@@ -220,8 +220,9 @@
           <p class="kicker" id="redacao-kicker">Fim de semana</p>
           <h1>Redação</h1>
           <p class="lead" id="redacao-lead">
-            Tema, uma hora no relógio, checklist e o texto. O app não corrige
-            como professor — serve para não pular o sábado e o domingo.
+            Escreve ou cola o texto, depois avalia com a rubrica do cargo:
+            SEDF dissertação, TCE estudo de caso, PM DF segurança. Não é
+            correção da banca.
           </p>
           <p class="field-label">Tema</p>
           <select id="redacao-tema" class="inc-filtro"></select>
@@ -244,13 +245,15 @@
               id="redacao-texto"
               rows="14"
               maxlength="12000"
-              placeholder="Escreve ou cola aqui. 20–30 linhas. O rascunho fica salvo neste aparelho."
+              placeholder="Escreve ou cola aqui. 20–30 linhas. Depois aperta Avaliar. O rascunho fica neste aparelho."
             ></textarea>
           </label>
           <p class="hint" id="redacao-contagem"></p>
           <div class="actions" id="redacao-acoes">
-            <button type="button" class="primary" id="redacao-feito">Marcar o dia como feito</button>
+            <button type="button" class="primary" id="redacao-avaliar">Avaliar</button>
+            <button type="button" class="ghost" id="redacao-feito">Marcar o dia como feito</button>
           </div>
+          <div id="redacao-parecer" class="redacao-parecer-wrap"></div>
         </section>
 
         <section id="view-cards" class="hero hidden">
@@ -311,6 +314,19 @@
           <div class="actions">
             <button id="salvar-perfil" class="primary" type="button">Salvar avatar</button>
           </div>
+          <h2 class="chart-title">Avaliador de redação</h2>
+          <p class="lead">
+            Chave grátis do Gemini (Google AI Studio → Get API key). Fica só neste
+            aparelho. O texto da redação vai para o Gemini na hora de avaliar;
+            não sobe para o Supabase.
+          </p>
+          <label class="field">Chave Gemini
+            <input id="gemini-key" type="password" autocomplete="off" placeholder="AIza…" />
+          </label>
+          <p class="hint" id="gemini-key-hint"></p>
+          <div class="actions">
+            <button id="salvar-gemini" class="ghost" type="button">Salvar chave</button>
+          </div>
         </section>
       </main>
       <nav class="dock hidden" id="dock" aria-label="Atalhos">
@@ -336,11 +352,11 @@
     <script src="aulas.js?v=207"></script>
     <script src="planejamento.js?v=207"></script>
     <script src="incidencia.js?v=206"></script>
-    <script src="redacao.js"></script>
+    <script src="redacao.js?v=210"></script>
     <script src="supabase-config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js"></script>
     <script src="cloud.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-    <script src="app.js?v=207"></script>
+    <script src="app.js?v=210"></script>
   </body>
 </html>

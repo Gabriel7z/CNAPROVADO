@@ -15,6 +15,7 @@ const ui = {
   errosAberto: null,
   redacaoKey: "",
   redacaoTick: { running: false, endsAt: 0, remain: 3600, minutos: 60 },
+  redacaoAvaliando: false,
   quiz: { i: 0, respostas: [], bloqueado: false, embaralhar: false, fila: [], fonte: "materia" },
   anki: { i: 0, virado: false, fila: [] },
 };
@@ -1859,6 +1860,18 @@ function renderPerfil() {
     grid.appendChild(btn);
   });
   renderConta($("#conta-box"));
+  const input = $("#gemini-key");
+  const hint = $("#gemini-key-hint");
+  const k = window.CNAPROVADO_REDACAO?.lerChave?.() || "";
+  if (input && input !== document.activeElement) input.value = k;
+  if (hint) hint.textContent = k ? "Chave salva neste aparelho." : "Sem chave ainda. O Avaliar não chama o modelo.";
+}
+
+function salvarGeminiKey() {
+  window.CNAPROVADO_REDACAO?.salvarChave?.($("#gemini-key")?.value || "");
+  const hint = $("#gemini-key-hint");
+  const k = window.CNAPROVADO_REDACAO?.lerChave?.() || "";
+  if (hint) hint.textContent = k ? "Chave salva neste aparelho." : "Chave apagada.";
 }
 
 function salvarPerfil() {
@@ -2209,6 +2222,100 @@ function pintarContagemRedacao() {
   }
 }
 
+function htmlParecerRedacao(parecer) {
+  if (!parecer) {
+    return `<p class="hint">Cola o texto e aperta Avaliar. O parecer usa a rubrica do cargo. Não é correção da banca.</p>`;
+  }
+  const bloco = (titulo, itens, cls) => {
+    if (!itens?.length) return "";
+    return `<section class="redacao-parecer-bloco ${cls}"><h3>${esc(titulo)}</h3><ul>${itens
+      .map((i) => `<li>${esc(i)}</li>`)
+      .join("")}</ul></section>`;
+  };
+  return `<article class="redacao-parecer">
+    <p class="kicker">Parecer${parecer.rotulo ? ` · ${esc(parecer.rotulo)}` : ""}</p>
+    ${parecer.aviso ? `<p class="inc-aviso">${esc(parecer.aviso)}</p>` : ""}
+    ${bloco("Acertou", parecer.acertou, "ok")}
+    ${bloco("Errou", parecer.errou, "bad")}
+    ${bloco("Faltou para este cargo", parecer.faltou, "falta")}
+    ${parecer.em ? `<p class="hint">${esc(parecer.em)}${parecer.modelo ? ` · ${esc(parecer.modelo)}` : ""}</p>` : ""}
+  </article>`;
+}
+
+function pintarParecerRedacao(parecer) {
+  const box = $("#redacao-parecer");
+  if (box) box.innerHTML = htmlParecerRedacao(parecer);
+}
+
+async function avaliarRedacaoAtual() {
+  const red = window.CNAPROVADO_REDACAO;
+  if (!red?.montarPedido) return;
+  const texto = $("#redacao-texto")?.value || "";
+  patchRascunhoRedacao({ texto });
+  const item = listaTemasRedacao().itens.find((t) => t.key === ui.redacaoKey);
+  const pre = red.precheck(texto);
+  const agora = () => new Date().toLocaleString("pt-BR");
+  const guardar = (parecer) => {
+    patchRascunhoRedacao({ parecer, texto });
+    pintarParecerRedacao(parecer);
+  };
+  if (!pre.ok) {
+    guardar({ ...pre.parecer, rotulo: "texto curto", em: agora() });
+    return;
+  }
+  const pedido = red.montarPedido({
+    pessoa: planoIdAtual(),
+    concursos: planoConcursosAtuais(),
+    titulo: item?.titulo,
+    proposta: item?.proposta,
+    texto,
+  });
+  const key = red.lerChave();
+  if (!key) {
+    guardar({
+      acertou: [],
+      errou: [],
+      faltou: [
+        "Cola uma chave Gemini grátis em Conta (Google AI Studio → Get API key). Fica só neste aparelho e não sobe para a nuvem.",
+      ],
+      aviso: "Sem chave o texto não vai para modelo nenhum.",
+      rotulo: pedido.rotulo,
+      em: agora(),
+    });
+    return;
+  }
+  ui.redacaoAvaliando = true;
+  const btn = $("#redacao-avaliar");
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "Avaliando…";
+  }
+  try {
+    const parecer = await red.chamarGemini(pedido, key);
+    guardar({
+      ...parecer,
+      rotulo: pedido.rotulo,
+      em: agora(),
+    });
+  } catch (e) {
+    guardar({
+      acertou: [],
+      errou: [`Não deu para avaliar: ${e.message || e}`],
+      faltou: ["Confere a chave em Conta. Gera outra no AI Studio se essa estiver inválida."],
+      aviso: "O texto não foi corrigido.",
+      rotulo: pedido.rotulo,
+      em: agora(),
+    });
+  } finally {
+    ui.redacaoAvaliando = false;
+    const b = $("#redacao-avaliar");
+    if (b) {
+      b.disabled = false;
+      b.textContent = "Avaliar";
+    }
+  }
+}
+
 function htmlCheckRedacao(checks) {
   return (window.CNAPROVADO_REDACAO.CHECKLIST || [])
     .map((c) => {
@@ -2263,11 +2370,15 @@ function renderRedacao() {
     ? `Hoje · ${nomeConcursoAtual()}`
     : `Treino de redação · ${nomeConcursoAtual()}`;
   $("#redacao-lead").textContent = hojeRed
-    ? `Hoje o plano do ${nomeConcursoAtual()} é escrever. Liga o cronômetro, marca o checklist e não precisa de professor no app — só não pular.`
-    : `Temas do ${nomeConcursoAtual()} (${bancaConcursoAtual()}). Hoje o plano pode não ser redação, mas você treina mesmo assim.`;
-  $("#redacao-proposta").innerHTML = item
-    ? `<p class="kicker">${esc(item.titulo)}</p><p>${esc(item.proposta)}</p>`
-    : "";
+    ? `Hoje o plano do ${nomeConcursoAtual()} é escrever. Liga o cronômetro, cola o texto e avalia com a rubrica deste cargo.`
+    : `Temas do ${nomeConcursoAtual()} (${bancaConcursoAtual()}). Escreve ou cola e aperta Avaliar — o parecer segue a rubrica do cargo, não a banca oficial.`;
+  const rubs = window.CNAPROVADO_REDACAO.rubricasDe?.(planoIdAtual(), planoConcursosAtuais()) || [];
+  const rubHtml = rubs.length
+    ? `<p class="kicker">${esc(item?.titulo || "")}</p><p>${esc(item?.proposta || "")}</p><p class="redacao-rubrica">Rubrica: ${esc(window.CNAPROVADO_REDACAO.rotuloRubricas(rubs))}</p>`
+    : item
+      ? `<p class="kicker">${esc(item.titulo)}</p><p>${esc(item.proposta)}</p>`
+      : "";
+  $("#redacao-proposta").innerHTML = rubHtml;
   const trocou = ui._redacaoMontada !== chave;
   ui.redacaoKey = chave;
   if (trocou) carregarRascunhoNaTela(item);
@@ -2291,6 +2402,14 @@ function renderRedacao() {
       : "Marcar o dia como feito"
     : "Tema livre — o rascunho já salva sozinho";
   $("#redacao-feito").disabled = !podeFeito;
+  const av = $("#redacao-avaliar");
+  if (av) {
+    av.disabled = Boolean(ui.redacaoAvaliando);
+    av.textContent = ui.redacaoAvaliando ? "Avaliando…" : "Avaliar";
+  }
+  const rasc = rascunhoRedacao(chave);
+  const box = $("#redacao-parecer");
+  if (box) box.innerHTML = htmlParecerRedacao(rasc.parecer);
   pintarTimerRedacao();
   pintarContagemRedacao();
 }
@@ -2325,6 +2444,9 @@ function bindRedacaoOnce() {
     if (!diaFeito(item.iso)) toggleDiaFeito(item.iso);
     patchRascunhoRedacao({ texto: $("#redacao-texto")?.value || "" });
     renderRedacao();
+  });
+  $("#redacao-avaliar")?.addEventListener("click", () => {
+    avaliarRedacaoAtual();
   });
 }
 
@@ -2406,6 +2528,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     render();
   });
   $("#salvar-perfil").addEventListener("click", salvarPerfil);
+  $("#salvar-gemini")?.addEventListener("click", salvarGeminiKey);
   bindRedacaoOnce();
   garantirClockRedacao();
   try {
