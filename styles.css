@@ -1724,6 +1724,61 @@ select.inc-filtro {
   justify-content: flex-start;
 }
 
+.redacao-rubrica {
+  margin-top: 10px !important;
+  color: var(--ink) !important;
+  font-weight: 700;
+  font-size: 0.88rem;
+}
+
+.redacao-parecer-wrap {
+  margin: 16px 0 0;
+  min-width: 0;
+}
+
+.redacao-parecer {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px 16px;
+  background: var(--card);
+}
+
+.redacao-parecer .kicker {
+  margin-bottom: 8px;
+}
+
+.redacao-parecer .inc-aviso {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.redacao-parecer-bloco {
+  margin: 12px 0 0;
+}
+
+.redacao-parecer-bloco h3 {
+  margin: 0 0 6px;
+  font-size: 0.95rem;
+}
+
+.redacao-parecer-bloco ul {
+  margin: 0;
+  padding-left: 1.1em;
+}
+
+.redacao-parecer-bloco.ok h3 {
+  color: var(--ok);
+}
+
+.redacao-parecer-bloco.bad h3 {
+  color: var(--bad);
+}
+
+.redacao-parecer-bloco.falta h3 {
+  color: var(--muted);
+}
+
 .redacao-check {
   display: grid;
   gap: 10px;
