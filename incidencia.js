@@ -114,7 +114,7 @@ const INCIDENCIA = [
     materia: "adm",
     materiaNome: "D.Adm",
     banca: "FCC",
-    recorte: "929 questões FCC da área de Gestão e Controle (caderno TEC, TCE-GO 2022). O edital novo puxa Lei 14.133; o histórico ainda mistura 8.666.",
+    recorte: "929 no post do TEC; 900 somadas nesta tabela (caderno FCC, TCE-GO 2022). O edital novo puxa Lei 14.133; o histórico ainda mistura 8.666.",
     fonteUrl: "https://www.tecconcursos.com.br/blog/noticias/concurso-tce-go-2022-priorizacao-de-assuntos/",
     topicos: [
       ["Licitações", 170],

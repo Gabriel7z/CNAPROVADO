@@ -635,9 +635,11 @@ function htmlIncCamadaEdital(lei) {
     </article>`;
   }
   const nOficial =
-    mat.nEdital != null
-      ? `<p class="inc-n"><b>${mat.nEdital}</b> questões oficiais nesta disciplina · prova de ${ed.n}.</p>`
-      : `<p class="inc-n">Está no programa, mas o edital <b>não deu n próprio</b> para esta matéria — só o bloco “${esc(mat.bloco)}”.</p>`;
+    mat.noEdital === false
+      ? ""
+      : mat.nEdital != null
+        ? `<p class="inc-n"><b>${mat.nEdital}</b> questões oficiais nesta disciplina · prova de ${ed.n}.</p>`
+        : `<p class="inc-n">Está no programa, mas o edital <b>não deu n próprio</b> para esta matéria — só o bloco “${esc(mat.bloco)}”.</p>`;
   const fora = mat.fora?.length
     ? `<p class="inc-aviso">Não estava neste edital:</p>${htmlIncTags(mat.fora, "out")}`
     : "";
@@ -845,7 +847,7 @@ function renderPlano() {
   $("#view-plano").classList.toggle("vista-cai", vista === "cai");
   $("#view-plano").classList.toggle("vista-afin", vista === "afin");
   if (vista === "cai") {
-    $("#plano-kicker").textContent = "Banca · o que mais cai";
+        $("#plano-kicker").textContent = "Edital · prova · caderno";
     $("#plano-titulo").textContent = "Filtro por conteúdo";
     $("#plano-lead").textContent =
       "Sem API da QConcursos ou do TEC. A gente cruza edital passado (programa + n oficial quando existe), a prova deste cargo (n=1) e o caderno da banca (n grande, tendência). % de tópico só do caderno — prova pequena não vira fatia de assunto.";
