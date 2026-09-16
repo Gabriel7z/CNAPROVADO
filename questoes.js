@@ -1,5 +1,5 @@
 const AULA = {
-  titulo: "Tópicos 1 a 4 — Fontes, Estado, Direta e Indireta",
+  titulo: "Tópicos 1 a 7 — Fontes, organização, órgãos e técnicas",
   professor: "Thállius Moraes",
   materia: "Direito Administrativo",
   fonte:
@@ -2355,7 +2355,10 @@ const MATERIAS_BASE = [
 ];
 
 function questoesDaMateria(id) {
-  if (id === "dadm") return QUESTOES;
+  if (id === "dadm") {
+    const extra = typeof QUESTOES_DADM_ORG !== "undefined" ? QUESTOES_DADM_ORG : [];
+    return QUESTOES.concat(extra);
+  }
   if (id === "pt") return typeof QUESTOES_PT !== "undefined" ? QUESTOES_PT : [];
   if (id === "dc") {
     const base = typeof QUESTOES_DC !== "undefined" ? QUESTOES_DC : [];

@@ -91,7 +91,7 @@ const CICLOS = {
   sedf: {
     adm: [
       bloco("D.Adm", "Fontes, conceito e objeto", "SEDF/Quadrix. Tópico 1 (Thállius). Q1–50 no app, sem embaralhar. Anota o que errar."),
-      bloco("D.Adm", "Organização administrativa", "Quadrix cobra muito: direta, indireta, desconcentração. Tópico 3. Q101–150."),
+      bloco("D.Adm", "Organização administrativa", "Quadrix cobra muito: direta, indireta, desconcentração. Tópicos 3 a 7 no app (Q101–150 e Q201–350)."),
       bloco("D.Adm", "Atos e poderes", "Atos administrativos + poderes (Quadrix). Cruza com o Anki da semana."),
       bloco("D.Adm", "Agentes, LC 840 e controle", "Agentes públicos do DF (LC 840/2011). Controle e responsabilidade civil. Revisa direta/indireta."),
     ],
@@ -181,7 +181,7 @@ const CICLOS = {
       bloco("D.Adm", "Fontes, conceito e objeto", "TCE-GO/FCC. Tópico 1. Q1–50 no app. Anota o que errar."),
       bloco("D.Adm", "Licitações (Lei 14.133)", "FCC do TCE puxa licitação. Fases, princípios, 14.133 (não fica só na 8.666). 15 itens."),
       bloco("D.Adm", "Serviços e contratos", "Serviços públicos + contratos administrativos. 15 itens FCC."),
-      bloco("D.Adm", "Organização e controle", "Direta/indireta + controle (TCE). Cruza com arts. 70 a 75 da CF."),
+      bloco("D.Adm", "Organização e controle", "Direta/indireta + controle (TCE). Tópicos 3 a 7 no app (Q101–150 e Q201–350). Cruza com arts. 70 a 75 da CF."),
     ],
     consti: [
       bloco("D.Const", "Poder Legislativo e TCs", "TCE-GO: Q201–300 no app. Tópico 5 (Poderes) também vale na PM DF. Tópico 6 (arts. 70–75 / TCs) é só TCE-GO."),
