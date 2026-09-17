@@ -9,8 +9,41 @@ const CONCURSOS = {
   tcego: { id: "tcego", nome: "TCE-GO", banca: "FCC", cargo: "ACE TI" },
 };
 
-const MATERIA_APP = { adm: "dadm", const: "dc", pt: "pt", ti: "ti", red: "red" };
-const APP_MATERIA = { dadm: "adm", dc: "const", pt: "pt", ti: "ti", red: "red" };
+const MATERIA_APP = {
+  adm: "dadm",
+  const: "dc",
+  pt: "pt",
+  ti: "ti",
+  red: "red",
+  df: "df",
+  legedu: "legedu",
+  ing: "ing",
+  rlm: "rlm",
+  dh: "dh",
+  crim: "crim",
+  legispm: "legispm",
+  dfmul: "dfmul",
+  admpub: "admpub",
+  penal: "penal",
+  procpen: "procpen",
+  penex: "penex",
+  penmil: "penmil",
+  procpenmil: "procpenmil",
+  fin: "fin",
+  legisgo: "legisgo",
+  orc: "orc",
+  controle: "controle",
+  aud: "aud",
+  lic: "lic",
+  prev: "prev",
+};
+const APP_MATERIA = {
+  dadm: "adm",
+  dc: "const",
+  pt: "pt",
+  ti: "ti",
+  red: "red",
+};
 
 const BLOCO_TITULO = {
   gerais: "Conhecimentos gerais",
@@ -34,24 +67,36 @@ const BLOCOS_PROVA = {
     grupos: [
       {
         id: "gerais",
-        lead: "Básicos da prova. Informática aqui é Windows/Office, não redes.",
+        lead: "Básicos do Gestor. Informática aqui é Windows/Office/Google, não o específico de redes.",
         itens: [
           { id: "pt", nome: "Português" },
-          { id: "adm", nome: "D.Adm" },
           { id: "ti", nome: "Informática básica", soGabriel: true },
+          { id: "adm", nome: "D.Adm" },
+          { id: "df", nome: "Distrito Federal", semConteudo: true },
         ],
       },
       {
         id: "complementares",
-        lead: "Bloco do meio da SEDF. Educação na CF entra aqui.",
-        itens: [{ id: "const", nome: "D.Const" }],
+        lead: "Legislação do Gestor (não é o bloco pedagógico do professor). D.Const no app cobre a fatia da CF.",
+        itens: [
+          { id: "const", nome: "D.Const (educação na CF)" },
+          { id: "legedu", nome: "Legislação educacional", semConteudo: true },
+        ],
       },
       {
         id: "especificos",
         soGabriel: true,
-        lead: "Cargo Gestor TI. No app o peso de redes, SQL e segurança está no recorte TCE-GO.",
+        lead: "Cargo Gestor TI. Ainda sem bateria própria; o recorte de redes/SQL/segurança no app está no TCE-GO.",
         itens: [],
-        extras: ["Redes e infraestrutura", "Banco de dados", "Segurança da informação", "Governança de TI"],
+        extras: [
+          "Desenvolvimento de sistemas",
+          "Banco de dados e SQL",
+          "Arquitetura de software",
+          "Engenharia de software",
+          "Segurança da informação",
+          "Redes e infraestrutura",
+          "Governança de TI",
+        ],
       },
       {
         id: "discursiva",
@@ -61,22 +106,34 @@ const BLOCOS_PROVA = {
     ],
   },
   pmdf: {
-    prova: "CFO Cebraspe: 40 gerais + 40 específicos + discursiva.",
+    prova: "CFO Cebraspe 2025: 40 gerais + 40 específicos + discursiva.",
     grupos: [
       {
         id: "gerais",
-        lead: "Português. Inglês, RLM e direitos humanos também caem; ainda sem bateria no app.",
-        itens: [{ id: "pt", nome: "Português" }],
-        extras: ["Inglês", "Raciocínio lógico", "Direitos humanos"],
+        lead: "Conhecimentos gerais do CFO 2025. Só Português tem bateria no app por enquanto.",
+        itens: [
+          { id: "pt", nome: "Português" },
+          { id: "legispm", nome: "Legislação da PMDF", semConteudo: true },
+          { id: "dfmul", nome: "DF e política para mulheres", semConteudo: true },
+          { id: "dh", nome: "Direitos humanos", semConteudo: true },
+          { id: "crim", nome: "Criminologia", semConteudo: true },
+          { id: "rlm", nome: "Raciocínio lógico", semConteudo: true },
+          { id: "ing", nome: "Inglês", semConteudo: true },
+        ],
       },
       {
         id: "especificos",
-        lead: "D.Const e D.Adm. Penal e penal militar ainda sem bateria no app.",
+        lead: "Específicos do CFO. D.Const e D.Adm já têm questões; o resto entra depois.",
         itens: [
+          { id: "admpub", nome: "Administração", semConteudo: true },
           { id: "const", nome: "D.Const" },
           { id: "adm", nome: "D.Adm" },
+          { id: "penal", nome: "Direito penal", semConteudo: true },
+          { id: "procpen", nome: "Processual penal", semConteudo: true },
+          { id: "penex", nome: "Leg. penal extravagante", semConteudo: true },
+          { id: "penmil", nome: "Penal militar", semConteudo: true },
+          { id: "procpenmil", nome: "Processual penal militar", semConteudo: true },
         ],
-        extras: ["Penal e processual", "Penal militar"],
       },
       {
         id: "fora",
@@ -85,7 +142,7 @@ const BLOCOS_PROVA = {
       },
       {
         id: "discursiva",
-        lead: "Questão discursiva dos específicos (segurança e direitos).",
+        lead: "1 questão discursiva dos específicos (até 30 linhas).",
         itens: [{ id: "red", nome: "Redação", soNav: false }],
       },
     ],
@@ -96,21 +153,27 @@ const BLOCOS_PROVA = {
     grupos: [
       {
         id: "gerais",
-        lead: "Português, D.Const e D.Adm. Financeiro, contabilidade e legislação de Goiás também são gerais no edital (ainda sem bateria).",
+        lead: "Quadro oficial dos gerais. Só PT, D.Const e D.Adm têm bateria no app.",
         itens: [
           { id: "pt", nome: "Português" },
           { id: "const", nome: "D.Const" },
           { id: "adm", nome: "D.Adm" },
+          { id: "fin", nome: "Direito financeiro", semConteudo: true },
+          { id: "legisgo", nome: "Legislação de Goiás", semConteudo: true },
         ],
-        extras: ["Direito financeiro", "Contabilidade pública", "Legislação de Goiás"],
       },
       {
         id: "especificos",
-        leadGabriel: "30 questões de TI (redes, SQL, segurança) e um pouco de controle/orçamento.",
-        leadAmanda: "Controle externo, auditoria, orçamento. Licitação também pesa neste bloco.",
-        itens: [{ id: "ti", nome: "TI (redes, SQL, segurança)", soGabriel: true }],
-        extrasGabriel: ["Controle e auditoria (poucas questões)"],
-        extrasAmanda: ["Controle externo", "Auditoria", "Orçamento público", "Licitações e contratos"],
+        leadGabriel: "30 de TI (peso 2) + auditoria, orçamento e controle. Só TI tem questões no app.",
+        leadAmanda: "Controle, auditoria, orçamento, licitações e previdência. Ainda sem bateria no app.",
+        itens: [
+          { id: "ti", nome: "TI (redes, SQL, segurança)", soGabriel: true },
+          { id: "orc", nome: "Orçamento público", semConteudo: true },
+          { id: "controle", nome: "Controle externo", semConteudo: true },
+          { id: "aud", nome: "Auditoria", semConteudo: true },
+          { id: "lic", nome: "Licitações e contratos", soAmanda: true, semConteudo: true },
+          { id: "prev", nome: "Previdência", soAmanda: true, semConteudo: true },
+        ],
       },
       {
         id: "discursiva",
@@ -145,6 +208,7 @@ function gruposDoConcurso(concurso, pessoa) {
       if (g.soGabriel && p === "amanda") return null;
       const itens = (g.itens || [])
         .filter((it) => !(it.soGabriel && p === "amanda"))
+        .filter((it) => !(it.soAmanda && p !== "amanda"))
         .map((it) => ({
           ...it,
           appId: materiaParaApp(it.id),
@@ -738,6 +802,7 @@ window.CNAPROVADO_PLANOS = {
   materiaParaApp,
   materiaDoApp,
   cargoDoConcurso,
+  gruposDoConcurso,
   blocoProvaDoConcurso,
   mapaProva,
   blocoDaMateria,

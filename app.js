@@ -194,11 +194,27 @@ function materiaEhTi(m) {
   return m?.id === "ti" || sigla === "ti" || nome.includes("informática") || nome === "ti";
 }
 
+function idsMateriasDoRecorte() {
+  const api = window.CNAPROVADO_PLANOS;
+  const ids = new Set();
+  planoConcursosAtuais().forEach((conc) => {
+    (api?.gruposDoConcurso?.(conc, planoIdAtual()) || []).forEach((g) => {
+      g.itens.forEach((it) => {
+        if (it.nav && it.appId) ids.add(it.appId);
+      });
+    });
+  });
+  return ids;
+}
+
 function materiasVisiveis() {
   const esconderTi = planoIdAtual() === "amanda";
+  const recorte = idsMateriasDoRecorte();
   const vistos = new Set();
   return materias().filter((m) => {
     if (esconderTi && materiaEhTi(m)) return false;
+    const extraUser = String(m.id).startsWith("m-");
+    if (recorte.size && !extraUser && !recorte.has(m.id)) return false;
     const k = String(m.sigla || m.id).toLowerCase();
     if (vistos.has(k)) return false;
     vistos.add(k);
@@ -208,8 +224,10 @@ function materiasVisiveis() {
 
 function htmlBotaoMateria(m) {
   const btn = document.createElement("button");
-  btn.className = `materia${m.id === ui.materia ? " ativa" : ""}`;
+  const vazia = !questoesDaMateria(m.id).length;
+  btn.className = `materia${m.id === ui.materia ? " ativa" : ""}${vazia ? " is-vazio" : ""}`;
   btn.type = "button";
+  btn.title = vazia ? "Matéria do edital — questões ainda não entraram" : m.nome;
   btn.textContent = m.sigla || m.nome;
   btn.addEventListener("click", () => {
     ui.materia = m.id;
@@ -227,6 +245,9 @@ function renderMaterias() {
     ui.materia = "dadm";
   }
   const lista = materiasVisiveis();
+  if (lista.length && !lista.some((m) => m.id === ui.materia)) {
+    ui.materia = lista[0].id;
+  }
   const concursos = planoConcursosAtuais();
   const mapa = window.CNAPROVADO_PLANOS?.blocoProvaDoConcurso?.(concursos[0], planoIdAtual());
   const porApp = Object.fromEntries(lista.map((m) => [m.id, m]));
@@ -630,7 +651,10 @@ function htmlMapaEdital() {
       const grupos = c.grupos
         .map((g) => {
           const chips = [
-            ...g.itens.map((it) => `<span class="edital-chip is-${esc(g.id)}">${esc(it.nome)}</span>`),
+            ...g.itens.map(
+              (it) =>
+                `<span class="edital-chip is-${esc(g.id)}${it.semConteudo ? " is-vazio" : ""}">${esc(it.nome)}</span>`
+            ),
             ...g.extras.map((n) => `<span class="edital-extra">${esc(n)}</span>`),
           ].join("");
           return `<div class="edital-grupo bloco-${esc(g.id)}">
@@ -674,18 +698,22 @@ function htmlMateriasIncidencia(concurso, materias, materiaAtiva) {
   const grupos = (mapa?.grupos || [])
     .map((g) => {
       const mats = [];
+      const pendentes = [];
       g.itens.forEach((it) => {
         const m = porId[it.id];
         if (m && !usados.has(m.id)) {
           usados.add(m.id);
           mats.push(m);
+        } else if (!m) {
+          pendentes.push(it.nome);
         }
       });
-      if (!mats.length && !g.extras.length) return "";
-      const extras = g.extras.length
-        ? `<details class="gaveta"><summary>Também no edital (${g.extras.length})</summary><div class="edital-chips">${g.extras
+      const extrasNomes = [...pendentes, ...(g.extras || [])];
+      if (!mats.length && !extrasNomes.length) return "";
+      const extras = extrasNomes.length
+        ? `<div class="edital-chips">${extrasNomes
             .map((n) => `<span class="edital-extra">${esc(n)}</span>`)
-            .join("")}</div></details>`
+            .join("")}</div>`
         : "";
       const lead = g.lead
         ? `<details class="gaveta"><summary>O que entra neste bloco</summary><p class="edital-lead">${esc(g.lead)}</p></details>`
@@ -693,13 +721,13 @@ function htmlMateriasIncidencia(concurso, materias, materiaAtiva) {
       return `<div class="edital-grupo bloco-${esc(g.id)}">
         <p class="field-label">${esc(g.titulo)}</p>
         ${lead}
-        <div class="plano-switch">${mats.map(btn).join("")}</div>
+        ${mats.length ? `<div class="plano-switch">${mats.map(btn).join("")}</div>` : ""}
         ${extras}
       </div>`;
     })
     .filter(Boolean)
     .join("");
-  const resto = (materias || []).filter((m) => !usados.has(m.id));
+  const resto = (materias || []).filter((m) => !usados.has(m.id) && !(planoIdAtual() === "amanda" && m.id === "ti"));
   const restoHtml = resto.length
     ? `<div class="edital-grupo"><p class="field-label">Outras</p><div class="plano-switch">${resto.map(btn).join("")}</div></div>`
     : "";

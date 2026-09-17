@@ -679,11 +679,14 @@ button:active {
   box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
 }
 
-.materia.ativa,
-.modo.ativo {
-  background: var(--primary);
-  color: var(--primary-ink);
-  border-color: var(--primary);
+.materia.is-vazio,
+.edital-chip.is-vazio {
+  border-style: dashed;
+  opacity: 0.82;
+}
+
+.materia.ativa.is-vazio {
+  opacity: 1;
 }
 
 .add-materia {
