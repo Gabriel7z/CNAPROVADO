@@ -1325,17 +1325,60 @@ button:active {
   margin: 0 0 16px;
 }
 
-#view-plano.vista-cai #plano-estudo,
+.gaveta {
+  margin: 0 0 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
+  padding: 0 14px;
+  background: var(--card);
+  min-width: 0;
+}
+
+.gaveta > summary {
+  cursor: pointer;
+  font-weight: 800;
+  padding: 12px 0;
+  list-style: none;
+}
+
+.gaveta > summary::-webkit-details-marker {
+  display: none;
+}
+
+.gaveta > summary::after {
+  content: "▾";
+  float: right;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.gaveta[open] > summary::after {
+  content: "▴";
+}
+
+.gaveta .edital-chips,
+.gaveta .afin-mats,
+.gaveta .inc-camadas {
+  margin-bottom: 12px;
+}
+
+.plano-ajustes {
+  margin: 0 0 18px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+
+.plano-topo-acoes {
+  margin: 0 0 12px;
+}
+
 #view-plano.vista-cai #plano-dia-sel,
 #view-plano.vista-cai #plano-lista,
 #view-plano.vista-cai #plano-calendario {
   display: none;
 }
 
-#view-plano.vista-afin #plano-metodo,
 #view-plano.vista-afin #plano-hoje,
-#view-plano.vista-afin .plano-carga-box,
-#view-plano.vista-afin #plano-meta,
 #view-plano.vista-afin #plano-dia-sel,
 #view-plano.vista-afin #plano-lista,
 #view-plano.vista-afin #plano-calendario {

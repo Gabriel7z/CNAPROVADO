@@ -31,7 +31,7 @@
         document.documentElement.setAttribute("data-theme", t);
       } catch (e) {}
     </script>
-        <link rel="stylesheet" href="styles.css?v=214" />
+        <link rel="stylesheet" href="styles.css?v=216" />
   </head>
   <body>
     <div class="wrap app-shell">
@@ -95,36 +95,41 @@
           <p class="kicker" id="plano-kicker">Mês 1</p>
           <h1 id="plano-titulo">Seu planejamento</h1>
           <p class="lead" id="plano-lead"></p>
-          <div id="plano-edital" class="edital-mapa"></div>
-          <div class="plano-estudo" id="plano-estudo">
-            <div class="plano-metodo" id="plano-metodo">
-              <p class="kicker">Método · curva do esquecimento</p>
-              <p>
-                Acertar na hora não segura o conteúdo. Sem revisão, a memória cai
-                rápido. Por isso cada assunto volta em <b>24h, 3, 7 e 15 dias</b>:
-                Anki e erros, sem matéria nova. Se o dia for de 1h, entra só a
-                revisão mais urgente.
-              </p>
-            </div>
-            <div class="plano-hoje" id="plano-hoje"></div>
-          <p class="field-label">De quem é este plano</p>
-          <div class="plano-switch" id="plano-switch"></div>
-          <p class="field-label plano-conc-dup">Vou estudar — marca os concursos</p>
-          <div class="plano-switch plano-conc-dup" id="plano-concurso" aria-label="SEDF, PM DF e TCE-GO"></div>
-            <p class="field-label">Quanto tempo você tem</p>
-            <div class="plano-carga-box">
-              <div class="plano-carga-row">
-                <span>Segunda a sexta</span>
-                <div class="plano-switch" id="plano-horas-dia"></div>
-              </div>
-              <div class="plano-carga-row">
-                <span>Sábado e domingo</span>
-                <div class="plano-switch" id="plano-horas-fim"></div>
-              </div>
-              <p class="plano-cal-hint" id="plano-horas-hint"></p>
-            </div>
-            <div class="meta" id="plano-meta"></div>
+          <div class="actions plano-topo-acoes" id="plano-topo-acoes">
+            <button type="button" class="ghost" id="plano-ajustes-btn" aria-expanded="false" aria-controls="plano-ajustes">Ajustar plano</button>
           </div>
+          <div id="plano-ajustes" class="plano-ajustes hidden">
+            <div id="plano-edital" class="edital-mapa"></div>
+            <div class="plano-estudo" id="plano-estudo">
+              <div class="plano-metodo" id="plano-metodo">
+                <p class="kicker">Método · curva do esquecimento</p>
+                <p>
+                  Acertar na hora não segura o conteúdo. Sem revisão, a memória cai
+                  rápido. Por isso cada assunto volta em <b>24h, 3, 7 e 15 dias</b>:
+                  Anki e erros, sem matéria nova. Se o dia for de 1h, entra só a
+                  revisão mais urgente.
+                </p>
+              </div>
+              <p class="field-label">De quem é este plano</p>
+              <div class="plano-switch" id="plano-switch"></div>
+              <p class="field-label plano-conc-dup">Vou estudar — marca os concursos</p>
+              <div class="plano-switch plano-conc-dup" id="plano-concurso" aria-label="SEDF, PM DF e TCE-GO"></div>
+              <p class="field-label">Quanto tempo você tem</p>
+              <div class="plano-carga-box">
+                <div class="plano-carga-row">
+                  <span>Segunda a sexta</span>
+                  <div class="plano-switch" id="plano-horas-dia"></div>
+                </div>
+                <div class="plano-carga-row">
+                  <span>Sábado e domingo</span>
+                  <div class="plano-switch" id="plano-horas-fim"></div>
+                </div>
+                <p class="plano-cal-hint" id="plano-horas-hint"></p>
+              </div>
+              <div class="meta" id="plano-meta"></div>
+            </div>
+          </div>
+          <div class="plano-hoje" id="plano-hoje"></div>
           <p class="field-label">Como ver</p>
           <div class="plano-switch" id="plano-vista" aria-label="Lista, calendário, o que cai ou afinidade"></div>
           <div class="plano-hoje hidden" id="plano-dia-sel"></div>
@@ -357,6 +362,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js"></script>
     <script src="cloud.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-    <script src="app.js?v=214"></script>
+    <script src="app.js?v=216"></script>
   </body>
 </html>

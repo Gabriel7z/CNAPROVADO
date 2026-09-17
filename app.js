@@ -16,6 +16,7 @@ const ui = {
   redacaoKey: "",
   redacaoTick: { running: false, endsAt: 0, remain: 3600, minutos: 60 },
   redacaoAvaliando: false,
+  planoAjustes: false,
   quiz: { i: 0, respostas: [], bloqueado: false, embaralhar: false, fila: [], fonte: "materia" },
   anki: { i: 0, virado: false, fila: [] },
 };
@@ -241,7 +242,7 @@ function renderMaterias() {
         vistos.add(m.id);
         mats.push(m);
       });
-      if (!mats.length && !g.extras.length) return;
+      if (!mats.length) return;
       const wrap = document.createElement("div");
       wrap.className = `materias-grupo bloco-${g.id}`;
       const lab = document.createElement("p");
@@ -251,12 +252,6 @@ function renderMaterias() {
       const row = document.createElement("div");
       row.className = "materias-grupo-row";
       mats.forEach((m) => row.appendChild(htmlBotaoMateria(m)));
-      g.extras.forEach((nome) => {
-        const span = document.createElement("span");
-        span.className = "edital-extra";
-        span.textContent = nome;
-        row.appendChild(span);
-      });
       wrap.appendChild(row);
       nav.appendChild(wrap);
     });
@@ -284,12 +279,6 @@ function renderMaterias() {
     return;
   }
   nav.classList.remove("is-grupos");
-  if (concursos.length > 1) {
-    const lab = document.createElement("p");
-    lab.className = "materias-grupo-lab";
-    lab.textContent = "A mesma matéria muda de bloco em cada concurso — o mapa está no Plano.";
-    nav.appendChild(lab);
-  }
   const row = document.createElement("div");
   row.className = "materias-grupo-row";
   lista.forEach((m) => row.appendChild(htmlBotaoMateria(m)));
@@ -646,7 +635,7 @@ function htmlMapaEdital() {
           ].join("");
           return `<div class="edital-grupo bloco-${esc(g.id)}">
             <p class="field-label">${esc(g.titulo)}</p>
-            <p class="edital-lead">${esc(g.lead)}</p>
+            ${g.lead ? `<details class="gaveta"><summary>O que entra neste bloco</summary><p class="edital-lead">${esc(g.lead)}</p></details>` : ""}
             <div class="edital-chips">${chips}</div>
           </div>`;
         })
@@ -693,11 +682,19 @@ function htmlMateriasIncidencia(concurso, materias, materiaAtiva) {
         }
       });
       if (!mats.length && !g.extras.length) return "";
-      const extras = g.extras.map((n) => `<span class="edital-extra">${esc(n)}</span>`).join("");
+      const extras = g.extras.length
+        ? `<details class="gaveta"><summary>Também no edital (${g.extras.length})</summary><div class="edital-chips">${g.extras
+            .map((n) => `<span class="edital-extra">${esc(n)}</span>`)
+            .join("")}</div></details>`
+        : "";
+      const lead = g.lead
+        ? `<details class="gaveta"><summary>O que entra neste bloco</summary><p class="edital-lead">${esc(g.lead)}</p></details>`
+        : "";
       return `<div class="edital-grupo bloco-${esc(g.id)}">
         <p class="field-label">${esc(g.titulo)}</p>
-        <p class="edital-lead">${esc(g.lead)}</p>
-        <div class="plano-switch">${mats.map(btn).join("")}${extras}</div>
+        ${lead}
+        <div class="plano-switch">${mats.map(btn).join("")}</div>
+        ${extras}
       </div>`;
     })
     .filter(Boolean)
@@ -915,38 +912,35 @@ function htmlIncidencia() {
   const prioN = recorte.semContagem ? recorte.topicos.length : recorte.topicos.filter((t) => t.prio).length;
   const bloco = window.CNAPROVADO_PLANOS?.blocoDaMateria?.(concurso, materia, planoIdAtual());
   return `
-    <div class="plano-metodo">
-      <p class="kicker">Três contas, nenhuma inventada</p>
-      <p>
-        Não tem API da QConcursos nem do TEC. Cruza <b>edital passado</b>
-        (programa e, quando a banca publicou, o n oficial),
-        <b>prova deste cargo</b> (n=1) e <b>caderno da banca</b> (n grande, tendência).
-        % de tópico só sai do caderno. Matérias em gerais e específicos de cada concurso.
-      </p>
-    </div>
     <p class="field-label">Concurso</p>
     <div class="plano-switch" id="inc-concursos">${concBtns}</div>
     <div id="inc-materias">${matBlocos}</div>
-    <p class="field-label">Peso desta matéria nos 3 concursos</p>
     ${htmlIncCruz(materia, api.concursoOrdem)}
-    <div class="inc-camadas">
-      ${htmlIncCamadaEdital(lei)}
-      ${htmlIncCamadaProva(lei)}
-    </div>
-    <label class="inc-filtro-label" for="inc-filtro">Filtrar assunto do caderno</label>
-    <input id="inc-filtro" class="inc-filtro" type="search" placeholder="ex.: interpretação, licitações" value="${esc(filtro)}" autocomplete="off" />
     <div class="meta inc-resumo">
-      <div><b>${esc(recorte.concursoNome)}</b><span>Camada 3 · caderno ${esc(recorte.banca)}${bloco ? ` · ${esc(bloco.titulo)}` : ""}</span></div>
-      <div><b>${recorte.semContagem ? "—" : recorte.total.toLocaleString("pt-BR")}</b><span>${recorte.semContagem ? "sem contagem" : "questões no caderno"}</span></div>
-      <div><b>${prioN}</b><span>${recorte.semContagem ? "assuntos do plano" : "assuntos até ~70%"}</span></div>
+      <div><b>${esc(recorte.concursoNome)}</b><span>Caderno ${esc(recorte.banca)}${bloco ? ` · ${esc(bloco.titulo)}` : ""}</span></div>
+      <div><b>${recorte.semContagem ? "—" : recorte.total.toLocaleString("pt-BR")}</b><span>${recorte.semContagem ? "sem contagem" : "no caderno"}</span></div>
+      <div><b>${prioN}</b><span>${recorte.semContagem ? "assuntos do plano" : "prioridade (~70%)"}</span></div>
     </div>
-    <p class="plano-cal-hint">${esc(recorte.recorte)} Tendência da banca, não é o edital de 2026 e não é a prova deste cargo.</p>
+    <details class="gaveta">
+      <summary>De onde vêm esses números</summary>
+      <p class="edital-lead">
+        Sem API da QConcursos ou do TEC. Edital passado (programa e n oficial quando existe),
+        prova deste cargo (n=1) e caderno da banca (tendência). % de tópico só do caderno.
+      </p>
+      <div class="inc-camadas">
+        ${htmlIncCamadaEdital(lei)}
+        ${htmlIncCamadaProva(lei)}
+      </div>
+      <p class="plano-cal-hint">${esc(recorte.recorte)} Tendência da banca, não é o edital de 2026 e não é a prova deste cargo.</p>
+      <p class="plano-cal-nota">Fonte do caderno: <a href="${esc(recorte.fonteUrl)}" target="_blank" rel="noopener noreferrer">TEC Concursos · priorização de assuntos</a></p>
+    </details>
+    <label class="inc-filtro-label" for="inc-filtro">Filtrar assunto</label>
+    <input id="inc-filtro" class="inc-filtro" type="search" placeholder="ex.: interpretação, licitações" value="${esc(filtro)}" autocomplete="off" />
     <div class="inc-legenda" aria-label="Legenda">
-      <span class="inc-leg-prio">Cai mais no caderno (prioridade)</span>
-      <span>Cai pouco no caderno</span>
+      <span class="inc-leg-prio">Cai mais no caderno</span>
+      <span>Cai pouco</span>
     </div>
     <div id="inc-lista" class="inc-lista">${htmlIncidenciaLista(recorte, filtro)}</div>
-    <p class="plano-cal-nota">Fonte do caderno: <a href="${esc(recorte.fonteUrl)}" target="_blank" rel="noopener noreferrer">TEC Concursos · priorização de assuntos</a></p>
   `;
 }
 
@@ -999,31 +993,35 @@ function renderPlano() {
   $("#view-plano").classList.toggle("vista-cai", vista === "cai");
   $("#view-plano").classList.toggle("vista-afin", vista === "afin");
   if (vista === "cai") {
-        $("#plano-kicker").textContent = "Edital · prova · caderno";
-    $("#plano-titulo").textContent = "Filtro por conteúdo";
+    $("#plano-kicker").textContent = "Edital · prova · caderno";
+    $("#plano-titulo").textContent = "O que cai";
     $("#plano-lead").textContent =
-      "Sem API da QConcursos ou do TEC. A gente cruza edital passado (programa + n oficial quando existe), a prova deste cargo (n=1) e o caderno da banca (n grande, tendência). % de tópico só do caderno — prova pequena não vira fatia de assunto.";
+      "Lista por % do caderno. Abre “De onde vêm esses números” se quiser edital, prova n=1 e fonte.";
   } else if (vista === "afin") {
     $("#plano-kicker").textContent = `Afinidade · ${meta.dono}`;
     $("#plano-titulo").textContent =
       concursos.length === 1 ? `O que cai no ${nomes}` : `Compatibilidade · ${nomes}`;
     $("#plano-lead").textContent =
       concursos.length === 1
-        ? `Você marcou só ${nomes}. Marca mais um em “Vou estudar” (SEDF, PM DF, TCE-GO) para ver o que vale nos dois e gerar o calendário cruzado.`
-        : `Você marcou ${nomes}. Verde = estuda uma vez e vale em todos os que você escolheu. Cinza = recorte de um só. O calendário em Lista/Calendário já fecha nesse recorte.`;
+        ? `Só ${nomes} marcado. Marca mais um em “Vou estudar” para cruzar. Como ler e o mapa das matérias ficam nas gavetas.`
+        : `Marcou ${nomes}. Verde vale em todos; cinza é recorte de um só. Como ler fica na gaveta.`;
   } else {
     $("#plano-kicker").textContent = `Mês 1 · ${meta.dono}`;
     $("#plano-titulo").textContent =
       id === "amanda" ? `Plano da Amanda · ${nomes}` : `Plano do Gabriel · ${nomes}`;
     $("#plano-lead").textContent =
       concursos.length === 1
-        ? `${meta.materias}. Marca em cima os concursos que você vai estudar (pode SEDF + TCE-GO, por exemplo). Aí a afinidade cruza e o calendário fecha nesse recorte. No Gmail do Gabriel entra TI na sexta; na Amanda não entra TI. 14/09 a 13/10/2026. As horas só mudam o tamanho da tarefa.`
-        : `${meta.materias}. Cronograma dos ${concursos.length} concursos marcados (${nomes}): no mesmo dia entra o recorte de cada um. Aba Afinidade mostra o cruzamento. No Gmail do Gabriel entra TI na sexta; na Amanda não entra TI. 14/09 a 13/10/2026.`;
+        ? `${meta.materias}. Hoje embaixo. Método, horas, Gabriel/Amanda e o mapa CG/CE ficam em Ajustar plano. 14/09 a 13/10/2026.`
+        : `${meta.materias}. Cronograma dos ${concursos.length} concursos (${nomes}). Ajustar plano guarda método, horas e o mapa CG/CE. 14/09 a 13/10/2026.`;
   }
   const elMapa = $("#plano-edital");
-  if (elMapa) {
-    elMapa.innerHTML = htmlMapaEdital();
-    elMapa.classList.toggle("hidden", vista === "cai" || vista === "afin");
+  if (elMapa) elMapa.innerHTML = htmlMapaEdital();
+  const boxAjustes = $("#plano-ajustes");
+  const btnAjustes = $("#plano-ajustes-btn");
+  if (boxAjustes) boxAjustes.classList.toggle("hidden", !ui.planoAjustes);
+  if (btnAjustes) {
+    btnAjustes.setAttribute("aria-expanded", ui.planoAjustes ? "true" : "false");
+    btnAjustes.textContent = ui.planoAjustes ? "Fechar ajustes" : "Ajustar plano";
   }
   $("#plano-meta").innerHTML = `
     <div><b>${feitos}/${dias.length}</b><span>dias feitos</span></div>
@@ -1175,6 +1173,12 @@ function renderPlano() {
   });
   if (vista === "cai") bindIncidencia();
   if (vista === "afin") bindAfinidade();
+  $("#plano-ajustes-btn")?.addEventListener("click", () => {
+    ui.planoAjustes = !ui.planoAjustes;
+    const y = window.scrollY;
+    renderPlano();
+    window.scrollTo(0, y);
+  });
 }
 
 function htmlAfinPct(row) {
@@ -1217,13 +1221,13 @@ function htmlAfinAssunto(item, alvo) {
   </article>`;
 }
 
-function htmlAfinGrupo(titulo, lead, itens, alvo) {
+function htmlAfinGrupo(titulo, lead, itens, alvo, aberto) {
   if (!itens.length) return "";
-  return `<section class="afin-grupo">
-    <h2>${esc(titulo)} <b>${itens.length}</b></h2>
+  return `<details class="gaveta"${aberto ? " open" : ""}>
+    <summary>${esc(titulo)} (${itens.length})</summary>
     <p class="afin-grupo-lead">${esc(lead)}</p>
     <div class="afin-lista">${itens.map((item) => htmlAfinAssunto(item, alvo)).join("")}</div>
-  </section>`;
+  </details>`;
 }
 
 function optsAfinidade(filtro) {
@@ -1274,12 +1278,16 @@ function htmlAfinidade() {
         Amarelo = vale em <b>2</b>. Cinza = recorte de <b>um</b> só. Os % são a camada 3
         (caderno TEC, não é o edital de 2026). “plano” é assunto do calendário
         quando a banca não publicou caderno. Peso da matéria na prova e no edital fica em “O que cai”.`;
+  const nMats = dados.materias.filter((m) => m.n > 0).length;
   return `
-    <div class="plano-metodo">
-      <p class="kicker">Como ler</p>
+    <details class="gaveta">
+      <summary>Como ler</summary>
       <p>${comoLer}</p>
-    </div>
-    <div class="afin-mats">${matCards}</div>
+    </details>
+    <details class="gaveta">
+      <summary>Matérias neste recorte (${nMats})</summary>
+      <div class="afin-mats">${matCards}</div>
+    </details>
     <p class="field-label">Filtrar matéria</p>
     <div class="plano-switch" id="afin-materias">${matBtns}</div>
     <label class="inc-filtro-label" for="afin-filtro">Filtrar assunto</label>
@@ -1312,13 +1320,13 @@ function htmlAfinBlocos(dados) {
     </div>`;
   const grupos =
     nMax === 1
-      ? htmlAfinGrupo("Neste concurso", `Recorte da ${nomes}. Marca mais um em “Vou estudar” para cruzar.`, dados.nos1, alvo)
+      ? htmlAfinGrupo("Neste concurso", `Recorte da ${nomes}. Marca mais um em “Vou estudar” para cruzar.`, dados.nos1, alvo, true)
       : nMax === 2
-        ? `${htmlAfinGrupo("Vale nos 2", `Estuda uma vez. Cai nos dois que você marcou (${nomes}).`, dados.nosTodos, alvo)}
-    ${htmlAfinGrupo("Só de um concurso", "Não mistura. Estuda quando o plano daquele concurso pedir.", dados.nos1, alvo)}`
-        : `${htmlAfinGrupo("Vale nos 3", "Estuda uma vez. Cai na SEDF, na PM DF e no TCE-GO.", dados.nosTodos, alvo)}
-    ${htmlAfinGrupo("Vale em 2", "Cai em dois concursos. O terceiro não cobra esse recorte (ou cobra pouco e fora do caderno).", dados.nos2 || dados.nosParcial || [], alvo)}
-    ${htmlAfinGrupo("Só de um concurso", "Não mistura. Estuda quando o plano daquele concurso pedir.", dados.nos1, alvo)}`;
+        ? `${htmlAfinGrupo("Vale nos 2", `Estuda uma vez. Cai nos dois que você marcou (${nomes}).`, dados.nosTodos, alvo, true)}
+    ${htmlAfinGrupo("Só de um concurso", "Não mistura. Estuda quando o plano daquele concurso pedir.", dados.nos1, alvo, false)}`
+        : `${htmlAfinGrupo("Vale nos 3", "Estuda uma vez. Cai na SEDF, na PM DF e no TCE-GO.", dados.nosTodos, alvo, true)}
+    ${htmlAfinGrupo("Vale em 2", "Cai em dois concursos. O terceiro não cobra esse recorte (ou cobra pouco e fora do caderno).", dados.nos2 || dados.nosParcial || [], alvo, false)}
+    ${htmlAfinGrupo("Só de um concurso", "Não mistura. Estuda quando o plano daquele concurso pedir.", dados.nos1, alvo, false)}`;
   return `
     ${meta}
     ${vazio}
@@ -1467,14 +1475,13 @@ function htmlCaiBloco(materiaId, concurso) {
     : "";
   const prio = recorte ? (recorte.semContagem ? recorte.topicos : recorte.topicos.filter((t) => t.prio)) : [];
   const resto = recorte && !recorte.semContagem ? recorte.topicos.filter((t) => !t.prio) : [];
-  const linhasCad = prio
-    .map((t) => {
-      if (!recorte || recorte.semContagem) {
-        return `<li>${esc(t.nome)}</li>`;
-      }
-      return `<li><b>${esc(t.nome)}</b> · ${fmtPct(t.pct)} · ${t.q} no caderno</li>`;
-    })
-    .join("");
+  const destaque = prio.slice(0, 5);
+  const linhaTopico = (t) => {
+    if (!recorte || recorte.semContagem) return `<li>${esc(t.nome)}</li>`;
+    return `<li><b>${esc(t.nome)}</b> · ${fmtPct(t.pct)} · ${t.q} no caderno</li>`;
+  };
+  const linhasDestaque = destaque.map(linhaTopico).join("");
+  const linhasResto = [...prio.slice(5), ...resto].map(linhaTopico).join("");
   const extra = resto.length
     ? `<p>${resto.length} assunto${resto.length === 1 ? "" : "s"} menor${resto.length === 1 ? "" : "es"} ficam na lista completa do caderno.</p>`
     : "";
@@ -1485,15 +1492,33 @@ function htmlCaiBloco(materiaId, concurso) {
   const banca = recorte?.banca || lei?.edital?.banca || "";
   const bloco = window.CNAPROVADO_PLANOS?.blocoDaMateria?.(concurso, materiaId, planoIdAtual());
   const blocoTxt = bloco ? ` · ${bloco.titulo}` : "";
+  const nEd =
+    ed?.nEdital != null
+      ? String(ed.nEdital)
+      : ed?.noEdital === false
+        ? "fora"
+        : ed
+          ? "no programa"
+          : "—";
+  const nPr = !prova ? "—" : prova.ausente ? `0/${prova.n}` : `${prova.qMateria}/${prova.n}`;
+  const nCad = recorte?.semContagem ? "sem caderno" : recorte ? recorte.total.toLocaleString("pt-BR") : "—";
   return `<div class="fonte-aula cai-materia">
     <p class="kicker">O que cai em ${esc(nomeMat)} · ${esc(nomeConc)}${esc(blocoTxt)} · ${esc(banca)}</p>
-    <p>Três contas: edital, prova deste cargo (n=1) e caderno da banca (tendência).</p>
-    <ul>${edLinha}${provaLinha}${linhasCad}</ul>
-    ${ed?.nota ? `<p>${esc(ed.nota)}</p>` : ""}
-    ${prova?.aviso ? `<p>${esc(prova.aviso)}</p>` : ""}
-    ${extra}
-    ${fonteCad}
-    <p><button type="button" class="linkish abrir-o-que-cai" data-concurso="${esc(concurso)}">Ver edital, prova e caderno em O que cai</button></p>
+    <div class="meta inc-resumo">
+      <div><b>${esc(nEd)}</b><span>edital</span></div>
+      <div><b>${esc(nPr)}</b><span>prova n=1</span></div>
+      <div><b>${esc(nCad)}</b><span>caderno</span></div>
+    </div>
+    ${linhasDestaque ? `<ul>${linhasDestaque}</ul>` : ""}
+    <details class="gaveta">
+      <summary>Edital, prova e o resto do caderno</summary>
+      <ul>${edLinha}${provaLinha}${linhasResto}</ul>
+      ${ed?.nota ? `<p>${esc(ed.nota)}</p>` : ""}
+      ${prova?.aviso ? `<p>${esc(prova.aviso)}</p>` : ""}
+      ${extra}
+      ${fonteCad}
+    </details>
+    <p><button type="button" class="linkish abrir-o-que-cai" data-concurso="${esc(concurso)}">Ver lista completa em O que cai</button></p>
   </div>`;
 }
 
