@@ -1173,12 +1173,6 @@ function renderPlano() {
   });
   if (vista === "cai") bindIncidencia();
   if (vista === "afin") bindAfinidade();
-  $("#plano-ajustes-btn")?.addEventListener("click", () => {
-    ui.planoAjustes = !ui.planoAjustes;
-    const y = window.scrollY;
-    renderPlano();
-    window.scrollTo(0, y);
-  });
 }
 
 function htmlAfinPct(row) {
@@ -2834,6 +2828,12 @@ function render() {
 document.addEventListener("DOMContentLoaded", async () => {
   window.CNAPROVADO_ON_CLOUD = () => render();
   render();
+  $("#plano-ajustes-btn")?.addEventListener("click", () => {
+    ui.planoAjustes = !ui.planoAjustes;
+    const y = window.scrollY;
+    renderPlano();
+    window.scrollTo(0, y);
+  });
   $$("#modos-nav .modo, #dock [data-modo]").forEach((btn) => {
     btn.addEventListener("click", () => {
       ui.modo = btn.dataset.modo;
