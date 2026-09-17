@@ -770,12 +770,140 @@ function htmlIncidenciaLista(recorte, filtro) {
     .join("");
 }
 
+function optsIncidenciaLeitura() {
+  return { pessoa: planoIdAtual() };
+}
+
+function htmlIncTags(lista, cls) {
+  if (!lista?.length) return "";
+  return `<div class="inc-tags">${lista
+    .map((nome) => `<span class="inc-tag ${cls}">${esc(nome)}</span>`)
+    .join("")}</div>`;
+}
+
+function htmlIncCamadaEdital(lei) {
+  const ed = lei?.edital;
+  const mat = ed?.materia;
+  if (!ed || !mat) {
+    return `<article class="inc-camada">
+      <p class="kicker">Camada 1 · Edital passado</p>
+      <p>Ainda não mapeamos o programa desta matéria neste concurso.</p>
+    </article>`;
+  }
+  const nOficial =
+    mat.noEdital === false
+      ? ""
+      : mat.nEdital != null
+        ? `<p class="inc-n"><b>${mat.nEdital}</b> questões oficiais nesta disciplina · prova de ${ed.n}.</p>`
+        : `<p class="inc-n">Está no programa, mas o edital <b>não deu n próprio</b> para esta matéria — só o bloco “${esc(mat.bloco)}”.</p>`;
+  const fora = mat.fora?.length
+    ? `<p class="inc-aviso">Não estava neste edital:</p>${htmlIncTags(mat.fora, "out")}`
+    : "";
+  return `<article class="inc-camada">
+    <p class="kicker">Camada 1 · Edital ${ed.ano} · ${esc(ed.banca)}</p>
+    <h3>${esc(ed.cargo)}</h3>
+    <p>${esc(mat.bloco)}</p>
+    ${nOficial}
+    ${mat.nota ? `<p class="inc-aviso">${esc(mat.nota)}</p>` : ""}
+    ${mat.noEdital === false ? `<p class="inc-aviso"><b>Fora da última prova deste cargo.</b></p>` : ""}
+    ${htmlIncTags(mat.programa, "in")}
+    ${fora}
+    <p class="plano-cal-nota">Fonte: <a href="${esc(ed.fonteUrl)}" target="_blank" rel="noopener noreferrer">${esc(ed.fonte)}</a></p>
+  </article>`;
+}
+
+function htmlIncLinhasDisciplina(prova, destaque) {
+  const rows = [...(prova.editalOficial || prova.disciplinas || [])].sort(
+    (a, b) => (b.q || 0) - (a.q || 0) || String(a.nome).localeCompare(String(b.nome), "pt-BR")
+  );
+  return `<ul class="inc-prova-lista">${rows
+    .map((d) => {
+      const on = d.materia === destaque || (prova.agrupa?.[destaque] || []).includes(d.materia);
+      return `<li class="${on ? "is-on" : ""}"><b>${d.q}</b> · ${esc(d.nome)}${on ? " · esta matéria" : ""}</li>`;
+    })
+    .join("")}</ul>`;
+}
+
+function htmlIncCamadaProva(lei) {
+  const prova = lei?.prova;
+  if (!prova) {
+    return `<article class="inc-camada">
+      <p class="kicker">Camada 2 · Prova deste cargo</p>
+      <p>Ainda não contamos uma prova deste cargo com fonte.</p>
+    </article>`;
+  }
+  const desta = prova.ausente
+    ? `<p class="inc-n"><b>0</b> nesta prova · ${esc(prova.cargo)} ${prova.ano} · n=${prova.n}.</p>`
+    : `<p class="inc-n"><b>${prova.qMateria}</b> de ${prova.n} (${prova.pct != null ? fmtPct(prova.pct) : "—"}) nesta prova · ${esc(prova.cargo)} ${prova.ano}.</p>`;
+  const extra = (lei.outrasProvas || [])
+    .map((p) => {
+      const q = (p.disciplinas || [])
+        .filter((d) => d.materia === lei.materia || (p.agrupa?.[lei.materia] || []).includes(d.materia))
+        .reduce((s, d) => s + d.q, 0);
+      const oficial = (p.editalOficial || []).filter(
+        (d) => d.materia === lei.materia || (lei.materia === "adm" && d.materia === "lic")
+      );
+      const nOf = oficial.reduce((s, d) => s + d.q, 0);
+      const extraN = nOf ? `edital ${nOf}` : `${q} na classificação`;
+      return `<p class="inc-aviso">Outro cargo, mesma banca: <b>${esc(p.cargo)}</b> — ${extraN} nesta matéria. Fonte diferente, não mistura.</p>`;
+    })
+    .join("");
+  return `<article class="inc-camada">
+    <p class="kicker">Camada 2 · Prova deste cargo · n=1</p>
+    <h3>${esc(prova.cargo)} · ${prova.banca} ${prova.ano}</h3>
+    ${desta}
+    <p class="inc-aviso">${esc(prova.aviso || "n=1 prova. Não vira % de tópico.")}</p>
+    ${htmlIncLinhasDisciplina(prova, lei.materia)}
+    ${extra}
+    <p class="plano-cal-nota">Fonte: <a href="${esc(prova.fonteUrl)}" target="_blank" rel="noopener noreferrer">${esc(prova.fonte)}</a> · ${esc(prova.nRotulo)}</p>
+  </article>`;
+}
+
+function htmlIncCruzLinha(lei) {
+  const ed = lei.edital?.materia;
+  const prova = lei.prova;
+  const cad = lei.recorte;
+  const nEd =
+    ed?.nEdital != null
+      ? `${ed.nEdital} oficiais`
+      : ed?.noEdital === false
+        ? "fora do edital"
+        : ed
+          ? "no programa, sem n próprio"
+          : "—";
+  const nPr = !prova
+    ? "—"
+    : prova.ausente
+      ? `0/${prova.n}`
+      : `${prova.qMateria}/${prova.n}`;
+  const nCad = cad?.semContagem ? "sem caderno" : cad ? `${cad.total.toLocaleString("pt-BR")} no caderno` : "—";
+  return `<article class="inc-cruz-item">
+    <p class="kicker">${esc(lei.nome)} · ${esc(lei.edital?.banca || lei.prova?.banca || "")}</p>
+    <p><span>Edital</span> <b>${esc(nEd)}</b></p>
+    <p><span>Prova do cargo</span> <b>${esc(nPr)}</b></p>
+    <p><span>Caderno da banca</span> <b>${esc(nCad)}</b></p>
+  </article>`;
+}
+
+function htmlIncCruz(materia, concursos) {
+  const api = window.CNAPROVADO_INCIDENCIA;
+  if (!api?.cruzar) return "";
+  const ids = concursos?.length ? concursos : api.concursoOrdem;
+  const visiveis = planoIdAtual() === "amanda" ? ids.filter((id) => id) : ids;
+  const rows = api.cruzar(materia, visiveis, optsIncidenciaLeitura());
+  return `<div class="inc-cruz" aria-label="Cruzamento por concurso">
+    ${rows.map(htmlIncCruzLinha).join("")}
+  </div>`;
+}
+
 function htmlIncidencia() {
   const sel = incidenciaSel();
   if (!sel?.recorte) {
     return `<p class="vazio">Não deu para carregar a tabela de incidência.</p>`;
   }
   const { recorte, concursos, materias, concurso, materia } = sel;
+  const api = window.CNAPROVADO_INCIDENCIA;
+  const lei = api?.leitura?.(concurso, materia, optsIncidenciaLeitura());
   const concBtns = concursos
     .map(
       (c) =>
@@ -786,36 +914,39 @@ function htmlIncidencia() {
   const filtro = ui.incidenciaFiltro || "";
   const prioN = recorte.semContagem ? recorte.topicos.length : recorte.topicos.filter((t) => t.prio).length;
   const bloco = window.CNAPROVADO_PLANOS?.blocoDaMateria?.(concurso, materia, planoIdAtual());
-  const blocoTxt = bloco ? `${bloco.titulo}` : recorte.materiaNome;
   return `
     <div class="plano-metodo">
-      <p class="kicker">De onde vêm esses %</p>
+      <p class="kicker">Três contas, nenhuma inventada</p>
       <p>
-        QConcursos e TEC não soltam API pública. Estas barras são o caderno
-        histórico que o TEC publicou para a banca do concurso — não é o edital
-        de 2026 e não prevê a prova. Serve para priorizar o que a banca mais
-        cobra. As matérias estão separadas em gerais e específicos de cada
-        concurso. No TCE-GO a TI do Gabriel é cargo específico; na SEDF a
-        informática do caderno é geral (Windows/Office).
+        Não tem API da QConcursos nem do TEC. Cruza <b>edital passado</b>
+        (programa e, quando a banca publicou, o n oficial),
+        <b>prova deste cargo</b> (n=1) e <b>caderno da banca</b> (n grande, tendência).
+        % de tópico só sai do caderno. Matérias em gerais e específicos de cada concurso.
       </p>
     </div>
     <p class="field-label">Concurso</p>
     <div class="plano-switch" id="inc-concursos">${concBtns}</div>
     <div id="inc-materias">${matBlocos}</div>
-    <label class="inc-filtro-label" for="inc-filtro">Filtrar assunto</label>
+    <p class="field-label">Peso desta matéria nos 3 concursos</p>
+    ${htmlIncCruz(materia, api.concursoOrdem)}
+    <div class="inc-camadas">
+      ${htmlIncCamadaEdital(lei)}
+      ${htmlIncCamadaProva(lei)}
+    </div>
+    <label class="inc-filtro-label" for="inc-filtro">Filtrar assunto do caderno</label>
     <input id="inc-filtro" class="inc-filtro" type="search" placeholder="ex.: interpretação, licitações" value="${esc(filtro)}" autocomplete="off" />
     <div class="meta inc-resumo">
-      <div><b>${esc(recorte.concursoNome)}</b><span>${esc(recorte.banca)} · ${esc(blocoTxt)}</span></div>
+      <div><b>${esc(recorte.concursoNome)}</b><span>Camada 3 · caderno ${esc(recorte.banca)}${bloco ? ` · ${esc(bloco.titulo)}` : ""}</span></div>
       <div><b>${recorte.semContagem ? "—" : recorte.total.toLocaleString("pt-BR")}</b><span>${recorte.semContagem ? "sem contagem" : "questões no caderno"}</span></div>
       <div><b>${prioN}</b><span>${recorte.semContagem ? "assuntos do plano" : "assuntos até ~70%"}</span></div>
     </div>
-    <p class="plano-cal-hint">${esc(recorte.recorte)}</p>
+    <p class="plano-cal-hint">${esc(recorte.recorte)} Tendência da banca, não é o edital de 2026 e não é a prova deste cargo.</p>
     <div class="inc-legenda" aria-label="Legenda">
-      <span class="inc-leg-prio">Cai mais (prioridade)</span>
-      <span>Cai pouco</span>
+      <span class="inc-leg-prio">Cai mais no caderno (prioridade)</span>
+      <span>Cai pouco no caderno</span>
     </div>
     <div id="inc-lista" class="inc-lista">${htmlIncidenciaLista(recorte, filtro)}</div>
-    <p class="plano-cal-nota">Fonte: <a href="${esc(recorte.fonteUrl)}" target="_blank" rel="noopener noreferrer">TEC Concursos · priorização de assuntos</a></p>
+    <p class="plano-cal-nota">Fonte do caderno: <a href="${esc(recorte.fonteUrl)}" target="_blank" rel="noopener noreferrer">TEC Concursos · priorização de assuntos</a></p>
   `;
 }
 
@@ -868,10 +999,10 @@ function renderPlano() {
   $("#view-plano").classList.toggle("vista-cai", vista === "cai");
   $("#view-plano").classList.toggle("vista-afin", vista === "afin");
   if (vista === "cai") {
-    $("#plano-kicker").textContent = "Banca · o que mais cai";
+        $("#plano-kicker").textContent = "Edital · prova · caderno";
     $("#plano-titulo").textContent = "Filtro por conteúdo";
     $("#plano-lead").textContent =
-      "Não tem API pública da QConcursos ou do TEC. Estas barras são o histórico da banca nos cadernos que o TEC publicou: SEDF/Quadrix, TCE-GO/FCC e PMDF/Cebraspe. Não é o edital de 2026 e não prevê a prova — é o que mais caiu até agora.";
+      "Sem API da QConcursos ou do TEC. A gente cruza edital passado (programa + n oficial quando existe), a prova deste cargo (n=1) e o caderno da banca (n grande, tendência). % de tópico só do caderno — prova pequena não vira fatia de assunto.";
   } else if (vista === "afin") {
     $("#plano-kicker").textContent = `Afinidade · ${meta.dono}`;
     $("#plano-titulo").textContent =
@@ -1138,11 +1269,11 @@ function htmlAfinidade() {
     nMax === 1
       ? `Você marcou só <b>${esc(nomes)}</b>. Marca mais um concurso em “Vou estudar” para ver o cruzamento e gerar o calendário dos dois.`
       : nMax === 2
-        ? `Verde = o mesmo assunto cai nos <b>2</b> que você marcou (${esc(nomes)}): estuda uma vez, vale nos dois. Cinza = recorte de <b>um</b> só. O concurso que ficou de fora não entra nesta lista. Os % vêm do caderno histórico do TEC (não é o edital de 2026).`
+        ? `Verde = o mesmo assunto cai nos <b>2</b> que você marcou (${esc(nomes)}): estuda uma vez, vale nos dois. Cinza = recorte de <b>um</b> só. O concurso que ficou de fora não entra nesta lista. Os % são a camada 3 (caderno TEC). Peso da matéria na prova e no edital fica em “O que cai”.`
         : `Verde = o mesmo assunto cai nos <b>3</b> concursos: estuda uma vez, vale nos três.
-        Amarelo = vale em <b>2</b>. Cinza = recorte de <b>um</b> só. Os % vêm do caderno
-        histórico do TEC (não é o edital de 2026). “plano” é assunto do calendário
-        quando a banca não publicou caderno daquela matéria.`;
+        Amarelo = vale em <b>2</b>. Cinza = recorte de <b>um</b> só. Os % são a camada 3
+        (caderno TEC, não é o edital de 2026). “plano” é assunto do calendário
+        quando a banca não publicou caderno. Peso da matéria na prova e no edital fica em “O que cai”.`;
   return `
     <div class="plano-metodo">
       <p class="kicker">Como ler</p>
@@ -1312,37 +1443,57 @@ function htmlCaiBloco(materiaId, concurso) {
   const api = window.CNAPROVADO_INCIDENCIA;
   const recorte = api?.recorteApp?.(concurso, materiaId);
   const nomeConc = api?.concursoNome?.[concurso] || concurso;
-  if (!recorte) {
+  const matInc = api?.materiaDaApp?.(materiaId) || materiaId;
+  const lei = api?.leitura?.(concurso, matInc, optsIncidenciaLeitura());
+  if (!recorte && !lei?.edital) {
     return `<div class="fonte-aula cai-materia">
       <p class="kicker">O que mais cai · ${esc(nomeConc)}</p>
       <p>Ainda não tem caderno de incidência para esta matéria neste concurso.</p>
     </div>`;
   }
-  const prio = recorte.semContagem ? recorte.topicos : recorte.topicos.filter((t) => t.prio);
-  const resto = recorte.semContagem ? [] : recorte.topicos.filter((t) => !t.prio);
-  const linhas = prio
+  const ed = lei?.edital?.materia;
+  const prova = lei?.prova;
+  const edLinha = ed
+    ? ed.noEdital === false
+      ? `<li><b>Edital ${lei.edital.ano}</b> · fora do programa deste cargo (${esc(lei.edital.cargo)}).</li>`
+      : ed.nEdital != null
+        ? `<li><b>Edital ${lei.edital.ano}</b> · ${ed.nEdital} oficiais nesta disciplina · ${esc(ed.bloco)}.</li>`
+        : `<li><b>Edital ${lei.edital.ano}</b> · no programa, sem n próprio · ${esc(ed.bloco)}.</li>`
+    : "";
+  const provaLinha = prova
+    ? prova.ausente
+      ? `<li><b>Prova ${esc(prova.cargo)} ${prova.ano}</b> · 0 de ${prova.n} nesta matéria · n=1.</li>`
+      : `<li><b>Prova ${esc(prova.cargo)} ${prova.ano}</b> · ${prova.qMateria} de ${prova.n}${prova.pct != null ? ` (${fmtPct(prova.pct)})` : ""} · n=1.</li>`
+    : "";
+  const prio = recorte ? (recorte.semContagem ? recorte.topicos : recorte.topicos.filter((t) => t.prio)) : [];
+  const resto = recorte && !recorte.semContagem ? recorte.topicos.filter((t) => !t.prio) : [];
+  const linhasCad = prio
     .map((t) => {
-      if (recorte.semContagem) {
+      if (!recorte || recorte.semContagem) {
         return `<li>${esc(t.nome)}</li>`;
       }
       return `<li><b>${esc(t.nome)}</b> · ${fmtPct(t.pct)} · ${t.q} no caderno</li>`;
     })
     .join("");
   const extra = resto.length
-    ? `<p>${resto.length} assunto${resto.length === 1 ? "" : "s"} menor${resto.length === 1 ? "" : "es"} ficam na lista completa.</p>`
+    ? `<p>${resto.length} assunto${resto.length === 1 ? "" : "s"} menor${resto.length === 1 ? "" : "es"} ficam na lista completa do caderno.</p>`
     : "";
-  const fonte = recorte.fonteUrl
-    ? `<p>Fonte: <a href="${esc(recorte.fonteUrl)}" target="_blank" rel="noopener noreferrer">TEC · priorização</a>.</p>`
+  const fonteCad = recorte?.fonteUrl
+    ? `<p>Caderno: <a href="${esc(recorte.fonteUrl)}" target="_blank" rel="noopener noreferrer">TEC · priorização</a>${lei?.edital?.fonteUrl ? ` · Edital: <a href="${esc(lei.edital.fonteUrl)}" target="_blank" rel="noopener noreferrer">${lei.edital.ano}</a>` : ""}${prova?.fonteUrl ? ` · Prova: <a href="${esc(prova.fonteUrl)}" target="_blank" rel="noopener noreferrer">${prova.ano}</a>` : ""}.</p>`
     : "";
+  const nomeMat = recorte?.materiaNome || ed?.bloco || materiaId;
+  const banca = recorte?.banca || lei?.edital?.banca || "";
   const bloco = window.CNAPROVADO_PLANOS?.blocoDaMateria?.(concurso, materiaId, planoIdAtual());
   const blocoTxt = bloco ? ` · ${bloco.titulo}` : "";
   return `<div class="fonte-aula cai-materia">
-    <p class="kicker">O que mais cai em ${esc(recorte.materiaNome)} · ${esc(nomeConc)}${esc(blocoTxt)} · ${esc(recorte.banca)}</p>
-    <p>${esc(recorte.recorte)}</p>
-    <ul>${linhas}</ul>
+    <p class="kicker">O que cai em ${esc(nomeMat)} · ${esc(nomeConc)}${esc(blocoTxt)} · ${esc(banca)}</p>
+    <p>Três contas: edital, prova deste cargo (n=1) e caderno da banca (tendência).</p>
+    <ul>${edLinha}${provaLinha}${linhasCad}</ul>
+    ${ed?.nota ? `<p>${esc(ed.nota)}</p>` : ""}
+    ${prova?.aviso ? `<p>${esc(prova.aviso)}</p>` : ""}
     ${extra}
-    ${fonte}
-    <p><button type="button" class="linkish abrir-o-que-cai" data-concurso="${esc(concurso)}">Ver a lista completa em O que cai</button></p>
+    ${fonteCad}
+    <p><button type="button" class="linkish abrir-o-que-cai" data-concurso="${esc(concurso)}">Ver edital, prova e caderno em O que cai</button></p>
   </div>`;
 }
 
