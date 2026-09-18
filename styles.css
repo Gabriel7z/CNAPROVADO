@@ -99,6 +99,40 @@ body {
   gap: 8px;
 }
 
+.frase-dia {
+  margin: -6px 0 16px;
+  padding: 14px 16px 16px;
+  border-radius: 16px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.frase-dia-kicker {
+  margin: 0 0 6px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.frase-dia-texto {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.45;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.frase-dia-fonte {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.82rem;
+  font-style: normal;
+  color: var(--muted);
+}
+
 .logo {
   font-weight: 800;
   letter-spacing: -0.03em;
