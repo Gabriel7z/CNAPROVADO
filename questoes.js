@@ -2373,6 +2373,14 @@ const MATERIAS_BASE = [
   { id: "aud", nome: "Auditoria", sigla: "Auditoria", cor: "#d4b45a" },
   { id: "lic", nome: "Licitações e contratos", sigla: "Licitações", cor: "#d4b45a" },
   { id: "prev", nome: "Previdência", sigla: "Previd.", cor: "#d4b45a" },
+  { id: "red", nome: "Redação", sigla: "Redação", cor: "#e11d48" },
+  { id: "tisist", nome: "Desenvolvimento de sistemas", sigla: "Dev", cor: "#2f9e8f" },
+  { id: "tibd", nome: "Banco de dados e SQL", sigla: "SQL", cor: "#2f9e8f" },
+  { id: "tiarch", nome: "Arquitetura de software", sigla: "Arq. sw", cor: "#2f9e8f" },
+  { id: "tieng", nome: "Engenharia de software", sigla: "Eng. sw", cor: "#2f9e8f" },
+  { id: "tiseg", nome: "Segurança da informação", sigla: "Seg. TI", cor: "#2f9e8f" },
+  { id: "tiredes", nome: "Redes e infraestrutura", sigla: "Redes", cor: "#2f9e8f" },
+  { id: "tigov", nome: "Governança de TI", sigla: "Gov. TI", cor: "#2f9e8f" },
 ];
 
 function questoesDaMateria(id) {
