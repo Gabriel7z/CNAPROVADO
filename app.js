@@ -17,6 +17,7 @@ const ui = {
   redacaoTick: { running: false, endsAt: 0, remain: 3600, minutos: 60 },
   redacaoAvaliando: false,
   planoAjustes: false,
+  navConcurso: null,
   quiz: { i: 0, respostas: [], bloqueado: false, embaralhar: false, fila: [], fonte: "materia" },
   anki: { i: 0, virado: false, fila: [] },
 };
@@ -237,6 +238,58 @@ function htmlBotaoMateria(m) {
   return btn;
 }
 
+function botaoAddMateria() {
+  const add = document.createElement("button");
+  add.className = "add-materia";
+  add.type = "button";
+  add.textContent = "+ Matéria";
+  add.addEventListener("click", novaMateria);
+  return add;
+}
+
+function appendGruposMateria(nav, concurso, lista) {
+  const mapa = window.CNAPROVADO_PLANOS?.blocoProvaDoConcurso?.(concurso, planoIdAtual());
+  const porApp = Object.fromEntries(lista.map((m) => [m.id, m]));
+  const usados = new Set();
+  (mapa?.grupos || []).forEach((g) => {
+    const mats = [];
+    g.itens.forEach((it) => {
+      if (!it.nav) return;
+      const m = porApp[it.appId];
+      if (!m || usados.has(m.id)) return;
+      usados.add(m.id);
+      mats.push(m);
+    });
+    if (!mats.length) return;
+    const wrap = document.createElement("div");
+    wrap.className = `materias-grupo bloco-${g.id}`;
+    const lab = document.createElement("p");
+    lab.className = "materias-grupo-lab";
+    lab.textContent = g.titulo;
+    wrap.appendChild(lab);
+    const row = document.createElement("div");
+    row.className = "materias-grupo-row";
+    mats.forEach((m) => row.appendChild(htmlBotaoMateria(m)));
+    wrap.appendChild(row);
+    nav.appendChild(wrap);
+  });
+  lista
+    .filter((m) => String(m.id).startsWith("m-") && !usados.has(m.id))
+    .forEach((m) => {
+      const wrap = document.createElement("div");
+      wrap.className = "materias-grupo";
+      const lab = document.createElement("p");
+      lab.className = "materias-grupo-lab";
+      lab.textContent = "Outras";
+      wrap.appendChild(lab);
+      const row = document.createElement("div");
+      row.className = "materias-grupo-row";
+      row.appendChild(htmlBotaoMateria(m));
+      wrap.appendChild(row);
+      nav.appendChild(wrap);
+    });
+}
+
 function renderMaterias() {
   const nav = $("#materias-nav");
   nav.innerHTML = "";
@@ -244,72 +297,18 @@ function renderMaterias() {
   if (esconderTi && materiaEhTi({ id: ui.materia, sigla: ui.materia, nome: ui.materia })) {
     ui.materia = "dadm";
   }
-  const lista = materiasVisiveis();
-  if (lista.length && !lista.some((m) => m.id === ui.materia)) {
-    ui.materia = lista[0].id;
-  }
   const concursos = planoConcursosAtuais();
-  const mapa = window.CNAPROVADO_PLANOS?.blocoProvaDoConcurso?.(concursos[0], planoIdAtual());
-  const porApp = Object.fromEntries(lista.map((m) => [m.id, m]));
-  if (concursos.length === 1 && mapa?.grupos?.length) {
-    nav.classList.add("is-grupos");
-    mapa.grupos.forEach((g) => {
-      const mats = [];
-      const vistos = new Set();
-      g.itens.forEach((it) => {
-        if (!it.nav) return;
-        const m = porApp[it.appId];
-        if (!m || vistos.has(m.id)) return;
-        vistos.add(m.id);
-        mats.push(m);
-      });
-      if (!mats.length) return;
-      const wrap = document.createElement("div");
-      wrap.className = `materias-grupo bloco-${g.id}`;
-      const lab = document.createElement("p");
-      lab.className = "materias-grupo-lab";
-      lab.textContent = g.titulo;
-      wrap.appendChild(lab);
-      const row = document.createElement("div");
-      row.className = "materias-grupo-row";
-      mats.forEach((m) => row.appendChild(htmlBotaoMateria(m)));
-      wrap.appendChild(row);
-      nav.appendChild(wrap);
-    });
-    lista
-      .filter((m) => !mapa.grupos.some((g) => g.itens.some((it) => it.appId === m.id && it.nav)))
-      .forEach((m) => {
-        const wrap = document.createElement("div");
-        wrap.className = "materias-grupo";
-        const lab = document.createElement("p");
-        lab.className = "materias-grupo-lab";
-        lab.textContent = "Outras";
-        wrap.appendChild(lab);
-        const row = document.createElement("div");
-        row.className = "materias-grupo-row";
-        row.appendChild(htmlBotaoMateria(m));
-        wrap.appendChild(row);
-        nav.appendChild(wrap);
-      });
-    const addGrupo = document.createElement("button");
-    addGrupo.className = "add-materia";
-    addGrupo.type = "button";
-    addGrupo.textContent = "+ Matéria";
-    addGrupo.addEventListener("click", novaMateria);
-    nav.appendChild(addGrupo);
-    return;
-  }
-  nav.classList.remove("is-grupos");
-  const row = document.createElement("div");
-  row.className = "materias-grupo-row";
-  lista.forEach((m) => row.appendChild(htmlBotaoMateria(m)));
-  nav.appendChild(row);
-  const add = document.createElement("button");
-  add.className = "add-materia";
-  add.type = "button";
-  add.textContent = "+ Matéria";
-  add.addEventListener("click", novaMateria);
-  nav.appendChild(add);
+  if (ui.navConcurso && !concursos.includes(ui.navConcurso)) ui.navConcurso = null;
+  nav.classList.add("is-grupos");
+  if (!ui.navConcurso) return;
+  const lista = materiasVisiveis();
+  const nome = window.CNAPROVADO_PLANOS?.CONCURSOS?.[ui.navConcurso]?.nome || ui.navConcurso;
+  const labConc = document.createElement("p");
+  labConc.className = "materias-grupo-lab";
+  labConc.textContent = `Matérias · ${nome}`;
+  nav.appendChild(labConc);
+  appendGruposMateria(nav, ui.navConcurso, lista);
+  nav.appendChild(botaoAddMateria());
 }
 
 function novaMateria() {
@@ -1154,17 +1153,7 @@ function renderPlano() {
       renderPlano();
     });
   });
-  $$("#plano-concurso [data-concurso]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      togglePlanoConcurso(btn.dataset.concurso);
-      ui._redacaoMontada = "";
-      const y = window.scrollY;
-      renderFiltroConcurso();
-      renderMaterias();
-      renderPlano();
-      window.scrollTo(0, y);
-    });
-  });
+  bindMarcaConcursos("#plano-concurso");
   $$("#plano-horas-dia [data-horas], #plano-horas-fim [data-horas]").forEach((btn) => {
     btn.addEventListener("click", () => {
       setPlanoCarga(btn.dataset.carga, Number(btn.dataset.horas));
@@ -1567,7 +1556,12 @@ function htmlSwitchConcurso(ativos) {
     .map((c) => {
       const on = ids.includes(c.id);
       const unico = on && soUm;
-      return `<button type="button" class="modo${on ? " ativo" : ""}${unico ? " is-unico" : ""}" data-concurso="${esc(c.id)}" aria-pressed="${on}"${unico ? ' aria-disabled="true" title="Deixa pelo menos um marcado"' : ""}>${esc(c.nome)}</button>`;
+      const aberto = ui.navConcurso === c.id;
+      const x =
+        on && !unico
+          ? `<span class="conc-off" data-conc-off="${esc(c.id)}" title="Tirar ${esc(c.nome)}">×</span>`
+          : "";
+      return `<button type="button" class="modo${on ? " ativo" : ""}${unico ? " is-unico" : ""}${aberto ? " is-aberto" : ""}" data-concurso="${esc(c.id)}" aria-pressed="${on}" title="${aberto ? "Clica de novo para esconder as matérias" : "Clica para ver as matérias"}">${esc(c.nome)}${x}</button>`;
     })
     .join("");
 }
@@ -1586,11 +1580,32 @@ function bancaConcursoAtual() {
 }
 
 function bindMarcaConcursos(sel) {
-  $$(`${sel} [data-concurso]`).forEach((btn) => {
-    btn.addEventListener("click", () => {
+  $$(`${sel} [data-conc-off]`).forEach((x) => {
+    x.addEventListener("click", (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      const id = x.dataset.concOff;
       const antes = planoConcursosAtuais();
-      const next = togglePlanoConcurso(btn.dataset.concurso);
-      if (next.length === antes.length && next.every((id, i) => id === antes[i])) return;
+      if (antes.length === 1) return;
+      togglePlanoConcurso(id);
+      if (ui.navConcurso === id) ui.navConcurso = planoConcursosAtuais()[0] || null;
+      ui._redacaoMontada = "";
+      const y = window.scrollY;
+      render();
+      window.scrollTo(0, y);
+    });
+  });
+  $$(`${sel} [data-concurso]`).forEach((btn) => {
+    btn.addEventListener("click", (ev) => {
+      if (ev.target.closest("[data-conc-off]")) return;
+      const id = btn.dataset.concurso;
+      const atual = planoConcursosAtuais();
+      if (!atual.includes(id)) {
+        togglePlanoConcurso(id);
+        ui.navConcurso = id;
+      } else {
+        ui.navConcurso = ui.navConcurso === id ? null : id;
+      }
       ui._redacaoMontada = "";
       const y = window.scrollY;
       render();
@@ -1607,10 +1622,11 @@ function renderFiltroConcurso() {
   el.setAttribute("aria-multiselectable", "true");
   const hint = $("#filtro-concurso-hint");
   if (hint) {
-    hint.textContent =
-      ids.length === 1
-        ? `Só ${nomesConcursosAtual()} por enquanto. Marca mais um para cruzar a compatibilidade e gerar o calendário dos dois.`
-        : `Marcou ${nomesConcursosAtual()}. A afinidade e o cronograma fecham nesse recorte.`;
+    hint.textContent = ui.navConcurso
+      ? `Matérias de ${window.CNAPROVADO_PLANOS?.CONCURSOS?.[ui.navConcurso]?.nome || ui.navConcurso}. Clica de novo no mesmo para esconder. O × tira o concurso do recorte.`
+      : ids.length === 1
+        ? `Só ${nomesConcursosAtual()} marcado. Clica nele para ver as matérias. Marca mais um para cruzar a afinidade.`
+        : `Marcou ${nomesConcursosAtual()}. Clica num concurso para ver as matérias dele.`;
   }
   bindMarcaConcursos("#filtro-concurso");
 }

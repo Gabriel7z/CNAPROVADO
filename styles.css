@@ -470,6 +470,34 @@ button:active {
   color: #fbbf24;
 }
 
+#materias-nav:empty {
+  display: none;
+}
+
+.materias-dica {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.conc-off {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 6px;
+  width: 18px;
+  height: 18px;
+  border-radius: 99px;
+  font-size: 0.85rem;
+  line-height: 1;
+  font-weight: 800;
+  background: color-mix(in srgb, var(--ink) 10%, transparent);
+}
+
+.modo.is-aberto {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 55%, transparent);
+}
+
 .concurso-bar {
   position: sticky;
   top: 0;

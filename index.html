@@ -31,7 +31,7 @@
         document.documentElement.setAttribute("data-theme", t);
       } catch (e) {}
     </script>
-        <link rel="stylesheet" href="styles.css?v=219" />
+        <link rel="stylesheet" href="styles.css?v=220" />
   </head>
   <body>
     <div class="wrap app-shell">
@@ -61,8 +61,6 @@
         </div>
       </header>
 
-      <nav class="materias hidden" id="materias-nav" aria-label="Matérias"></nav>
-
       <nav class="modos hidden" id="modos-nav" aria-label="Modos">
         <button class="modo ativo" data-modo="plano" type="button">Plano</button>
         <button class="modo" data-modo="questoes" type="button">Questões</button>
@@ -77,8 +75,10 @@
       <div class="concurso-bar hidden" id="concurso-bar">
         <p class="field-label">Vou estudar</p>
         <div class="plano-switch" id="filtro-concurso" aria-label="Marca SEDF, PM DF e TCE-GO"></div>
-        <p class="concurso-hint" id="filtro-concurso-hint">Marca um, dois ou os três. Aí a afinidade mostra o cruzamento e o cronograma fecha nesse recorte.</p>
+        <p class="concurso-hint" id="filtro-concurso-hint">Marca um, dois ou os três. Clica no concurso para ver as matérias dele.</p>
       </div>
+
+      <nav class="materias hidden" id="materias-nav" aria-label="Matérias"></nav>
 
       <main class="card">
         <section id="view-login" class="hero">
@@ -362,6 +362,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js"></script>
     <script src="cloud.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-    <script src="app.js?v=219"></script>
+    <script src="app.js?v=220"></script>
   </body>
 </html>
