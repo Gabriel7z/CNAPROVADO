@@ -36,6 +36,13 @@ const MATERIA_APP = {
   aud: "aud",
   lic: "lic",
   prev: "prev",
+  tisist: "tisist",
+  tibd: "tibd",
+  tiarch: "tiarch",
+  tieng: "tieng",
+  tiseg: "tiseg",
+  tiredes: "tiredes",
+  tigov: "tigov",
 };
 const APP_MATERIA = {
   dadm: "adm",
@@ -87,21 +94,20 @@ const BLOCOS_PROVA = {
         id: "especificos",
         soGabriel: true,
         lead: "Cargo Gestor TI. Ainda sem bateria própria; o recorte de redes/SQL/segurança no app está no TCE-GO.",
-        itens: [],
-        extras: [
-          "Desenvolvimento de sistemas",
-          "Banco de dados e SQL",
-          "Arquitetura de software",
-          "Engenharia de software",
-          "Segurança da informação",
-          "Redes e infraestrutura",
-          "Governança de TI",
+        itens: [
+          { id: "tisist", nome: "Desenvolvimento de sistemas", semConteudo: true, soGabriel: true },
+          { id: "tibd", nome: "Banco de dados e SQL", semConteudo: true, soGabriel: true },
+          { id: "tiarch", nome: "Arquitetura de software", semConteudo: true, soGabriel: true },
+          { id: "tieng", nome: "Engenharia de software", semConteudo: true, soGabriel: true },
+          { id: "tiseg", nome: "Segurança da informação", semConteudo: true, soGabriel: true },
+          { id: "tiredes", nome: "Redes e infraestrutura", semConteudo: true, soGabriel: true },
+          { id: "tigov", nome: "Governança de TI", semConteudo: true, soGabriel: true },
         ],
       },
       {
         id: "discursiva",
         lead: "Dissertação de atualidades, 20–30 linhas.",
-        itens: [{ id: "red", nome: "Redação", soNav: false }],
+        itens: [{ id: "red", nome: "Redação" }],
       },
     ],
   },
@@ -143,7 +149,7 @@ const BLOCOS_PROVA = {
       {
         id: "discursiva",
         lead: "1 questão discursiva dos específicos (até 30 linhas).",
-        itens: [{ id: "red", nome: "Redação", soNav: false }],
+        itens: [{ id: "red", nome: "Redação" }],
       },
     ],
   },
@@ -178,7 +184,7 @@ const BLOCOS_PROVA = {
       {
         id: "discursiva",
         lead: "Estudo de caso, não dissertação ENEM.",
-        itens: [{ id: "red", nome: "Redação", soNav: false }],
+        itens: [{ id: "red", nome: "Redação" }],
       },
     ],
   },
@@ -212,7 +218,7 @@ function gruposDoConcurso(concurso, pessoa) {
         .map((it) => ({
           ...it,
           appId: materiaParaApp(it.id),
-          nav: it.soNav !== false && it.id !== "red",
+          nav: it.soNav !== false,
         }));
       const extras =
         p === "amanda" ? g.extrasAmanda || g.extras || [] : g.extrasGabriel || g.extras || [];

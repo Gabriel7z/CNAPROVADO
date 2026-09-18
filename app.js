@@ -231,6 +231,11 @@ function htmlBotaoMateria(m) {
   btn.title = vazia ? "Matéria do edital — questões ainda não entraram" : m.nome;
   btn.textContent = m.sigla || m.nome;
   btn.addEventListener("click", () => {
+    if (m.id === "red") {
+      ui.modo = "redacao";
+      render();
+      return;
+    }
     ui.materia = m.id;
     ui.modo = "questoes";
     render();
@@ -260,7 +265,7 @@ function appendGruposMateria(nav, concurso, lista) {
       usados.add(m.id);
       mats.push(m);
     });
-    if (!mats.length) return;
+    if (!mats.length && !(g.extras || []).length) return;
     const wrap = document.createElement("div");
     wrap.className = `materias-grupo bloco-${g.id}`;
     const lab = document.createElement("p");
@@ -270,6 +275,12 @@ function appendGruposMateria(nav, concurso, lista) {
     const row = document.createElement("div");
     row.className = "materias-grupo-row";
     mats.forEach((m) => row.appendChild(htmlBotaoMateria(m)));
+    (g.extras || []).forEach((n) => {
+      const chip = document.createElement("span");
+      chip.className = "edital-extra";
+      chip.textContent = n;
+      row.appendChild(chip);
+    });
     wrap.appendChild(row);
     nav.appendChild(wrap);
   });
