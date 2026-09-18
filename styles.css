@@ -491,6 +491,13 @@ button:active {
   font-size: 0.85rem;
   line-height: 1;
   font-weight: 800;
+  background: color-mix(in srgb, var(--ink) 10%, transparent);
+}
+
+.modo.ativo .conc-off,
+.modo.is-aberto .conc-off {
+  background: color-mix(in srgb, var(--primary-ink) 22%, transparent);
+  color: inherit;
 }
 
 .concurso-bar {
@@ -729,11 +736,6 @@ button:active {
   color: var(--primary-ink);
   border-color: var(--primary);
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 40%, transparent);
-}
-
-.conc-off {
-  background: color-mix(in srgb, var(--primary-ink) 22%, transparent);
-  color: inherit;
 }
 
 .add-materia {
