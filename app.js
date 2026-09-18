@@ -1301,7 +1301,16 @@ function htmlAfinidade() {
         (caderno TEC, não é o edital de 2026). “plano” é assunto do calendário
         quando a banca não publicou caderno. Peso da matéria na prova e no edital fica em “O que cai”.`;
   const nMats = dados.materias.filter((m) => m.n > 0).length;
+  const marcados = planoConcursosAtuais();
+  const concBtns = htmlSwitchConcurso(marcados);
+  const dicaMarca =
+    marcados.length === 1
+      ? `Só ${esc(nomes)} marcado. Clica em mais um chip (PM DF, TCE-GO…) para cruzar.`
+      : `Marcou ${esc(nomes)}. Clica de novo num chip para tirar; tem que ficar pelo menos um.`;
   return `
+    <p class="field-label">Vou estudar — marca um, dois ou os três</p>
+    <div class="plano-switch" id="afin-concursos">${concBtns}</div>
+    <p class="concurso-hint">${dicaMarca}</p>
     <details class="gaveta">
       <summary>Como ler</summary>
       <p>${comoLer}</p>
@@ -1358,6 +1367,7 @@ function htmlAfinBlocos(dados) {
 }
 
 function bindAfinidade() {
+  bindMarcaConcursos("#afin-concursos");
   $$("#afin-materias [data-afin-mat]").forEach((btn) => {
     btn.addEventListener("click", () => {
       persist((d) => {
@@ -1575,6 +1585,20 @@ function bancaConcursoAtual() {
     .join(" · ");
 }
 
+function bindMarcaConcursos(sel) {
+  $$(`${sel} [data-concurso]`).forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const antes = planoConcursosAtuais();
+      const next = togglePlanoConcurso(btn.dataset.concurso);
+      if (next.length === antes.length && next.every((id, i) => id === antes[i])) return;
+      ui._redacaoMontada = "";
+      const y = window.scrollY;
+      render();
+      window.scrollTo(0, y);
+    });
+  });
+}
+
 function renderFiltroConcurso() {
   const el = $("#filtro-concurso");
   if (!el) return;
@@ -1588,17 +1612,7 @@ function renderFiltroConcurso() {
         ? `Só ${nomesConcursosAtual()} por enquanto. Marca mais um para cruzar a compatibilidade e gerar o calendário dos dois.`
         : `Marcou ${nomesConcursosAtual()}. A afinidade e o cronograma fecham nesse recorte.`;
   }
-  el.querySelectorAll("[data-concurso]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const antes = planoConcursosAtuais();
-      const next = togglePlanoConcurso(btn.dataset.concurso);
-      if (next.length === antes.length && next.every((id, i) => id === antes[i])) return;
-      ui._redacaoMontada = "";
-      const y = window.scrollY;
-      render();
-      window.scrollTo(0, y);
-    });
-  });
+  bindMarcaConcursos("#filtro-concurso");
 }
 
 function extraRedacaoDoConcurso(banca, concs) {
