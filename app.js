@@ -187,6 +187,19 @@ function travarApp(on) {
   $("#concurso-bar")?.classList.toggle("hidden", !on);
   $("#chip-perfil").classList.toggle("hidden", !on);
   $("#dock")?.classList.toggle("hidden", !on);
+  $("#frase-dia")?.classList.toggle("hidden", !on);
+}
+
+function renderFraseDia() {
+  const el = $("#frase-dia");
+  if (!el) return;
+  const iso = window.CNAPROVADO_PLANOS?.hojeIso?.() || new Date().toISOString().slice(0, 10);
+  const item = window.CNAPROVADO_FRASES?.doDia?.(iso);
+  if (!item) {
+    el.innerHTML = "";
+    return;
+  }
+  el.innerHTML = `<p class="frase-dia-kicker">Frase do dia</p><blockquote class="frase-dia-texto">${esc(item.t)}</blockquote><cite class="frase-dia-fonte">${esc(item.f)}</cite>`;
 }
 
 function materiaEhTi(m) {
@@ -2852,6 +2865,7 @@ function render() {
     return;
   }
   travarApp(true);
+  renderFraseDia();
   renderChip();
   renderMaterias();
   renderModos();

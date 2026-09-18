@@ -31,7 +31,7 @@
         document.documentElement.setAttribute("data-theme", t);
       } catch (e) {}
     </script>
-        <link rel="stylesheet" href="styles.css?v=221" />
+    <link rel="stylesheet" href="styles.css?v=223" />
   </head>
   <body>
     <div class="wrap app-shell">
@@ -60,6 +60,8 @@
           </button>
         </div>
       </header>
+
+      <aside class="frase-dia hidden" id="frase-dia"></aside>
 
       <nav class="modos hidden" id="modos-nav" aria-label="Modos">
         <button class="modo ativo" data-modo="plano" type="button">Plano</button>
@@ -362,6 +364,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js"></script>
     <script src="cloud.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-    <script src="app.js?v=221"></script>
+    <script src="frases.js?v=223"></script>
+    <script src="app.js?v=223"></script>
   </body>
 </html>
