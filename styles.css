@@ -491,11 +491,6 @@ button:active {
   font-size: 0.85rem;
   line-height: 1;
   font-weight: 800;
-  background: color-mix(in srgb, var(--ink) 10%, transparent);
-}
-
-.modo.is-aberto {
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 55%, transparent);
 }
 
 .concurso-bar {
@@ -712,6 +707,13 @@ button:active {
   box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
 }
 
+.materia.ativa,
+.modo.ativo {
+  background: var(--primary);
+  color: var(--primary-ink);
+  border-color: var(--primary);
+}
+
 .materia.is-vazio,
 .edital-chip.is-vazio {
   border-style: dashed;
@@ -720,6 +722,18 @@ button:active {
 
 .materia.ativa.is-vazio {
   opacity: 1;
+}
+
+.modo.is-aberto {
+  background: var(--primary);
+  color: var(--primary-ink);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 40%, transparent);
+}
+
+.conc-off {
+  background: color-mix(in srgb, var(--primary-ink) 22%, transparent);
+  color: inherit;
 }
 
 .add-materia {
