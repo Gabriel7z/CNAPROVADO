@@ -18,6 +18,7 @@ const ui = {
   redacaoAvaliando: false,
   planoAjustes: false,
   navConcurso: null,
+  desempenhoMateria: "todas",
   quiz: { i: 0, respostas: [], bloqueado: false, embaralhar: false, fila: [], fonte: "materia" },
   anki: { i: 0, virado: false, fila: [] },
 };
@@ -2199,9 +2200,27 @@ function fmtDiaPonto(iso) {
   return `${p[2]}.${p[1]}.${p[0]}`;
 }
 
-function serieQuestoesPorDia() {
+function respostasDaMateria(materiaId) {
+  let rows = (db().respostas || []).filter((r) => !materiaPainelOculta(r.materia));
+  if (!materiaId || materiaId === "todas") return rows;
+  return rows.filter((r) => r.materia === materiaId);
+}
+
+function nomeMateriaPainel(id) {
+  const m = materias().find((x) => x.id === id);
+  if (!m) return id;
+  return m.sigla || m.nome;
+}
+
+function materiaPainelOculta(id) {
+  if (planoIdAtual() !== "amanda") return false;
+  const m = materias().find((x) => x.id === id) || { id };
+  return materiaEhTi(m);
+}
+
+function serieQuestoesPorDia(materiaId) {
   const mapa = new Map();
-  (db().respostas || []).forEach((r) => {
+  respostasDaMateria(materiaId).forEach((r) => {
     const dia = isoDiaLocal(r.ts);
     if (!dia) return;
     mapa.set(dia, (mapa.get(dia) || 0) + 1);
@@ -2212,16 +2231,18 @@ function serieQuestoesPorDia() {
     .map(([iso, n]) => ({ iso, n, rotulo: fmtDiaPonto(iso) }));
 }
 
-function htmlChartDias() {
-  const serie = serieQuestoesPorDia();
+function htmlChartDias(materiaId, compacto) {
+  const serie = serieQuestoesPorDia(materiaId);
   if (!serie.length) {
     return '<div class="vazio">Responde questões que o gráfico monta o dia: 12.03.2039 · 50 questões.</div>';
   }
   const max = Math.max(...serie.map((d) => d.n), 1);
   const hoje = isoDiaLocal(Date.now());
+  const teto = compacto ? 72 : 120;
+  const minH = compacto ? 6 : 8;
   const colunas = serie
     .map((d) => {
-      const h = Math.max(8, Math.round((d.n / max) * 120));
+      const h = Math.max(minH, Math.round((d.n / max) * teto));
       const hojeCls = d.iso === hoje ? " is-hoje" : "";
       const [dd, mm, aa] = d.rotulo.split(".");
       return `<div class="dia-col${hojeCls}" title="${esc(d.rotulo)} · ${d.n} questão${d.n === 1 ? "" : "s"}">
@@ -2231,37 +2252,38 @@ function htmlChartDias() {
       </div>`;
     })
     .join("");
-  return `<div class="chart-dias-scroll" role="img" aria-label="Questões respondidas por dia">${colunas}</div>`;
+  const quem = !materiaId || materiaId === "todas" ? "no geral" : `em ${nomeMateriaPainel(materiaId)}`;
+  const cls = compacto ? "chart-dias-scroll is-compacto" : "chart-dias-scroll";
+  return `<div class="${cls}" role="img" aria-label="Questões respondidas por dia ${esc(quem)}">${colunas}</div>`;
 }
 
-function renderDesempenho() {
-  const { geral, por } = totais();
+function totaisDaLista(rows) {
+  const geral = { ok: 0, bad: 0 };
+  (rows || []).forEach((r) => {
+    if (r.acertou) geral.ok += 1;
+    else geral.bad += 1;
+  });
+  return geral;
+}
+
+function htmlKpisDesempenho(geral, hojeN) {
   const total = geral.ok + geral.bad;
   const pct = total ? Math.round((geral.ok / total) * 100) : 0;
-  const nAberto = cadernoItens().length;
-  const serie = serieQuestoesPorDia();
-  const hojeN = serie.find((d) => d.iso === isoDiaLocal(Date.now()))?.n || 0;
-  $("#desempenho-lead").textContent = nAberto
-    ? `Acertos, erros e quantas você fez em cada dia. ${nAberto} questão${nAberto === 1 ? "" : "s"} ainda em aberto no caderno de erros.`
-    : "Acertos, erros e quantas você fez em cada dia. Fica neste aparelho; se você entrar na conta, também sobe para a nuvem.";
-  $("#stats-kpis").innerHTML = `
-    <div><b>${pct}%</b><span>aproveitamento geral</span></div>
+  return `
+    <div><b>${pct}%</b><span>aproveitamento</span></div>
     <div><b>${geral.ok}</b><span>acertos</span></div>
     <div><b>${geral.bad}</b><span>erros</span></div>
     <div><b>${hojeN}</b><span>hoje</span></div>
   `;
-  const boxDias = $("#chart-dias");
-  if (boxDias) boxDias.innerHTML = htmlChartDias();
-  if (!total) {
-    $("#chart-geral").innerHTML = '<div class="vazio">Faça uma bateria para ver os gráficos.</div>';
-    $("#chart-materias").innerHTML = "";
-    $("#historico").innerHTML = "";
-    return;
-  }
+}
+
+function htmlDonutDesempenho(geral) {
+  const total = geral.ok + geral.bad;
+  if (!total) return '<div class="vazio">Faça uma bateria para ver os gráficos.</div>';
   const r = 42;
   const c = 2 * Math.PI * r;
   const okLen = (geral.ok / total) * c;
-  $("#chart-geral").innerHTML = `
+  return `
     <div class="donut-wrap">
       <svg width="120" height="120" viewBox="0 0 120 120" aria-label="Acertos e erros">
         <circle cx="60" cy="60" r="${r}" fill="none" stroke="#eadfca" stroke-width="14"/>
@@ -2274,16 +2296,103 @@ function renderDesempenho() {
       </div>
     </div>
   `;
-  $("#chart-materias").innerHTML = Object.values(por)
-    .filter((m) => m.ok + m.bad > 0)
-    .map((m) => {
-      const t = m.ok + m.bad;
-      const okW = (m.ok / t) * 100;
-      const badW = (m.bad / t) * 100;
-      return `<div class="bar-row"><span>${m.nome}</span><div class="bar-track"><span class="bar-ok" style="width:${okW}%"></span><span class="bar-bad" style="width:${badW}%"></span></div><span>${Math.round((m.ok / t) * 100)}%</span></div>`;
-    })
-    .join("");
-  const hist = db().baterias.slice(-8).reverse();
+}
+
+function listaMateriasComResposta() {
+  const { por } = totais();
+  return Object.entries(por)
+    .filter(([id, m]) => m.ok + m.bad > 0 && !materiaPainelOculta(id))
+    .sort((a, b) => b[1].ok + b[1].bad - (a[1].ok + a[1].bad))
+    .map(([id, m]) => ({ id, ...m, nome: nomeMateriaPainel(id) }));
+}
+
+function htmlFiltroDesempenho(mats) {
+  const atual = ui.desempenhoMateria || "todas";
+  const valido = atual === "todas" || mats.some((m) => m.id === atual);
+  if (!valido) ui.desempenhoMateria = "todas";
+  const sel = ui.desempenhoMateria || "todas";
+  const chips = [
+    `<button type="button" class="modo${sel === "todas" ? " ativo" : ""}" data-desemp-mat="todas">Todas</button>`,
+    ...mats.map(
+      (m) =>
+        `<button type="button" class="modo${sel === m.id ? " ativo" : ""}" data-desemp-mat="${esc(m.id)}">${esc(m.nome)}</button>`
+    ),
+  ];
+  return `<div class="plano-switch" id="desemp-materias">${chips.join("")}</div>`;
+}
+
+function htmlPainelMateria(m) {
+  const t = m.ok + m.bad;
+  const pct = t ? Math.round((m.ok / t) * 100) : 0;
+  const serie = serieQuestoesPorDia(m.id);
+  const hojeN = serie.find((d) => d.iso === isoDiaLocal(Date.now()))?.n || 0;
+  const okW = t ? (m.ok / t) * 100 : 0;
+  const badW = t ? (m.bad / t) * 100 : 0;
+  return `<article class="mat-painel">
+    <header class="mat-painel-topo">
+      <h3>${esc(m.nome)}</h3>
+      <strong>${pct}%</strong>
+    </header>
+    <div class="stats-grid mat-kpis">
+      <div><b>${m.ok}</b><span>acertos</span></div>
+      <div><b>${m.bad}</b><span>erros</span></div>
+      <div><b>${t}</b><span>no total</span></div>
+      <div><b>${hojeN}</b><span>hoje</span></div>
+    </div>
+    <div class="bar-row mat-bar"><span>Acerto</span><div class="bar-track"><span class="bar-ok" style="width:${okW}%"></span><span class="bar-bad" style="width:${badW}%"></span></div><span>${pct}%</span></div>
+    ${htmlChartDias(m.id, true)}
+  </article>`;
+}
+
+function bindFiltroDesempenho() {
+  $$("#desemp-materias [data-desemp-mat]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      ui.desempenhoMateria = btn.getAttribute("data-desemp-mat") || "todas";
+      renderDesempenho();
+    });
+  });
+}
+
+function renderDesempenho() {
+  const { geral: geralTudo } = totais();
+  const totalTudo = geralTudo.ok + geralTudo.bad;
+  const mats = listaMateriasComResposta();
+  const nAberto = cadernoItens().length;
+  const filtroEl = $("#desemp-filtro");
+  if (filtroEl) filtroEl.innerHTML = mats.length ? htmlFiltroDesempenho(mats) : "";
+  bindFiltroDesempenho();
+  const foco = ui.desempenhoMateria || "todas";
+  const geral = totaisDaLista(respostasDaMateria(foco));
+  const serie = serieQuestoesPorDia(foco);
+  const hojeN = serie.find((d) => d.iso === isoDiaLocal(Date.now()))?.n || 0;
+  const nomeFoco = foco === "todas" ? "no geral" : `em ${nomeMateriaPainel(foco)}`;
+  $("#desempenho-lead").textContent = nAberto
+    ? `Acertos, erros e o gráfico do dia ${nomeFoco}. ${nAberto} questão${nAberto === 1 ? "" : "s"} ainda em aberto no caderno de erros.`
+    : `Acertos, erros e o gráfico do dia ${nomeFoco}. Fica neste aparelho; se você entrar na conta, também sobe para a nuvem.`;
+  $("#stats-kpis").innerHTML = htmlKpisDesempenho(geral, hojeN);
+  const hint = $("#chart-dias-hint");
+  if (hint) {
+    hint.textContent =
+      foco === "todas"
+        ? "Cada barra é um dia: data e quantas você respondeu no total."
+        : `Cada barra é um dia só de ${nomeMateriaPainel(foco)}.`;
+  }
+  const boxDias = $("#chart-dias");
+  if (boxDias) boxDias.innerHTML = htmlChartDias(foco);
+  if (!totalTudo) {
+    $("#chart-geral").innerHTML = '<div class="vazio">Faça uma bateria para ver os gráficos.</div>';
+    $("#chart-materias").innerHTML = "";
+    $("#historico").innerHTML = "";
+    return;
+  }
+  $("#chart-geral").innerHTML = htmlDonutDesempenho(geral);
+  $("#chart-materias").innerHTML = mats.length
+    ? mats.map(htmlPainelMateria).join("")
+    : '<div class="vazio">Ainda não tem resposta por matéria.</div>';
+  const hist = db()
+    .baterias.filter((b) => !materiaPainelOculta(b.materia))
+    .slice(-8)
+    .reverse();
   $("#historico").innerHTML = hist.length
     ? hist
         .map((b) => {
