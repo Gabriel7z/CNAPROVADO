@@ -95,6 +95,7 @@ const AULAS = {
         concursos: ["pmdf", "tcego"],
         vale: ["pmdf", "tcego"],
         compat: "PM DF e TCE-GO. SEDF não cobra 14.133 no edital Quadrix. Parte 1: quem se submete, o que não entra (estatais/13.303), transição da 8.666 e os princípios do art. 5º.",
+        professor: "Herbert Almeida",
       },
     ],
   },

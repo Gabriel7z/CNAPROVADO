@@ -1477,7 +1477,7 @@ function htmlQuizAula(materiaId, qid) {
   const api = window.CNAPROVADO_AULAS;
   const info = api?.daQuestao?.(materiaId, qid);
   if (!info?.aula) return "";
-  return `<p class="quiz-aula">Para esta questão, veja a aula: ${htmlLinkAula(info.aula.url, info.aula.titulo)} · ${esc(info.pack.professor)}.</p>
+  return `<p class="quiz-aula">Para esta questão, veja a aula: ${htmlLinkAula(info.aula.url, info.aula.titulo)} · ${esc(info.aula.professor || info.pack.professor)}.</p>
     ${htmlAulaCompat(info.aula)}`;
 }
 
