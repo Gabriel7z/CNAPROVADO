@@ -2,11 +2,11 @@ const AULAS = {
   dadm: {
     id: "dadm",
     professor: "Thállius Moraes",
-    titulo: "Tópicos 1 a 10 — Organização, atos e licitações (14.133)",
+    titulo: "Tópicos 1 a 11 — Organização, atos e licitações (14.133)",
     titulos: {
       sedf: "Tópicos 1 a 9 — Organização e atos (14.133 fora do edital SEDF)",
-      pmdf: "Tópicos 1 a 10 — Organização, atos e Lei 14.133",
-      tcego: "Tópicos 1 a 10 — Organização, atos e Lei 14.133",
+      pmdf: "Tópicos 1 a 11 — Organização, atos e Lei 14.133",
+      tcego: "Tópicos 1 a 11 — Organização, atos e Lei 14.133",
     },
     playlist: {
       titulo: "Playlist D.Adm · Thállius",
@@ -95,6 +95,17 @@ const AULAS = {
         concursos: ["pmdf", "tcego"],
         vale: ["pmdf", "tcego"],
         compat: "PM DF e TCE-GO. SEDF não cobra 14.133 no edital Quadrix. Parte 1: quem se submete, o que não entra (estatais/13.303), transição da 8.666 e os princípios do art. 5º.",
+        professor: "Herbert Almeida",
+      },
+      {
+        id: "t11",
+        titulo: "Tópico 11 — Licitações Lei 14.133 parte 2: objetivos, definições e planejamento (Herbert Almeida)",
+        url: "https://www.youtube.com/watch?v=QPbq4DMOFF4&list=PL70rxKg7qWNWV9bGrCV74SS2-vv38m4sh&index=2",
+        de: 651,
+        ate: 750,
+        concursos: ["pmdf", "tcego"],
+        vale: ["pmdf", "tcego"],
+        compat: "PM DF e TCE-GO. Parte 2 (~1h44): art. 11 (objetivos), ciclo de vida, sobrepreço × superfaturamento, agente de contratação, ETP/TR/PCA. Modalidades ficam na parte 3.",
         professor: "Herbert Almeida",
       },
     ],

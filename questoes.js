@@ -2380,7 +2380,8 @@ function questoesDaMateria(id) {
     const extra = typeof QUESTOES_DADM_ORG !== "undefined" ? QUESTOES_DADM_ORG : [];
     const atos = typeof QUESTOES_DADM_ATOS !== "undefined" ? QUESTOES_DADM_ATOS : [];
     const licit = typeof QUESTOES_DADM_LICIT !== "undefined" ? QUESTOES_DADM_LICIT : [];
-    return QUESTOES.concat(extra, atos, licit);
+    const licit2 = typeof QUESTOES_DADM_LICIT2 !== "undefined" ? QUESTOES_DADM_LICIT2 : [];
+    return QUESTOES.concat(extra, atos, licit, licit2);
   }
   if (id === "pt") return typeof QUESTOES_PT !== "undefined" ? QUESTOES_PT : [];
   if (id === "dc") {

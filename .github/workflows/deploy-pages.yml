@@ -24,7 +24,7 @@ jobs:
       - name: Stage static site
         run: |
           mkdir _site
-          cp index.html app.js questoes.js questoes-mais.js questoes-dadm-org.js questoes-dadm-atos.js questoes-dadm-licit.js questoes-pt.js questoes-dc.js questoes-dc-leg.js questoes-ti.js questoes-ti-sql.js questoes-ti-seg.js aulas.js planejamento.js incidencia.js redacao.js styles.css cloud.js supabase-config.js frases.js _site/
+          cp index.html app.js questoes.js questoes-mais.js questoes-dadm-org.js questoes-dadm-atos.js questoes-dadm-licit.js questoes-dadm-licit2.js questoes-pt.js questoes-dc.js questoes-dc-leg.js questoes-ti.js questoes-ti-sql.js questoes-ti-seg.js aulas.js planejamento.js incidencia.js redacao.js styles.css cloud.js supabase-config.js frases.js _site/
           touch _site/.nojekyll
 
       - uses: actions/configure-pages@v5
