@@ -2184,19 +2184,74 @@ function totais() {
   return { geral, por };
 }
 
+function isoDiaLocal(ts) {
+  const n = ts ? new Date(ts) : new Date();
+  if (Number.isNaN(n.getTime())) return "";
+  const y = n.getFullYear();
+  const m = String(n.getMonth() + 1).padStart(2, "0");
+  const d = String(n.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+function fmtDiaPonto(iso) {
+  const p = String(iso || "").split("-");
+  if (p.length !== 3) return iso || "";
+  return `${p[2]}.${p[1]}.${p[0]}`;
+}
+
+function serieQuestoesPorDia() {
+  const mapa = new Map();
+  (db().respostas || []).forEach((r) => {
+    const dia = isoDiaLocal(r.ts);
+    if (!dia) return;
+    mapa.set(dia, (mapa.get(dia) || 0) + 1);
+  });
+  return [...mapa.entries()]
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .slice(-14)
+    .map(([iso, n]) => ({ iso, n, rotulo: fmtDiaPonto(iso) }));
+}
+
+function htmlChartDias() {
+  const serie = serieQuestoesPorDia();
+  if (!serie.length) {
+    return '<div class="vazio">Responde questões que o gráfico monta o dia: 12.03.2039 · 50 questões.</div>';
+  }
+  const max = Math.max(...serie.map((d) => d.n), 1);
+  const hoje = isoDiaLocal(Date.now());
+  const colunas = serie
+    .map((d) => {
+      const h = Math.max(8, Math.round((d.n / max) * 120));
+      const hojeCls = d.iso === hoje ? " is-hoje" : "";
+      const [dd, mm, aa] = d.rotulo.split(".");
+      return `<div class="dia-col${hojeCls}" title="${esc(d.rotulo)} · ${d.n} questão${d.n === 1 ? "" : "s"}">
+        <span class="dia-n">${d.n}</span>
+        <span class="dia-bar" style="height:${h}px"></span>
+        <span class="dia-label">${esc(dd)}.${esc(mm)}<br>${esc(aa)}</span>
+      </div>`;
+    })
+    .join("");
+  return `<div class="chart-dias-scroll" role="img" aria-label="Questões respondidas por dia">${colunas}</div>`;
+}
+
 function renderDesempenho() {
   const { geral, por } = totais();
   const total = geral.ok + geral.bad;
   const pct = total ? Math.round((geral.ok / total) * 100) : 0;
   const nAberto = cadernoItens().length;
+  const serie = serieQuestoesPorDia();
+  const hojeN = serie.find((d) => d.iso === isoDiaLocal(Date.now()))?.n || 0;
   $("#desempenho-lead").textContent = nAberto
-    ? `Acertos, erros e evolução por matéria. ${nAberto} questão${nAberto === 1 ? "" : "s"} ainda em aberto no caderno de erros.`
-    : "Acertos, erros e evolução por matéria. Fica neste aparelho; se você entrar na conta, também sobe para a nuvem.";
+    ? `Acertos, erros e quantas você fez em cada dia. ${nAberto} questão${nAberto === 1 ? "" : "s"} ainda em aberto no caderno de erros.`
+    : "Acertos, erros e quantas você fez em cada dia. Fica neste aparelho; se você entrar na conta, também sobe para a nuvem.";
   $("#stats-kpis").innerHTML = `
     <div><b>${pct}%</b><span>aproveitamento geral</span></div>
     <div><b>${geral.ok}</b><span>acertos</span></div>
     <div><b>${geral.bad}</b><span>erros</span></div>
+    <div><b>${hojeN}</b><span>hoje</span></div>
   `;
+  const boxDias = $("#chart-dias");
+  if (boxDias) boxDias.innerHTML = htmlChartDias();
   if (!total) {
     $("#chart-geral").innerHTML = '<div class="vazio">Faça uma bateria para ver os gráficos.</div>';
     $("#chart-materias").innerHTML = "";

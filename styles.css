@@ -861,7 +861,7 @@ button:active {
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   margin: 8px 0 22px;
 }
@@ -919,6 +919,56 @@ button:active {
   align-items: center;
   gap: 18px;
   flex-wrap: wrap;
+}
+
+.chart-hint {
+  margin: -4px 0 10px;
+  font-size: 0.88rem;
+}
+
+.chart-dias-scroll {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  overflow-x: auto;
+  min-height: 188px;
+  padding: 8px 4px 4px;
+}
+
+.dia-col {
+  flex: 1 0 56px;
+  max-width: 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  min-height: 168px;
+}
+
+.dia-n {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.dia-bar {
+  width: 28px;
+  border-radius: 9px 9px 4px 4px;
+  background: var(--primary);
+  min-height: 4px;
+}
+
+.dia-col.is-hoje .dia-bar {
+  background: var(--ok);
+}
+
+.dia-label {
+  font-size: 0.68rem;
+  line-height: 1.25;
+  text-align: center;
+  color: var(--muted);
+  font-weight: 600;
 }
 
 .anki-card {
@@ -2224,8 +2274,7 @@ select.inc-filtro {
     grid-template-columns: 1fr 1fr;
   }
 
-  .meta > div:last-child,
-  .stats-grid > div:last-child {
+  .meta > div:last-child {
     grid-column: 1 / -1;
   }
 
