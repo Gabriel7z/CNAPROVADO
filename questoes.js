@@ -2378,7 +2378,8 @@ const MATERIAS_BASE = [
 function questoesDaMateria(id) {
   if (id === "dadm") {
     const extra = typeof QUESTOES_DADM_ORG !== "undefined" ? QUESTOES_DADM_ORG : [];
-    return QUESTOES.concat(extra);
+    const atos = typeof QUESTOES_DADM_ATOS !== "undefined" ? QUESTOES_DADM_ATOS : [];
+    return QUESTOES.concat(extra, atos);
   }
   if (id === "pt") return typeof QUESTOES_PT !== "undefined" ? QUESTOES_PT : [];
   if (id === "dc") {

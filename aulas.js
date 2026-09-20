@@ -2,7 +2,7 @@ const AULAS = {
   dadm: {
     id: "dadm",
     professor: "Thállius Moraes",
-    titulo: "Tópicos 1 a 7 — Fontes, organização, órgãos e técnicas",
+    titulo: "Tópicos 1 a 9 — Organização e atos administrativos",
     playlist: {
       titulo: "Playlist D.Adm · Thállius",
       url: "https://www.youtube.com/playlist?list=PLl6y9CqXvcCIqKM0eBk_YcFp17Ae2k21c",
@@ -62,6 +62,24 @@ const AULAS = {
         ate: 350,
         vale: ["sedf", "pmdf", "tcego"],
         compat: "Vale nos 3. Quadrix ama o par desconcentração (órgão, mesma pessoa) × descentralização (outra pessoa). TCE cruza com controle.",
+      },
+      {
+        id: "t8",
+        titulo: "Tópico 8 — Atos administrativos parte 1: conceito, unilateral/bilateral, vinculado e discricionário",
+        url: "https://www.youtube.com/watch?v=3eT4dV2Hn2s",
+        de: 351,
+        ate: 425,
+        vale: ["sedf", "pmdf", "tcego"],
+        compat: "Vale nos 3. Quadrix e Cebraspe amam: nem todo ato da Administração é ato administrativo; mérito só no discricionário.",
+      },
+      {
+        id: "t9",
+        titulo: "Tópico 9 — Atos administrativos parte 2: classificações (geral, complexo, perfeito/válido/eficaz)",
+        url: "https://www.youtube.com/watch?v=gtYJ9HriH00",
+        de: 426,
+        ate: 500,
+        vale: ["sedf", "pmdf", "tcego"],
+        compat: "Vale nos 3. Pegadinha clássica: complexo (vontades no mesmo ato) × composto (ato + aprovação). Aposentadoria = complexo.",
       },
     ],
   },

@@ -346,7 +346,7 @@ const CICLOS = {
     adm: [
       bloco("D.Adm", "Fontes, conceito e objeto", "SEDF/Quadrix. Tópico 1 (Thállius). Q1–50 no app, sem embaralhar. Anota o que errar."),
       bloco("D.Adm", "Organização administrativa", "Quadrix cobra muito: direta, indireta, desconcentração. Tópicos 3 a 7 no app (Q101–150 e Q201–350)."),
-      bloco("D.Adm", "Atos e poderes", "Atos administrativos + poderes (Quadrix). Cruza com o Anki da semana."),
+      bloco("D.Adm", "Atos e poderes", "Atos: Thállius parte 1 e 2 (Q351–500). Cruza com Anki e poderes na semana."),
       bloco("D.Adm", "Agentes, LC 840 e controle", "Agentes públicos do DF (LC 840/2011). Controle e responsabilidade civil. Revisa direta/indireta."),
     ],
     consti: [
@@ -389,7 +389,7 @@ const CICLOS = {
   pmdf: {
     adm: [
       bloco("D.Adm", "Fontes, conceito e objeto", "PMDF/Cebraspe. Tópico 1. Q1–50 no app. Cuidado com o certo/errado pegadinha."),
-      bloco("D.Adm", "Atos e poderes", "Cebraspe ama atos e poderes. Marca nulidade vs anulabilidade. Cruza com Q do tópico."),
+      bloco("D.Adm", "Atos e poderes", "Cebraspe ama atos. Começa nas Q351–500 (Thállius parte 1 e 2: conceito e classificações). Nulidade vs anulabilidade é bloco seguinte."),
       bloco("D.Adm", "Licitações (Lei 14.133)", "PMDF puxa 14.133. Princípios, fases, dispensa/inexigibilidade. 15 itens Cebraspe."),
       bloco("D.Adm", "Improbidade e responsabilidade", "Lei 8.429 (após 14.230) + responsabilidade civil do Estado. 12 itens."),
     ],
