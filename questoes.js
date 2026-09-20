@@ -2379,7 +2379,8 @@ function questoesDaMateria(id) {
   if (id === "dadm") {
     const extra = typeof QUESTOES_DADM_ORG !== "undefined" ? QUESTOES_DADM_ORG : [];
     const atos = typeof QUESTOES_DADM_ATOS !== "undefined" ? QUESTOES_DADM_ATOS : [];
-    return QUESTOES.concat(extra, atos);
+    const licit = typeof QUESTOES_DADM_LICIT !== "undefined" ? QUESTOES_DADM_LICIT : [];
+    return QUESTOES.concat(extra, atos, licit);
   }
   if (id === "pt") return typeof QUESTOES_PT !== "undefined" ? QUESTOES_PT : [];
   if (id === "dc") {

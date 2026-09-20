@@ -390,7 +390,7 @@ const CICLOS = {
     adm: [
       bloco("D.Adm", "Fontes, conceito e objeto", "PMDF/Cebraspe. Tópico 1. Q1–50 no app. Cuidado com o certo/errado pegadinha."),
       bloco("D.Adm", "Atos e poderes", "Cebraspe ama atos. Começa nas Q351–500 (Thállius parte 1 e 2: conceito e classificações). Nulidade vs anulabilidade é bloco seguinte."),
-      bloco("D.Adm", "Licitações (Lei 14.133)", "PMDF puxa 14.133. Princípios, fases, dispensa/inexigibilidade. 15 itens Cebraspe."),
+      bloco("D.Adm", "Licitações (Lei 14.133)", "PMDF/Cebraspe. Parte 1 do Herbert (Q501–650): aplicação, transição e princípios. Dispensa/inexigibilidade vêm nas aulas seguintes."),
       bloco("D.Adm", "Improbidade e responsabilidade", "Lei 8.429 (após 14.230) + responsabilidade civil do Estado. 12 itens."),
     ],
     consti: [
@@ -433,7 +433,7 @@ const CICLOS = {
   tcego: {
     adm: [
       bloco("D.Adm", "Fontes, conceito e objeto", "TCE-GO/FCC. Tópico 1. Q1–50 no app. Anota o que errar."),
-      bloco("D.Adm", "Licitações (Lei 14.133)", "FCC do TCE puxa licitação. Fases, princípios, 14.133 (não fica só na 8.666). 15 itens."),
+      bloco("D.Adm", "Licitações (Lei 14.133)", "FCC do TCE. Parte 1 do Herbert (Q501–650): quem se submete, 13.303 nas estatais, transição da 8.666, princípios. Não fica só na 8.666."),
       bloco("D.Adm", "Serviços e contratos", "Serviços públicos + contratos administrativos. 15 itens FCC."),
       bloco("D.Adm", "Organização e controle", "Direta/indireta + controle (TCE). Tópicos 3 a 7 no app (Q101–150 e Q201–350). Cruza com arts. 70 a 75 da CF."),
     ],
