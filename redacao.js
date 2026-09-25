@@ -50,6 +50,20 @@ const REDACAO_EXTRAS = [
     proposta: "O direito à educação. Use art. 205 ou 206 da CF. 20–30 linhas.",
     banca: "SEDF",
   },
+  {
+    id: "sus-aps",
+    titulo: "SUS e atenção básica",
+    proposta:
+      "O papel da atenção primária na saúde bucal do DF. Use CF art. 196 ou 198 e um fato concreto da rede. 20–30 linhas.",
+    banca: "SES Odontologia",
+  },
+  {
+    id: "saude-bucal",
+    titulo: "Saúde bucal na ESF",
+    proposta:
+      "Saúde bucal na Estratégia Saúde da Família. Um argumento de SUS e um de ética profissional. 20–30 linhas.",
+    banca: "SES Odontologia",
+  },
 ];
 
 const REDACAO_GEMINI_KEY = "cnaprovado-gemini-key";
@@ -125,6 +139,23 @@ const REDACAO_RUBRICAS = {
       "Puxar SQL, rede ou arquitetura de software (isso é do cargo de TI).",
     ],
   },
+  sesodonto: {
+    id: "sesodonto",
+    concurso: "SES Odontologia",
+    banca: "IBFC (2022) · 2027 a definir",
+    cargo: "Cirurgião-dentista",
+    tipo: "A prova de 2022 não teve discursiva. Se o edital de 2027 cobrar texto, o eixo é saúde pública / SUS — não dissertação ENEM nem estudo de caso de TCE.",
+    criterios: [
+      "Ficou no eixo saúde, SUS, atenção básica ou ética profissional.",
+      "Tese clara e dois argumentos com fundamento (CF arts. 196–200, 8.080, APS).",
+      "Conclusão possível para a rede pública de saúde do DF.",
+      "Português de prova, sem enrolação.",
+    ],
+    evita: [
+      "Tema de educação escolar da SEDF.",
+      "Estudo de caso de Tribunal de Contas ou TI.",
+    ],
+  },
 };
 
 function redacaoLerChaveGemini() {
@@ -147,15 +178,16 @@ function redacaoSalvarChaveGemini(key) {
 
 function redacaoRubricasDe(pessoa, concursos) {
   const ids = Array.isArray(concursos) ? concursos : concursos ? [concursos] : [];
-  const ordem = ["sedf", "pmdf", "tcego"];
+  const ordem = ["sedf", "pmdf", "tcego", "sesodonto"];
   const escolhidos = ordem.filter((id) => ids.some((c) => String(c || "").toLowerCase() === id));
   const alvo = escolhidos.length ? escolhidos : ["sedf"];
   const amanda = pessoa === "amanda";
   return alvo
     .map((id) => {
-      if (id === "sedf") return REDACAO_RUBRICAS.sedf;
+      if (id === "sedf") return amanda ? { ...REDACAO_RUBRICAS.sedf, cargo: "Nível superior (discursiva de atualidades)" } : REDACAO_RUBRICAS.sedf;
       if (id === "pmdf") return REDACAO_RUBRICAS.pmdf;
       if (id === "tcego") return amanda ? REDACAO_RUBRICAS.tcegoControle : REDACAO_RUBRICAS.tcegoTi;
+      if (id === "sesodonto") return REDACAO_RUBRICAS.sesodonto;
       return null;
     })
     .filter(Boolean);
@@ -198,7 +230,7 @@ Responda SOMENTE um JSON válido, sem markdown, neste formato:
 Cada array tem de 2 a 6 frases curtas em português do Brasil. Cite trecho curto do texto quando apontar erro.
 Se o texto não for redação (lista, código, lorem), diga isso em errou e esvazie acertou.
 Aplique TODAS as rubricas. Se houver mais de um concurso, o texto precisa pagar os dois formatos — aponte o que vale nos dois e o que só serve em um.`;
-  const usuario = `Pessoa: ${opts?.pessoa === "amanda" ? "Amanda (sem TI)" : "Gabriel"}
+  const usuario = `Pessoa: ${opts?.pessoa === "amanda" ? "Amanda (SEDF nível superior + SES Odontologia)" : "Gabriel"}
 Concursos marcados: ${rotulo}
 Tema: ${opts?.titulo || "sem título"}
 Proposta: ${opts?.proposta || "sem proposta"}

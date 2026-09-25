@@ -7,6 +7,7 @@ const AULAS = {
       sedf: "Tópicos 1 a 9 — Organização e atos (14.133 fora do edital SEDF)",
       pmdf: "Tópicos 1 a 11 — Organização, atos e Lei 14.133",
       tcego: "Tópicos 1 a 11 — Organização, atos e Lei 14.133",
+      sesodonto: "Tópicos 1 a 9 — Organização e atos (LC 840; 14.133 fora do recorte SES 2022)",
     },
     playlist: {
       titulo: "Playlist D.Adm · Thállius",
@@ -47,7 +48,7 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=w4ni5JEEzos",
         de: 201,
         ate: 250,
-        vale: ["sedf", "pmdf", "tcego"],
+        vale: ["sedf", "pmdf", "tcego", "sesodonto"],
         compat: "Vale nos 3: fundação pública, empresa pública e sociedade de economia mista. Quadrix pesa organização; FCC e Cebraspe cobram o quadro cria × autoriza, capital e forma.",
       },
       {
@@ -56,7 +57,7 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=rbFGCGr9who",
         de: 251,
         ate: 300,
-        vale: ["sedf", "pmdf", "tcego"],
+        vale: ["sedf", "pmdf", "tcego", "sesodonto"],
         compat: "Vale nos 3. Pegadinha clássica: órgão não é pessoa. Ministério/Receita = órgão; INSS = autarquia.",
       },
       {
@@ -65,7 +66,7 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=s7EWBxTVpHw",
         de: 301,
         ate: 350,
-        vale: ["sedf", "pmdf", "tcego"],
+        vale: ["sedf", "pmdf", "tcego", "sesodonto"],
         compat: "Vale nos 3. Quadrix ama o par desconcentração (órgão, mesma pessoa) × descentralização (outra pessoa). TCE cruza com controle.",
       },
       {
@@ -74,7 +75,7 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=3eT4dV2Hn2s",
         de: 351,
         ate: 425,
-        vale: ["sedf", "pmdf", "tcego"],
+        vale: ["sedf", "pmdf", "tcego", "sesodonto"],
         compat: "Vale nos 3. Quadrix e Cebraspe amam: nem todo ato da Administração é ato administrativo; mérito só no discricionário.",
       },
       {
@@ -83,7 +84,7 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=gtYJ9HriH00",
         de: 426,
         ate: 500,
-        vale: ["sedf", "pmdf", "tcego"],
+        vale: ["sedf", "pmdf", "tcego", "sesodonto"],
         compat: "Vale nos 3. Pegadinha clássica: complexo (vontades no mesmo ato) × composto (ato + aprovação). Aposentadoria = complexo.",
       },
       {
@@ -264,7 +265,7 @@ const AULAS = {
         de: 51,
         ate: 100,
         concursos: ["sedf", "pmdf", "tcego"],
-        vale: ["sedf", "pmdf", "tcego"],
+        vale: ["sedf", "pmdf", "tcego", "sesodonto"],
         compat: "Vale nos 3: navegador, HTTPS, malware, senha, LGPD. No TCE-GO é o básico antes da segurança FCC.",
       },
       {
@@ -314,7 +315,7 @@ const AULAS = {
         de: 301,
         ate: 350,
         concursos: ["sedf", "pmdf", "tcego"],
-        vale: ["sedf", "pmdf", "tcego"],
+        vale: ["sedf", "pmdf", "tcego", "sesodonto"],
         compat: "Vale nos 3: confidencialidade, integridade, disponibilidade e ameaças. O TCE-GO cobra mais fundo.",
       },
       {
@@ -344,7 +345,7 @@ function aulaDaQuestao(materiaId, qid) {
 }
 
 function listaIdsConcurso(concursos) {
-  const ordem = ["sedf", "pmdf", "tcego"];
+  const ordem = ["sedf", "pmdf", "tcego", "sesodonto"];
   const raw = Array.isArray(concursos) ? concursos : concursos == null || concursos === "" ? [] : [concursos];
   const ids = ordem.filter((id) => raw.some((c) => String(c || "").toLowerCase() === id));
   return ids.length ? ids : ["sedf"];
@@ -386,12 +387,12 @@ function tituloDoConcurso(materiaId, concurso) {
 function valeDaAula(aula) {
   if (aula?.vale?.length) return aula.vale;
   if (aula?.concursos?.length) return aula.concursos;
-  return ["sedf", "pmdf", "tcego"];
+  return ["sedf", "pmdf", "tcego", "sesodonto"];
 }
 
 function concursosDaAula(aula) {
   if (aula?.concursos?.length) return aula.concursos;
-  return ["sedf", "pmdf", "tcego"];
+  return ["sedf", "pmdf", "tcego", "sesodonto"];
 }
 
 function aulasForaDoConcurso(materiaId, concurso) {

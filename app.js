@@ -364,22 +364,30 @@ function planoIdAtual() {
   const nome = String(db().perfil?.nome || cloud()?.perfil?.apelido || "").toLowerCase();
   const mapa = db().planoPorEmail || {};
   const gmail = api?.EMAIL_GABRIEL || "ggabriel.ferreira.099@gmail.com";
+  if (email.includes("amanda") || (!email && nome.includes("amanda"))) return "amanda";
   if (email === gmail) {
     return mapa[email] === "amanda" ? "amanda" : "gabriel";
   }
   if (email && (mapa[email] === "amanda" || mapa[email] === "gabriel")) return mapa[email];
-  if (nome.includes("amanda") || email.includes("amanda")) return "amanda";
+  if (nome.includes("amanda")) return "amanda";
   return "gabriel";
 }
 
 function planoConcursosAtuais() {
   const api = window.CNAPROVADO_PLANOS;
   const email = emailDaConta();
+  const pessoa = planoIdAtual();
   const data = db();
   const mapaArr = data.planoConcursosPorEmail || {};
   const mapaStr = data.planoConcursoPorEmail || {};
   const salvo = email ? mapaArr[email] ?? mapaStr[email] : data.planoConcursos ?? data.planoConcurso;
-  return api?.listaConcursos?.(salvo) || ["sedf"];
+  return api?.listaConcursos?.(salvo, pessoa) || concursosPadraoLocal(pessoa);
+}
+
+function concursosPadraoLocal(pessoa) {
+  const api = window.CNAPROVADO_PLANOS;
+  if (api?.concursosPadrao) return api.concursosPadrao(pessoa);
+  return pessoa === "amanda" ? ["sedf", "sesodonto"] : ["sedf"];
 }
 
 function planoConcursoAtual() {
@@ -387,20 +395,24 @@ function planoConcursoAtual() {
 }
 
 function chaveConcursosAtual() {
-  return window.CNAPROVADO_PLANOS?.chaveConcursos?.(planoConcursosAtuais()) || planoConcursosAtuais().join("+");
+  return (
+    window.CNAPROVADO_PLANOS?.chaveConcursos?.(planoConcursosAtuais(), planoIdAtual()) ||
+    planoConcursosAtuais().join("+")
+  );
 }
 
 function nomesConcursosAtual() {
   const api = window.CNAPROVADO_PLANOS;
   const ids = planoConcursosAtuais();
-  if (api?.nomesConcursos) return api.nomesConcursos(ids);
+  if (api?.nomesConcursos) return api.nomesConcursos(ids, planoIdAtual());
   return ids
     .map((id) => api?.CONCURSOS?.[id]?.nome || window.CNAPROVADO_INCIDENCIA?.concursoNome?.[id] || id)
     .join(" · ");
 }
 
 function setPlanoConcursos(ids) {
-  const n = window.CNAPROVADO_PLANOS?.listaConcursos?.(ids) || ["sedf"];
+  const n =
+    window.CNAPROVADO_PLANOS?.listaConcursos?.(ids, planoIdAtual()) || concursosPadraoLocal(planoIdAtual());
   const email = emailDaConta();
   persist((d) => {
     if (!d.planoConcursosPorEmail) d.planoConcursosPorEmail = {};
@@ -420,9 +432,11 @@ function togglePlanoConcurso(id) {
   const api = window.CNAPROVADO_PLANOS;
   const atual = planoConcursosAtuais();
   const key = String(id || "").toLowerCase();
+  const permitidos = api?.concursosDaPessoa?.(planoIdAtual()) || atual;
+  if (!permitidos.includes(key)) return atual;
   const tem = atual.includes(key);
   if (tem && atual.length === 1) return atual;
-  const next = api?.listaConcursos?.(tem ? atual.filter((c) => c !== key) : [...atual, key]) || [];
+  const next = api?.listaConcursos?.(tem ? atual.filter((c) => c !== key) : [...atual, key], planoIdAtual()) || [];
   if (!next.length) return atual;
   setPlanoConcursos(next);
   return next;
@@ -446,6 +460,7 @@ function diaFeito(iso) {
 function setPlanoId(id) {
   const email = emailDaConta();
   if (!email) return;
+  if (email.includes("amanda")) id = "amanda";
   persist((d) => {
     d.planoPorEmail[email] = id;
   });
@@ -637,6 +652,9 @@ function htmlCalendario(api, dias, hoje) {
     ["pt", "Português"],
     ["ti", "TI"],
     ["red", "Redação"],
+    ["odonto", "Odonto"],
+    ["sus", "SUS"],
+    ["etica", "Ética"],
   ].filter(([chave]) => dias.some((d) => api.materiaChave(d.materia) === chave));
   const legenda = legendas
     .map(([chave, nome]) => `<span class="mat-${chave}">${nome}</span>`)
@@ -657,7 +675,9 @@ function htmlMapaEdital() {
   if (!cards.length) return "";
   const aviso =
     planoConcursosAtuais().length > 1
-      ? `<p class="edital-aviso">A mesma matéria muda de bloco. TI na SEDF é informática de gerais; no TCE-GO do Gabriel é específico. Na Amanda o específico do TCE é Controle, sem TI.</p>`
+      ? planoIdAtual() === "amanda"
+        ? `<p class="edital-aviso">A mesma matéria muda de bloco. Na SEDF, PT/D.Adm/D.Const são núcleo comum de nível superior. Na SES, o peso está em SUS e odontologia; PT e LC 840 voltam nos gerais.</p>`
+        : `<p class="edital-aviso">A mesma matéria muda de bloco. TI na SEDF é informática de gerais; no TCE-GO do Gabriel é específico.</p>`
       : "";
   const html = cards
     .map((c) => {
@@ -750,7 +770,9 @@ function htmlMateriasIncidencia(concurso, materias, materiaAtiva) {
 function incidenciaSel() {
   const api = window.CNAPROVADO_INCIDENCIA;
   if (!api) return null;
-  const concursos = api.concursos();
+  const permitidos = new Set(planoConcursosAtuais());
+  let concursos = (api.concursos() || []).filter((c) => permitidos.has(c.id));
+  if (!concursos.length) concursos = api.concursos() || [];
   let concurso = db().incidenciaConcurso || planoConcursoAtual();
   if (!concursos.some((c) => c.id === concurso)) concurso = concursos[0]?.id || "sedf";
   let materias = api.materias(concurso);
@@ -1077,10 +1099,10 @@ function renderPlano() {
     redId: "plano-red-hoje",
   });
   $("#plano-hoje").classList.toggle("hidden", vista !== "lista");
-  $("#plano-switch").innerHTML = `
-    <button type="button" class="modo${id === "gabriel" ? " ativo" : ""}" data-plano="gabriel">Gabriel</button>
-    <button type="button" class="modo${id === "amanda" ? " ativo" : ""}" data-plano="amanda">Amanda</button>
-  `;
+  $("#plano-switch").innerHTML = emailDaConta().includes("amanda")
+    ? `<button type="button" class="modo ativo" data-plano="amanda">Amanda</button>`
+    : `<button type="button" class="modo${id === "gabriel" ? " ativo" : ""}" data-plano="gabriel">Gabriel</button>
+    <button type="button" class="modo${id === "amanda" ? " ativo" : ""}" data-plano="amanda">Amanda</button>`;
   $("#plano-concurso").innerHTML = htmlSwitchConcurso(concursos);
   $("#plano-horas-dia").innerHTML = htmlHorasBtns(carga.dia, "dia");
   $("#plano-horas-fim").innerHTML = htmlHorasBtns(carga.fim, "fim");
@@ -1308,10 +1330,10 @@ function htmlAfinidade() {
   const concBtns = htmlSwitchConcurso(marcados);
   const dicaMarca =
     marcados.length === 1
-      ? `Só ${esc(nomes)} marcado. Clica em mais um chip (PM DF, TCE-GO…) para cruzar.`
+      ? `Só ${esc(nomes)} marcado. Clica em mais um chip para cruzar.`
       : `Marcou ${esc(nomes)}. Clica de novo num chip para tirar; tem que ficar pelo menos um.`;
   return `
-    <p class="field-label">Vou estudar — marca um, dois ou os três</p>
+    <p class="field-label">Vou estudar — marca os concursos deste plano</p>
     <div class="plano-switch" id="afin-concursos">${concBtns}</div>
     <p class="concurso-hint">${dicaMarca}</p>
     <details class="gaveta">
@@ -1333,7 +1355,7 @@ function htmlAfinidade() {
 function htmlAfinBlocos(dados) {
   const alvo = dados.escolhidos || planoConcursosAtuais();
   const nMax = dados.nMax || alvo.length || 3;
-  const nomes = window.CNAPROVADO_PLANOS?.nomesConcursos?.(alvo) || nomesConcursosAtual();
+  const nomes = window.CNAPROVADO_PLANOS?.nomesConcursos?.(alvo, planoIdAtual()) || nomesConcursosAtual();
   const vazio = dados.assuntos.length
     ? ""
     : `<p class="vazio">Nenhum assunto com esse filtro.</p>`;
@@ -1564,9 +1586,13 @@ function htmlCaiNaMateria(materiaId) {
 
 function htmlSwitchConcurso(ativos) {
   const api = window.CNAPROVADO_PLANOS;
-  const ids = api?.listaConcursos?.(ativos) || (Array.isArray(ativos) ? ativos : [ativos || "sedf"]);
+  const pessoa = planoIdAtual();
+  const ids = api?.listaConcursos?.(ativos, pessoa) || (Array.isArray(ativos) ? ativos : [ativos || "sedf"]);
   const soUm = ids.length === 1;
-  return Object.values(api?.CONCURSOS || {})
+  const catalogo = (api?.concursosDaPessoa?.(pessoa) || Object.keys(api?.CONCURSOS || {}))
+    .map((id) => api?.CONCURSOS?.[id])
+    .filter(Boolean);
+  return catalogo
     .map((c) => {
       const on = ids.includes(c.id);
       const unico = on && soUm;
@@ -1646,7 +1672,7 @@ function renderFiltroConcurso() {
 }
 
 function extraRedacaoDoConcurso(banca, concs) {
-  const ids = window.CNAPROVADO_PLANOS?.listaConcursos?.(concs) || (Array.isArray(concs) ? concs : [concs]);
+  const ids = window.CNAPROVADO_PLANOS?.listaConcursos?.(concs, planoIdAtual()) || (Array.isArray(concs) ? concs : [concs]);
   const n = String(banca || "")
     .toLowerCase()
     .replace(/\s+/g, "");
@@ -1654,6 +1680,7 @@ function extraRedacaoDoConcurso(banca, concs) {
     if (conc === "sedf") return n.includes("sedf") || n.includes("quadrix");
     if (conc === "pmdf") return n.includes("pmdf") || n.includes("cebraspe");
     if (conc === "tcego") return n.includes("tce") || n.includes("fcc");
+    if (conc === "sesodonto") return n.includes("ses") || n.includes("odonto") || n.includes("saúde") || n.includes("saude");
     return true;
   });
 }
@@ -3018,6 +3045,22 @@ function bindRedacaoOnce() {
   });
 }
 
+function persistirConcursosSeMudou() {
+  const email = emailDaConta();
+  if (!email) return;
+  const next = planoConcursosAtuais();
+  const data = db();
+  const salvo = data.planoConcursosPorEmail?.[email];
+  if (JSON.stringify(salvo) === JSON.stringify(next)) return;
+  persist((d) => {
+    if (!d.planoConcursosPorEmail) d.planoConcursosPorEmail = {};
+    if (!d.planoConcursoPorEmail) d.planoConcursoPorEmail = {};
+    d.planoConcursosPorEmail[email] = next;
+    d.planoConcursoPorEmail[email] = next[0];
+    if (!next.includes(d.incidenciaConcurso)) d.incidenciaConcurso = next[0];
+  });
+}
+
 function render() {
   if (!logado()) {
     travarApp(false);
@@ -3029,6 +3072,7 @@ function render() {
     return;
   }
   travarApp(true);
+  persistirConcursosSeMudou();
   renderFraseDia();
   renderChip();
   renderMaterias();

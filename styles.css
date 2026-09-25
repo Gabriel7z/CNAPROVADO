@@ -1485,6 +1485,21 @@ button:active {
   border-color: color-mix(in srgb, #e11d48 42%, var(--line));
 }
 
+.plano-cal-cell.mat-odonto {
+  background: color-mix(in srgb, #0d9488 16%, var(--card));
+  border-color: color-mix(in srgb, #0d9488 46%, var(--line));
+}
+
+.plano-cal-cell.mat-sus {
+  background: color-mix(in srgb, #0284c7 16%, var(--card));
+  border-color: color-mix(in srgb, #0284c7 46%, var(--line));
+}
+
+.plano-cal-cell.mat-etica {
+  background: color-mix(in srgb, #4d7c0f 16%, var(--card));
+  border-color: color-mix(in srgb, #4d7c0f 46%, var(--line));
+}
+
 .plano-cal-cell.is-hoje {
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 55%, transparent);
 }
@@ -2185,6 +2200,18 @@ select.inc-filtro {
 
 .plano-legenda .mat-red {
   background: color-mix(in srgb, #e11d48 14%, var(--card));
+}
+
+.plano-legenda .mat-odonto {
+  background: color-mix(in srgb, #0d9488 16%, var(--card));
+}
+
+.plano-legenda .mat-sus {
+  background: color-mix(in srgb, #0284c7 16%, var(--card));
+}
+
+.plano-legenda .mat-etica {
+  background: color-mix(in srgb, #4d7c0f 16%, var(--card));
 }
 
 .dock {

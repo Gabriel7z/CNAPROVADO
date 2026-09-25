@@ -298,6 +298,96 @@ const INCIDENCIA = [
       ["Intervenção na propriedade", 2],
     ],
   },
+  {
+    id: "sesodonto-pt",
+    concurso: "sesodonto",
+    concursoNome: "SES Odontologia",
+    materia: "pt",
+    materiaNome: "Português",
+    banca: "IBFC",
+    recorte: "Recorte da prova SES-DF / IBFC 2022 (Cirurgião-dentista). Sem caderno TEC com contagem neste cargo.",
+    fonteUrl: "https://economia.df.gov.br/2022-carreira-de-cirurgiao-dentista",
+    semContagem: true,
+    topicos: [
+      ["Interpretação de textos", 0],
+      ["Ortografia e acentuação", 0],
+      ["Concordância", 0],
+      ["Regência", 0],
+      ["Pontuação", 0],
+    ],
+  },
+  {
+    id: "sesodonto-adm",
+    concurso: "sesodonto",
+    concursoNome: "SES Odontologia",
+    materia: "adm",
+    materiaNome: "D.Adm",
+    banca: "IBFC",
+    recorte: "Legislação geral da SES-DF 2022 (LC 840 e Administração). Sem caderno TEC com contagem.",
+    fonteUrl: "https://economia.df.gov.br/2022-carreira-de-cirurgiao-dentista",
+    semContagem: true,
+    topicos: [
+      ["LC 840/2011", 0],
+      ["Administração Pública na CF", 0],
+      ["Ética no serviço público", 0],
+    ],
+  },
+  {
+    id: "sesodonto-const",
+    concurso: "sesodonto",
+    concursoNome: "SES Odontologia",
+    materia: "const",
+    materiaNome: "D.Const",
+    banca: "IBFC",
+    recorte: "CF e LODF no recorte de legislação geral da SES-DF 2022. Sem caderno TEC com contagem.",
+    fonteUrl: "https://economia.df.gov.br/2022-carreira-de-cirurgiao-dentista",
+    semContagem: true,
+    topicos: [
+      ["Direitos sociais (saúde)", 0],
+      ["Administração Pública na CF", 0],
+      ["Organização do DF", 0],
+    ],
+  },
+  {
+    id: "sesodonto-sus",
+    concurso: "sesodonto",
+    concursoNome: "SES Odontologia",
+    materia: "sus",
+    materiaNome: "SUS",
+    banca: "IBFC",
+    recorte: "Legislação específica de saúde da SES-DF 2022. Sem caderno TEC com contagem.",
+    fonteUrl: "https://economia.df.gov.br/2022-carreira-de-cirurgiao-dentista",
+    semContagem: true,
+    topicos: [
+      ["Princípios e diretrizes do SUS", 0],
+      ["Leis 8.080 e 8.142", 0],
+      ["Decreto 7.508/2011", 0],
+      ["APS e Portaria 77/2017 do DF", 0],
+    ],
+  },
+  {
+    id: "sesodonto-odonto",
+    concurso: "sesodonto",
+    concursoNome: "SES Odontologia",
+    materia: "odonto",
+    materiaNome: "Odontologia",
+    banca: "IBFC",
+    recorte: "Específicos de cirurgião-dentista (SES-DF / IBFC 2022). Sem caderno TEC com contagem. Edital 2027 ainda não saiu.",
+    fonteUrl: "https://economia.df.gov.br/2022-carreira-de-cirurgiao-dentista",
+    semContagem: true,
+    topicos: [
+      ["Dentística e cárie", 0],
+      ["Endodontia", 0],
+      ["Periodontia", 0],
+      ["Cirurgia e urgências", 0],
+      ["Odontopediatria", 0],
+      ["Radiologia", 0],
+      ["Farmacologia e anestesiologia", 0],
+      ["Semiologia e patologia bucal", 0],
+      ["Ética CFO e biossegurança", 0],
+      ["Saúde bucal na ESF", 0],
+    ],
+  },
 ];
 
 function incidenciaComPct(item) {
@@ -346,27 +436,27 @@ function incidenciaRecorte(concurso, materia) {
   return item ? incidenciaComPct(item) : null;
 }
 
-const CONCURSO_ORDEM = ["sedf", "pmdf", "tcego"];
-const CONCURSO_NOME = { sedf: "SEDF", pmdf: "PM DF", tcego: "TCE-GO" };
+const CONCURSO_ORDEM = ["sedf", "pmdf", "tcego", "sesodonto"];
+const CONCURSO_NOME = { sedf: "SEDF", pmdf: "PM DF", tcego: "TCE-GO", sesodonto: "SES Odontologia" };
 
 const MATERIAS_AFINIDADE = [
   {
     id: "adm",
     nome: "D.Adm",
-    concursos: ["sedf", "pmdf", "tcego"],
-    nota: "Vale nos 3. SEDF puxa organização e LC 840; PM DF e TCE-GO puxam licitação e improbidade.",
+    concursos: ["sedf", "pmdf", "tcego", "sesodonto"],
+    nota: "Vale nos planos. SEDF puxa organização e LC 840; SES usa LC 840 na legislação geral; PM DF e TCE-GO puxam licitação e improbidade.",
   },
   {
     id: "const",
     nome: "D.Const",
-    concursos: ["sedf", "pmdf", "tcego"],
-    nota: "Vale nos 3. PM DF pesa art. 5º e 136–144; TCE-GO pesa Legislativo e TCs; SEDF puxa educação na CF.",
+    concursos: ["sedf", "pmdf", "tcego", "sesodonto"],
+    nota: "Vale nos planos. SES e SEDF puxam CF e LODF; PM DF pesa art. 5º e 136–144; TCE-GO pesa Legislativo e TCs.",
   },
   {
     id: "pt",
     nome: "Português",
-    concursos: ["sedf", "pmdf", "tcego"],
-    nota: "Vale nos 3. Interpretação e reescrita são o núcleo comum.",
+    concursos: ["sedf", "pmdf", "tcego", "sesodonto"],
+    nota: "Vale nos planos. Interpretação e reescrita são o núcleo comum.",
   },
   {
     id: "ti",
@@ -379,7 +469,21 @@ const MATERIAS_AFINIDADE = [
     id: "red",
     nome: "Redação",
     concursos: ["sedf", "pmdf", "tcego"],
-    nota: "Fim de semana nos 3 planos. O que muda é o tema (educação, segurança, controle).",
+    nota: "Fim de semana nos planos com discursiva. SES Odontologia (IBFC 2022) não tinha redação.",
+  },
+  {
+    id: "sus",
+    nome: "SUS",
+    concursos: ["sesodonto"],
+    soAmanda: true,
+    nota: "Só SES Odontologia. Princípios do SUS, 8.080, 8.142 e APS do DF.",
+  },
+  {
+    id: "odonto",
+    nome: "Odontologia",
+    concursos: ["sesodonto"],
+    soAmanda: true,
+    nota: "Específico da SES. Não cai na SEDF.",
   },
 ];
 
@@ -390,6 +494,11 @@ const AFINIDADE_PLANO = [
   { concurso: "pmdf", materia: "red", topicos: ["Dissertação (tema do concurso)"] },
   { concurso: "tcego", materia: "ti", topicos: ["Redes e protocolos", "Banco de dados e SQL", "Segurança da informação", "Dev, Git e governança"] },
   { concurso: "tcego", materia: "red", topicos: ["Dissertação (tema do concurso)"] },
+  { concurso: "sesodonto", materia: "pt", topicos: ["Interpretação de textos", "Ortografia", "Concordância", "Regência"] },
+  { concurso: "sesodonto", materia: "adm", topicos: ["LC 840/2011", "Administração Pública na CF", "Ética no serviço público"] },
+  { concurso: "sesodonto", materia: "const", topicos: ["Direitos sociais (saúde)", "Administração Pública na CF", "Organização do DF"] },
+  { concurso: "sesodonto", materia: "sus", topicos: ["Princípios e diretrizes do SUS", "Leis 8.080 e 8.142", "Decreto 7.508", "APS e Portaria 77/2017 do DF"] },
+  { concurso: "sesodonto", materia: "odonto", topicos: ["Dentística e cárie", "Endodontia", "Periodontia", "Cirurgia e urgências", "Odontopediatria", "Radiologia", "Ética CFO e biossegurança", "Saúde bucal na ESF"] },
 ];
 
 const AFINIDADE_ALIAS = [
@@ -496,6 +605,8 @@ const AFINIDADE_MATERIA_NOME = {
   pt: "Português",
   ti: "TI",
   red: "Redação",
+  sus: "SUS",
+  odonto: "Odontologia",
 };
 
 function slugTexto(s) {
@@ -631,7 +742,9 @@ function agruparAfinidade(opts) {
     );
 
   const nMax = alvo.length;
-  const materias = MATERIAS_AFINIDADE.filter((m) => !(pessoa === "amanda" && m.soGabriel)).map((m) => {
+  const materias = MATERIAS_AFINIDADE.filter((m) => !(pessoa === "amanda" && m.soGabriel))
+    .filter((m) => !(pessoa !== "amanda" && m.soAmanda))
+    .map((m) => {
     const concursos = m.concursos.filter((c) => alvo.includes(c));
     return {
       ...m,
@@ -1077,6 +1190,99 @@ const FONTES_CONCURSO = {
           { materia: "controle", nome: "Controle externo", q: 9 },
           { materia: "aud", nome: "Técnicas de auditoria", q: 10 },
           { materia: "prev", nome: "Previdência", q: 3 },
+        ],
+      },
+    ],
+  },
+  sesodonto: {
+    concurso: "sesodonto",
+    nome: "SES Odontologia",
+    bancaHistorica: "IBFC",
+    edital: {
+      ano: 2022,
+      banca: "IBFC",
+      cargo: "Cirurgião-dentista (pré-edital 2027; recorte da prova de 2022)",
+      n: 80,
+      tipo: "objetiva",
+      fonte: "Edital nº 15/2022 SES-DF (IBFC) — carreira de Cirurgião-dentista",
+      fonteUrl: "https://economia.df.gov.br/2022-carreira-de-cirurgiao-dentista",
+      blocos: [
+        { nome: "Língua Portuguesa", q: 15 },
+        { nome: "Legislação geral", q: 10 },
+        { nome: "Legislação específica / SUS", q: 15 },
+        { nome: "Conhecimentos específicos", q: 40 },
+      ],
+      discursiva: "Não havia discursiva neste edital (só objetiva e títulos).",
+      materias: {
+        pt: {
+          noEdital: true,
+          bloco: "Língua Portuguesa (15 itens)",
+          programa: ["Interpretação", "Ortografia", "Concordância", "Regência", "Pontuação"],
+          fora: [],
+        },
+        adm: {
+          noEdital: true,
+          bloco: "Legislação geral",
+          nota: "LC 840 e Administração no recorte de legislação geral, não o edital completo de D.Adm.",
+          programa: ["LC 840/2011", "Administração Pública na CF", "Ética no serviço público"],
+          fora: ["Licitações (14.133)"],
+        },
+        const: {
+          noEdital: true,
+          bloco: "Legislação geral",
+          programa: ["Direitos sociais (saúde)", "Administração Pública na CF", "Organização do DF"],
+          fora: [],
+        },
+        sus: {
+          noEdital: true,
+          bloco: "Legislação específica / SUS",
+          programa: [
+            "Princípios e diretrizes do SUS",
+            "Leis 8.080 e 8.142",
+            "Decreto 7.508/2011",
+            "APS e Portaria 77/2017 do DF",
+          ],
+          fora: [],
+        },
+        odonto: {
+          noEdital: true,
+          bloco: "Conhecimentos específicos",
+          programa: [
+            "Dentística e cárie",
+            "Endodontia",
+            "Periodontia",
+            "Cirurgia e urgências",
+            "Odontopediatria",
+            "Radiologia",
+            "Farmacologia e anestesiologia",
+            "Semiologia e patologia bucal",
+            "Ética CFO e biossegurança",
+            "Saúde bucal na ESF",
+          ],
+          fora: [],
+        },
+        red: {
+          noEdital: false,
+          bloco: "Sem discursiva neste recorte",
+          programa: [],
+          fora: ["Dissertação"],
+        },
+      },
+    },
+    provas: [
+      {
+        id: "cirurgiao-dentista-2022",
+        cargo: "Cirurgião-dentista",
+        ano: 2022,
+        banca: "IBFC",
+        n: 80,
+        fonte: "Edital nº 15/2022 SES-DF — quadro da prova objetiva",
+        fonteUrl: "https://economia.df.gov.br/2022-carreira-de-cirurgiao-dentista",
+        disciplinas: [
+          { materia: "pt", nome: "Português", q: 15 },
+          { materia: "adm", nome: "Legislação geral", q: 10 },
+          { materia: "sus", nome: "Legislação específica / SUS", q: 15 },
+          { materia: "odonto", nome: "Conhecimentos específicos", q: 40 },
         ],
       },
     ],

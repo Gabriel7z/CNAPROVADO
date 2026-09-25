@@ -2373,6 +2373,11 @@ const MATERIAS_BASE = [
   { id: "aud", nome: "Auditoria", sigla: "Auditoria", cor: "#d4b45a" },
   { id: "lic", nome: "Licitações e contratos", sigla: "Licitações", cor: "#d4b45a" },
   { id: "prev", nome: "Previdência", sigla: "Previd.", cor: "#d4b45a" },
+  { id: "atual", nome: "Atualidades", sigla: "Atualid.", cor: "#8a7a5a" },
+  { id: "sus", nome: "SUS e legislação de saúde", sigla: "SUS", cor: "#2f9e8f" },
+  { id: "odonto", nome: "Odontologia clínica", sigla: "Odonto", cor: "#0ea5a4" },
+  { id: "odcollect", nome: "Odontologia em saúde coletiva", sigla: "Odonto. col.", cor: "#0ea5a4" },
+  { id: "odontoetica", nome: "Ética CFO e biossegurança", sigla: "Ética odonto", cor: "#0ea5a4" },
 ];
 
 function questoesDaMateria(id) {

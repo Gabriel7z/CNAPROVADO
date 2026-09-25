@@ -7,7 +7,18 @@ const CONCURSOS = {
   sedf: { id: "sedf", nome: "SEDF", banca: "Quadrix", cargo: "Gestor TI" },
   pmdf: { id: "pmdf", nome: "PM DF", banca: "Cebraspe", cargo: "área policial" },
   tcego: { id: "tcego", nome: "TCE-GO", banca: "FCC", cargo: "ACE TI" },
+  sesodonto: {
+    id: "sesodonto",
+    nome: "SES Odontologia",
+    banca: "IBFC (2022) · 2027 a definir",
+    cargo: "Cirurgião-dentista",
+  },
 };
+
+const CONCURSOS_ORDEM = ["sedf", "pmdf", "tcego", "sesodonto"];
+const CONCURSOS_GABRIEL = ["sedf", "pmdf", "tcego"];
+const CONCURSOS_AMANDA = ["sedf", "sesodonto"];
+const CONCURSOS_VELHOS_AMANDA = ["pmdf", "tcego"];
 
 const MATERIA_APP = {
   adm: "dadm",
@@ -64,23 +75,29 @@ const BLOCO_CURTO = {
 const BLOCOS_PROVA = {
   sedf: {
     prova: "Quadrix 2022: 40 básicos + 30 complementares + 50 específicos + dissertação.",
+    provaAmanda:
+      "Núcleo comum de nível superior (Quadrix 2022): PT, D.Adm, DF, CF/LODF e dissertação. O específico muda com o cargo — o plano cobre o que se repete em qualquer superior da SEDF.",
     grupos: [
       {
         id: "gerais",
         lead: "Básicos do Gestor. Informática aqui é Windows/Office/Google, não o específico de redes.",
+        leadAmanda:
+          "Básicos que costumam se repetir em cargo de nível superior da SEDF. Informática fica de fora deste plano.",
         itens: [
           { id: "pt", nome: "Português" },
           { id: "ti", nome: "Informática básica", soGabriel: true },
           { id: "adm", nome: "D.Adm" },
           { id: "df", nome: "Distrito Federal", semConteudo: true },
+          { id: "atual", nome: "Atualidades", semConteudo: true, soAmanda: true },
         ],
       },
       {
         id: "complementares",
         lead: "Legislação do Gestor (não é o bloco pedagógico do professor). D.Const no app cobre a fatia da CF.",
+        leadAmanda: "CF e LODF no núcleo comum. Legislação educacional fica de fora: é recorte de magistério, não de qualquer superior.",
         itens: [
-          { id: "const", nome: "D.Const (educação na CF)" },
-          { id: "legedu", nome: "Legislação educacional", semConteudo: true },
+          { id: "const", nome: "D.Const (educação na CF)", nomeAmanda: "D.Const (CF e LODF)" },
+          { id: "legedu", nome: "Legislação educacional", semConteudo: true, soGabriel: true },
         ],
       },
       {
@@ -182,6 +199,44 @@ const BLOCOS_PROVA = {
       },
     ],
   },
+  sesodonto: {
+    prova:
+      "Pré-edital (previsto para 2027). Recorte da última prova efetiva: SES-DF / IBFC 2022, Cirurgião-dentista — PT, legislação geral, SUS e específicos de odontologia. Sem discursiva naquele edital. Banca do próximo ainda pode mudar.",
+    grupos: [
+      {
+        id: "gerais",
+        lead: "Gerais da SES-DF 2022 (IBFC). PT já tem bateria no app; SUS, DF e legislação geral entram como mapa até ter questão própria.",
+        itens: [
+          { id: "pt", nome: "Português" },
+          { id: "adm", nome: "D.Adm / LC 840" },
+          { id: "const", nome: "D.Const / CF" },
+          { id: "df", nome: "Distrito Federal", semConteudo: true },
+          { id: "sus", nome: "SUS e legislação de saúde", semConteudo: true },
+        ],
+      },
+      {
+        id: "especificos",
+        lead: "Específicos de cirurgião-dentista. Ainda sem bateria no app — o plano aponta o que estudar fora, no recorte da prova de 2022.",
+        itens: [
+          { id: "odonto", nome: "Odontologia clínica", semConteudo: true },
+          { id: "odcollect", nome: "Odontologia em saúde coletiva", semConteudo: true },
+          { id: "odontoetica", nome: "Ética CFO e biossegurança", semConteudo: true },
+        ],
+        extras: [
+          "Dentística",
+          "Endodontia",
+          "Periodontia",
+          "Cirurgia bucomaxilofacial",
+          "Odontopediatria",
+          "Radiologia odontológica",
+          "Farmacologia e anestesiologia",
+          "Semiologia e patologia bucal",
+          "Urgências odontológicas",
+          "ESF e saúde bucal na atenção básica",
+        ],
+      },
+    ],
+  },
 };
 
 function materiaParaApp(id) {
@@ -196,6 +251,7 @@ function cargoDoConcurso(id, pessoa) {
   const c = CONCURSOS[id];
   if (!c) return id;
   if (id === "tcego") return pessoa === "amanda" ? "ACE · Controle Externo" : "ACE · TI";
+  if (id === "sedf") return pessoa === "amanda" ? "Nível superior" : c.cargo;
   return c.cargo;
 }
 
@@ -211,6 +267,7 @@ function gruposDoConcurso(concurso, pessoa) {
         .filter((it) => !(it.soAmanda && p !== "amanda"))
         .map((it) => ({
           ...it,
+          nome: p === "amanda" ? it.nomeAmanda || it.nome : it.nome,
           appId: materiaParaApp(it.id),
           nav: it.soNav !== false && it.id !== "red",
         }));
@@ -253,7 +310,7 @@ function blocoProvaDoConcurso(concurso, pessoa) {
 }
 
 function mapaProva(pessoa, concursos) {
-  return listaConcursos(concursos).map((id) => blocoProvaDoConcurso(id, pessoa)).filter(Boolean);
+  return listaConcursos(concursos, pessoa).map((id) => blocoProvaDoConcurso(id, pessoa)).filter(Boolean);
 }
 
 function blocoDaMateria(concurso, materia, pessoa) {
@@ -275,31 +332,43 @@ const PLANOS = {
   amanda: {
     id: "amanda",
     dono: "Amanda",
-    materias: "D.Adm, D.Const, Português e redação",
+    materias: "D.Adm, D.Const, Português, odontologia, SUS e redação",
   },
 };
 
-function listaConcursos(arg) {
-  const ordem = ["sedf", "pmdf", "tcego"];
+function concursosDaPessoa(pessoa) {
+  return normalizarPessoa(pessoa) === "amanda" ? CONCURSOS_AMANDA.slice() : CONCURSOS_GABRIEL.slice();
+}
+
+function concursosPadrao(pessoa) {
+  return normalizarPessoa(pessoa) === "amanda" ? CONCURSOS_AMANDA.slice() : ["sedf"];
+}
+
+function listaConcursos(arg, pessoa) {
+  const p = normalizarPessoa(pessoa);
+  const ordem = concursosDaPessoa(p);
   const raw = Array.isArray(arg) ? arg : arg == null || arg === "" ? [] : [arg];
-  const ids = ordem.filter((id) =>
-    raw.some((c) => String(c || "").toLowerCase() === id)
-  );
-  return ids.length ? ids : ["sedf"];
+  const lower = raw.map((c) => String(c || "").toLowerCase());
+  const ids = ordem.filter((id) => lower.includes(id));
+  if (p === "amanda") {
+    const tinhaVelho = lower.some((c) => CONCURSOS_VELHOS_AMANDA.includes(c));
+    if (tinhaVelho || !ids.length) return concursosPadrao(p);
+  }
+  return ids.length ? ids : concursosPadrao(p);
 }
 
-function chaveConcursos(arg) {
-  return listaConcursos(arg).join("+");
+function chaveConcursos(arg, pessoa) {
+  return listaConcursos(arg, pessoa).join("+");
 }
 
-function nomesConcursos(arg) {
-  return listaConcursos(arg)
+function nomesConcursos(arg, pessoa) {
+  return listaConcursos(arg, pessoa)
     .map((id) => CONCURSOS[id]?.nome || id)
     .join(" · ");
 }
 
-function normalizarConcurso(id) {
-  return listaConcursos(id)[0];
+function normalizarConcurso(id, pessoa) {
+  return listaConcursos(id, pessoa)[0];
 }
 
 function normalizarPessoa(id) {
@@ -308,13 +377,13 @@ function normalizarPessoa(id) {
 
 function metaPlano(pessoa, concurso) {
   const p = normalizarPessoa(pessoa);
-  const ids = listaConcursos(concurso);
+  const ids = listaConcursos(concurso, p);
   const c = CONCURSOS[ids[0]];
   const base = PLANOS[p];
   const alvo =
     ids.length === 1
       ? `${c.nome} · ${cargoDoConcurso(ids[0], p)} · ${c.banca}`
-      : nomesConcursos(ids);
+      : nomesConcursos(ids, p);
   return {
     ...base,
     concurso: ids[0],
@@ -474,11 +543,66 @@ const CICLOS = {
       bloco("Redação", "Fechamento", "Lê os 4 textos TCE. Anki das matérias da semana."),
     ],
   },
+  sesodonto: {
+    odonto: [
+      bloco("Odontologia", "Dentística e cárie", "SES-DF / IBFC 2022. Diagnóstico de cárie, quando restaurar, ART e colagem de fragmento. Faz um mapa no papel."),
+      bloco("Odontologia", "Endodontia", "Biologia pulpar, pulpite, abscesso e drenagem. 1 esquema de urgência endodôntica."),
+      bloco("Odontologia", "Periodontia", "Classificação, etiologia e relação com doença sistêmica. Revisa o quadro clínico no caderno."),
+      bloco("Odontologia", "Cirurgia e urgências", "Exodontia, dente impactado, infecção bucomaxilofacial e avaliação pré/pós-operatória."),
+    ],
+    sus: [
+      bloco("SUS", "Princípios e diretrizes", "SUS: universalidade, integralidade, equidade. CF arts. 196–200. Escreve 5 frases certas."),
+      bloco("SUS", "Leis 8.080 e 8.142", "Diretrizes da 8.080 e controle social da 8.142. Cruza com a Portaria 77/2017 do DF."),
+      bloco("SUS", "Decreto 7.508 e redes", "Região de saúde, RAS e relacão hierárquica. Liga no mapa da SES-DF."),
+      bloco("SUS", "Atenção primária no DF", "PNAB + Portaria 77/2017 (APS do DF). O que é equipe e território."),
+    ],
+    saudecol: [
+      bloco("Saúde coletiva", "Saúde bucal na ESF", "CEO, eSB e saúde bucal na atenção básica. Recorte SES-DF 2022."),
+      bloco("Saúde coletiva", "Vigilância e indicadores", "Indicadores de saúde bucal, epidemiologia da cárie e periodontal."),
+      bloco("Saúde coletiva", "Regulação e atenção secundária", "Portarias 773/2018 e 1.388/2018 do DF: ambulatório e regulação."),
+      bloco("Saúde coletiva", "Paciente especial e criança", "Manejo infantil, ART, aleitamento e paciente com necessidade especial."),
+    ],
+    etica: [
+      bloco("Ética e biossegurança", "Código de Ética CFO", "Deveres, publicidade e sigilo. 1 quadro de o que a banca cobra."),
+      bloco("Ética e biossegurança", "Biossegurança", "PPE, descarte, desinfecção e esterilização no consultório público."),
+      bloco("Ética e biossegurança", "Anestesia e farmacologia", "Anestésicos locais, interações e técnicas. Urgência com paciente mediado."),
+      bloco("Ética e biossegurança", "Radiologia e diagnóstico", "Técnicas intra e extraorais + câncer de boca: classificação e encaminhamento."),
+    ],
+    odonto2: [
+      bloco("Odontologia", "Odontopediatria", "Anestesia na criança, dente decíduo e crescimento/desenvolvimento."),
+      bloco("Odontologia", "Patologia e semiologia", "Lesões de mucosa, manifestações sistêmicas, biópsia e diagnóstico diferencial."),
+      bloco("Odontologia", "Radiologia", "Formação da imagem, periapical, panorâmica e proteção radiológica."),
+      bloco("Odontologia", "Simulado de específicos", "Revisa os 3 temas da semana. Sem conteúdo novo. Erro vai para o caderno."),
+    ],
+    revisao: [
+      bloco("Odontologia", "Revisão de específicos", "Anki/caderno dos tópicos da semana. Sem matéria nova."),
+      bloco("Odontologia", "Revisão de urgência", "Fluxo de urgência: dor, abscesso, trauma. 20 min de esquema."),
+      bloco("Odontologia", "Revisão de clínica", "Dentística + endo + perio no mesmo mapa."),
+      bloco("Odontologia", "Fechamento da semana", "Lista o que ainda não fechou. Cruza com SUS da terça."),
+    ],
+    revisao2: [
+      bloco("SUS", "Revisão de SUS", "Relê princípios e 8.080/8.142. 20 min. Sem conteúdo novo."),
+      bloco("Saúde coletiva", "Revisão ESF", "eSB, CEO e APS do DF. Cruza com a Portaria 77."),
+      bloco("Ética e biossegurança", "Revisão ética", "CFO + biossegurança. 15 min de caderno."),
+      bloco("Odontologia", "Fechamento", "Passa os específicos da semana e marca o buraco para segunda."),
+    ],
+  },
 };
 
 function semanalPessoa(pessoa, concurso, semana) {
-  const c = CICLOS[normalizarConcurso(concurso)] || CICLOS.sedf;
+  const c = CICLOS[normalizarConcurso(concurso, pessoa)] || CICLOS.sedf;
   const s = Math.min(semana, 3);
+  if (pessoa === "amanda" && concurso === "sesodonto") {
+    return {
+      1: c.odonto[s],
+      2: c.sus[s],
+      3: c.saudecol[s],
+      4: c.etica[s],
+      5: c.odonto2[s],
+      6: c.revisao[s],
+      0: c.revisao2[s],
+    };
+  }
   const admQ = {
     materia: "D.Adm",
     titulo: `${c.adm[s].titulo} — questões`,
@@ -678,7 +802,7 @@ function anexarRevisoes(dias) {
 }
 
 function fundirBlocosDoDia(pessoa, concursos, semana, weekday) {
-  const ids = listaConcursos(concursos);
+  const ids = listaConcursos(concursos, pessoa);
   const blocos = ids.map((id) => {
     const mapa = semanalPessoa(pessoa, id, semana);
     return { ...mapa[weekday], concurso: id };
@@ -686,13 +810,14 @@ function fundirBlocosDoDia(pessoa, concursos, semana, weekday) {
   const base = blocos[0];
   if (!base) return { materia: "Estudo", titulo: "Plano", fazer: "" };
   if (blocos.length === 1) return base;
-  const nomes = nomesConcursos(ids);
+  const nomes = nomesConcursos(ids, pessoa);
   const titulos = [...new Set(blocos.map((b) => b.titulo))];
+  const materias = [...new Set(blocos.map((b) => b.materia))];
   const fazer = blocos
     .map((b) => `${CONCURSOS[b.concurso].nome}: ${b.fazer}`)
     .join(" Também — ");
   return {
-    materia: base.materia,
+    materia: materias.length === 1 ? materias[0] : materias.join(" + "),
     titulo: titulos.length === 1 ? titulos[0] : titulos.join(" · "),
     fazer: `Marcou ${nomes}. ${fazer}`,
   };
@@ -700,7 +825,7 @@ function fundirBlocosDoDia(pessoa, concursos, semana, weekday) {
 
 function diasDoPlano(kind, carga, concurso) {
   const pessoa = normalizarPessoa(kind);
-  const concursos = listaConcursos(concurso);
+  const concursos = listaConcursos(concurso, pessoa);
   const out = [];
   for (let i = 0; i < PLANO_DIAS; i += 1) {
     const d = dataDoPlano(i);
@@ -753,11 +878,23 @@ function materiaChave(materia) {
   if (m.startsWith("portugu")) return "pt";
   if (m === "ti" || m.startsWith("ti ")) return "ti";
   if (m.startsWith("reda")) return "red";
+  if (m.includes("odonto") || m.includes("dent")) return "odonto";
+  if (m.startsWith("sus") || m.includes("saúde coletiva") || m.includes("saude coletiva")) return "sus";
+  if (m.includes("ética") || m.includes("etica") || m.includes("biosseguran")) return "etica";
   return "out";
 }
 
 function materiaCurta(materia) {
-  const map = { adm: "Adm", const: "Const", pt: "PT", ti: "TI", red: "Red" };
+  const map = {
+    adm: "Adm",
+    const: "Const",
+    pt: "PT",
+    ti: "TI",
+    red: "Red",
+    odonto: "Odonto",
+    sus: "SUS",
+    etica: "Ética",
+  };
   return map[materiaChave(materia)] || String(materia || "").slice(0, 4);
 }
 
@@ -797,6 +934,9 @@ function celulasDoMes(ano, mes, porIso) {
 window.CNAPROVADO_PLANOS = {
   PLANOS,
   CONCURSOS,
+  CONCURSOS_ORDEM,
+  CONCURSOS_GABRIEL,
+  CONCURSOS_AMANDA,
   BLOCOS_PROVA,
   BLOCO_TITULO,
   materiaParaApp,
@@ -822,6 +962,8 @@ window.CNAPROVADO_PLANOS = {
   listaConcursos,
   chaveConcursos,
   nomesConcursos,
+  concursosDaPessoa,
+  concursosPadrao,
   normalizarPessoa,
   metaPlano,
   cargaPadrao,
