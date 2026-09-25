@@ -6,7 +6,7 @@ App de estudo para concursos: https://gabriel7z.github.io/CNAPROVADO/
 - Questões, cards estilo Anki, avatar, gráficos e ranking
 - D.Adm: 200 questões (Tópicos 1 a 4, Thállius Moraes) e 200 cards Anki
 - Questões com o link da aula/playlist no YouTube (D.Adm Thállius, PT Noslen, D.Const JC Concursos, TI Emannuelle). O vídeo não fica no app — só o link.
-- Três planos individuais (SEDF, PM DF e TCE-GO), 14/09 a 13/10/2026. Gabriel (`ggabriel.ferreira.099@gmail.com`): D.Adm, D.Const, Português, TI e redação. Amanda: D.Adm, D.Const, Português e redação (sem TI)
+- Três planos no Gabriel (SEDF, PM DF e TCE-GO) e dois na Amanda (SEDF nível superior + SES Odontologia, previsto para 2027), 14/09 a 13/10/2026. Gabriel (`ggabriel.ferreira.099@gmail.com`): D.Adm, D.Const, Português, TI e redação. Amanda: D.Adm, D.Const, Português, odontologia, SUS e redação (sem TI, sem PM DF, sem TCE-GO)
 - Aba Afinidade: assuntos que valem nos 3 concursos, nos 2, ou só em um
 - Conta e ranking na nuvem com Supabase (as questões continuam neste site; o banco guarda pessoas e resultados)
 
