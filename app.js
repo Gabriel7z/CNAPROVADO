@@ -677,7 +677,7 @@ function htmlMapaEdital() {
     planoConcursosAtuais().length > 1
       ? planoIdAtual() === "amanda"
         ? `<p class="edital-aviso">A mesma matéria muda de bloco. Na SEDF, PT/D.Adm/D.Const são núcleo comum de nível superior. Na SES, o peso está em SUS e odontologia; PT e LC 840 voltam nos gerais.</p>`
-        : `<p class="edital-aviso">A mesma matéria muda de bloco. TI na SEDF é informática de gerais; no TCE-GO do Gabriel é específico. Na Amanda o recorte é SEDF + SES Odontologia, sem TI.</p>`
+        : `<p class="edital-aviso">A mesma matéria muda de bloco. TI na SEDF é informática de gerais; no TCE-GO do Gabriel é específico.</p>`
       : "";
   const html = cards
     .map((c) => {
