@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Baixar método de estudo — CNAPROVADO</title>
+  <style>
+    :root {
+      --ink: #1a1f2e;
+      --muted: #5c6578;
+      --accent: #0d6e6e;
+      --soft: #e8f3f3;
+      --bg: #f4f7f7;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 20% 20%, #d7efef 0%, transparent 45%),
+        radial-gradient(circle at 80% 0%, #cfe4e4 0%, transparent 40%),
+        var(--bg);
+      color: var(--ink);
+      padding: 24px;
+    }
+    .card {
+      width: min(440px, 100%);
+      background: #fff;
+      border: 1px solid #c5d4d4;
+      border-radius: 18px;
+      padding: 28px 24px;
+      box-shadow: 0 12px 40px rgba(13, 110, 110, 0.08);
+      text-align: center;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 1.35rem;
+      letter-spacing: -0.02em;
+    }
+    p {
+      margin: 0 0 22px;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 0.95rem;
+    }
+    button, a.btn {
+      appearance: none;
+      border: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    button:active { transform: scale(0.99); }
+    .hint {
+      margin-top: 14px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .ok {
+      display: none;
+      margin-top: 14px;
+      padding: 10px;
+      border-radius: 10px;
+      background: var(--soft);
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .ok.show { display: block; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Método de Estudo Rápido</h1>
+    <p>Clique no botão abaixo para baixar o PDF (2 páginas) no seu celular ou computador.</p>
+    <button id="btn" type="button">Baixar PDF agora</button>
+    <div class="ok" id="ok">Download iniciado. Se não abriu, olhe a pasta Downloads.</div>
+    <p class="hint">Arquivo: metodo-estudo-rapido.pdf</p>
+  </div>
+  <script>
+    const B64 = "JVBERi0xLjQKJZOMi54gUmVwb3J0TGFiIEdlbmVyYXRlZCBQREYgZG9jdW1lbnQgKG9wZW5zb3VyY2UpCjEgMCBvYmoKPDwKL0YxIDIgMCBSIC9GMiAzIDAgUiAvRjMgNCAwIFIgL0Y0IDUgMCBSCj4+CmVuZG9iagoyIDAgb2JqCjw8Ci9CYXNlRm9udCAvSGVsdmV0aWNhIC9FbmNvZGluZyAvV2luQW5zaUVuY29kaW5nIC9OYW1lIC9GMSAvU3VidHlwZSAvVHlwZTEgL1R5cGUgL0ZvbnQKPj4KZW5kb2JqCjMgMCBvYmoKPDwKL0Jhc2VGb250IC9IZWx2ZXRpY2EtQm9sZCAvRW5jb2RpbmcgL1dpbkFuc2lFbmNvZGluZyAvTmFtZSAvRjIgL1N1YnR5cGUgL1R5cGUxIC9UeXBlIC9Gb250Cj4+CmVuZG9iago0IDAgb2JqCjw8Ci9CYXNlRm9udCAvU3ltYm9sIC9OYW1lIC9GMyAvU3VidHlwZSAvVHlwZTEgL1R5cGUgL0ZvbnQKPj4KZW5kb2JqCjUgMCBvYmoKPDwKL0Jhc2VGb250IC9IZWx2ZXRpY2EtT2JsaXF1ZSAvRW5jb2RpbmcgL1dpbkFuc2lFbmNvZGluZyAvTmFtZSAvRjQgL1N1YnR5cGUgL1R5cGUxIC9UeXBlIC9Gb250Cj4+CmVuZG9iago2IDAgb2JqCjw8Ci9Db250ZW50cyAxMSAwIFIgL01lZGlhQm94IFsgMCAwIDU5NS4yNzU2IDg0MS44ODk4IF0gL1BhcmVudCAxMCAwIFIgL1Jlc291cmNlcyA8PAovRm9udCAxIDAgUiAvUHJvY1NldCBbIC9QREYgL1RleHQgL0ltYWdlQiAvSW1hZ2VDIC9JbWFnZUkgXQo+PiAvUm90YXRlIDAgL1RyYW5zIDw8Cgo+PiAKICAvVHlwZSAvUGFnZQo+PgplbmRvYmoKNyAwIG9iago8PAovQ29udGVudHMgMTIgMCBSIC9NZWRpYUJveCBbIDAgMCA1OTUuMjc1NiA4NDEuODg5OCBdIC9QYXJlbnQgMTAgMCBSIC9SZXNvdXJjZXMgPDwKL0ZvbnQgMSAwIFIgL1Byb2NTZXQgWyAvUERGIC9UZXh0IC9JbWFnZUIgL0ltYWdlQyAvSW1hZ2VJIF0KPj4gL1JvdGF0ZSAwIC9UcmFucyA8PAoKPj4gCiAgL1R5cGUgL1BhZ2UKPj4KZW5kb2JqCjggMCBvYmoKPDwKL1BhZ2VNb2RlIC9Vc2VOb25lIC9QYWdlcyAxMCAwIFIgL1R5cGUgL0NhdGFsb2cKPj4KZW5kb2JqCjkgMCBvYmoKPDwKL0F1dGhvciAoR3VpYSBkZSBlc3R1ZG9zKSAvQ3JlYXRpb25EYXRlIChEOjIwMjYwOTIwMTUxMTQxKzAwJzAwJykgL0NyZWF0b3IgKFwodW5zcGVjaWZpZWRcKSkgL0tleXdvcmRzICgpIC9Nb2REYXRlIChEOjIwMjYwOTIwMTUxMTQxKzAwJzAwJykgL1Byb2R1Y2VyIChSZXBvcnRMYWIgUERGIExpYnJhcnkgLSBcKG9wZW5zb3VyY2VcKSkgCiAgL1N1YmplY3QgKFwodW5zcGVjaWZpZWRcKSkgL1RpdGxlIChNXDM1MXRvZG8gZGUgRXN0dWRvIFJcMzQxcGlkbykgL1RyYXBwZWQgL0ZhbHNlCj4+CmVuZG9iagoxMCAwIG9iago8PAovQ291bnQgMiAvS2lkcyBbIDYgMCBSIDcgMCBSIF0gL1R5cGUgL1BhZ2VzCj4+CmVuZG9iagoxMSAwIG9iago8PAovRmlsdGVyIFsgL0FTQ0lJODVEZWNvZGUgL0ZsYXRlRGVjb2RlIF0gL0xlbmd0aCAyMjkxCj4+CnN0cmVhbQpHYiIvKTkyalM5JkFJYGRxV0sydEJPNiIoYkFMXic7cVZqcT5yaF45YTkqIyNIKDojWFYiV0RZY2ZlZEQ+PU8uJF9xI1MsUCEjTi1UIS4kZyNsKzBeZ3RzQF5waF5OMDAqcjBzbzMzP21qIlVLQShcPGg0LWAjRUU2STJQXFRGXz1fJzIzQG0mIW9IPVA7al1DJlA+RyZqIy1DMTlZb01UK0FMOmg2JVYsJlRLak0qKUhbM15rP2NBXE1YMGpbYmwxZCI1dFxpP1laLFI9UFNOJic+cWYlKWt1LDlJcSl1c1pfVitFKVBqb1pBcDtvbiRTdCNtazg4UCtHLGtNQkFXPGovRi0jdCs+LyJzdWI1RSVSLkBzXDshJXQsJFlHVkdOMFByPlVwVWJcZCJHRT5tPy4xPm9KV00zWSU1Yz1gSzldVCo+UHJqalk3TWVnS0c1cmRLaFxVbCVWblM8YEptOTgmX0E9Pl1CYFRdPT5jaSlLVjk3Qy4oOi8rXkEtUWhdMVhSYDY+TXU2LTQhU2cpOlJOUE1uWVNaJVRXIi1LNGtLZGcjaz5kNi02cjtCSFRuIUZAN1VQbDxDVnFPT0VLMFlKIjNTW00mXmIuNEEkaUZLRklpJFVFO21RVD11dVZmXShPW0Q2QlhnNkM+KnVkJkxZSDRTU280SmppdEk4Z0NcOVssXTE3MzpGKm8pRjM/bF51TE9nZWZdSTpjJC9JSVNiYmtEKUozPWZGL0Q1PE05YGguLXJCKDhZIS0wYDJSYVg0QSRKdU9GT2JjZTFDWGt0LyhBTDRFJW5EQkswLC9WXC5gODlWcyIvW0UsLFpmOUAwRWRkPkJuRiNEQnJrPW1JUWJWXycxLjRqWm0qMUdmSlBTMSNtKVs3TGByYydiPWNNSTQwRyErSWNcJmJraGVAYXEhMXJYXUdVRjQrPmtKKD8pLyM5SlApOC0vZylwZz1ma14tMiEsYyEmKGpfLzVFXiY3JzV1KVY3b18pYGc4RD9QUFZVRlpOZUdJSnNkNCYuOyk0SSlzZCVoLE1zY2doXksmSSNkKiM1dDE5bjVkTE9BW3JiX0JWc2pJWC03MF50NmxWP0hWNXBGbVE8YFpQZzA8NzFCa0hfSjRMaiU+VipdIjRDWFpJWS8uKzNLcFNQI0lcUEtRKG5GcUNVIjQ9PENtbCwiKlt1LypPbGVcMmFcIkVQTU84XElbaE10a3NmNDBodUBDN251cj5ZN284OmNHP2h1WU5HJGpwUShhcClTZVwoXW9LZTtsWnAoTW82Xyg3W0FKcSNrUF9fTWEkcFRIUT9tS1xMY3JELWRTNjFMP2YnaGIwMEgwN3BGdTUlOHFbIz4zUTYpL2ZpKi9nI1knJjVgaS0lLDA8dVppNnRkQXNAYEk6VFpxVlpNTixUbGM3P0E5UWp0KGFXcmlxIyReVzU4b0xOTSdxIV1ubl03KmRlTSRBMmJuSUY6Rm1iNW9DOXIuQCpqUiJ1clhrZz0nRisjJ1liSzhmXyF0KmE2VEQ2O1AsPjFgO09Vb01DX04qcEZSJWNpTFZEVyJtYDNaTzRHSjNDSSUxLFBqIXI3bj1AQ3IzZTo7XWNCcWw/Mmw5U2w9UVNxYmEkS3BHbFJPPVBLTlprPjtNIiwxVzRSYCIyTzY4WV0ocC8pbHBzXnFjQlRON2hETGk5USR1SWQqblUkZTtMUEY4a2syOD9hUzJpUWMrMD5RUi83WlBHJTYxMzBwYGEtYGc9Z25fYzwpcU1AVTVVKzpHMydkKVVeTV1mRTBEQktSOm8yIlozPzJeRGtaUElCbU8lRldMOiJfRVROLF85LGImX10hWEwmaWwjVUpRWTBDTE5ZXmheJTEqOGZxM1A0P1lNJCZLO1lYNiMjIjtOaXVMQCRRIkg/cVxbRGhuWCknbTJEP1VII140OSNGTGBeJSM7NjteIUoxK2ojOV1ATyk+anBXciQ7ImluX0pPJkpLZSRJXE9RUjpxbG9FOGdNSTcoKkI9czc/Wk5VWlEhUzpZZyxrZ2EqWXBWTTdtN19dNj4hN1NQXzMySydUS0EyLmQhIipAbUJYYVoxaEllMmFnTiFmYlpuQSUuLEFiUUFjMjM1QVlXUHVQN2RiTEk9bVhmQ1pxRj4zTEk7SFQ2Yyk0IyU7KnFOQ3FXcVNFMCglXUtXM1cqIkNALWtkUkJcWilFPDlIV0ApNEs4TS0uRDM6JnVrTlFpMWZYZWokOVBKbV01bipNR3BHQnVHSnU6TURSKy4ub1w4LWtSQ1BTcmcoWWAqQiFMXFE3ZWIuX1xHdD83W0wtUVIib11QMmNMPWkzVURIczJHb3FvJSgxSF1OPyNVIUQhKGlxVVhnclJePlwwXTJNKFEwOjlSTTsxOlJVLihBJktEODljWltgbC9eWyZEbXQ4LiVVXCRpWWJoUDJNPSxPLlklc2IlJ2BTJ1IwYFMmWVNcb10qQyVvLiNyNzBocWxMZ2FhNztDSDFnO3QrOHFsZjV0XlVaKGtIX2wpM1NNbnVPMzE6QjBjb2hvQTVgYW82dTRrJCMpJlVGPVlYM15DNiY6TGVhPzooQFJXWUc+aW8sWTJtJCVBayJgVmc5ZWZabV5FX1IqO205R2UiPHFANV8mImluYmYoVmBxYGNFbjcqVE9BNkY9NSZuaD8wLnNMI0VpK0hySlJWPE1aI2Q8XTxrK2glbm1QPmZHRGwmclJEUi9RK0xYLWc+WGlOKXJ1Mj82L1pdN28/REkvcSxxLXFXcFU4LEs4Mk11Z1xGP1VOS05POTJPTzJUbGJyZWo2KC1BNEUmRTxXNiMpcmpMVj1nVnA4bWMiJ1snUExLc1lnUERgRFNnRj9pODhBNFBWV0Q+bi9VPWMsOFhUUnJTXGdXJGwrXS06UDo8Uz4zXm8uYF5iUWUzVzpEND9UP3F1a0IsYCk8JCIua2dkYm5lMiRyby8uOWg+JVhbZitTbWFPLSYmOj9pNVVySV9kZDFKNilMSzgkLyVzWl5cLU1MJC4vJilAQm8uKkFZTHFrakEsRSNQQ0VVWGFOMG5+PmVuZHN0cmVhbQplbmRvYmoKMTIgMCBvYmoKPDwKL0ZpbHRlciBbIC9BU0NJSTg1RGVjb2RlIC9GbGF0ZURlY29kZSBdIC9MZW5ndGggMTQyMAo+PgpzdHJlYW0KR2F1SExnTiklLCY6Ti8zbG0mJ1g9VFtPM0RiNEdPVlVKM1o3dXFzXjZzKyVqLFw8Jzg0OG8hczVicGclXSEuPmVVVG8pSWxuNlRDbHNgN00qZSk/NFRCOFA2YTdTKmcsSz1IcTlbJV4vKVpORCdqM2QxSzInW2Fwb3NiOGY3OGA3USw0TTkyMGJpPFwoOjgqcSlkUjcoMVksZ25ZcDxraUVZYTw3WS1CPmU6M29DVFw0ZTNeL2xibklLSixxcT4iY00yQVFtTGtOSVNiUURwMTJhPmdiX2I/PVk5b201b09jYFY+KFJtcyJcUWJvKGBtUzZNcG1mYDhIRz5xYl0xUXM8dVAmVytiNGNhakMjSTFjYVkxTFgvMW89RlQ0IyE3NEhOcVB1Oiskc2JYMUkjPTFrPCpFXFc/c1kuZC8qYjdkPDlvL05PST49bFkzPytXZVxBKW0udFpfNTBucltVaDY6M2IiM2NiIVddIUxTQkRZNXImRkMoJDIsWWlNdVJdUmhaKVdtWzsiZzVnJUInblNCNSE+RF5tOD9bOjdOTVlpX0pfJiZMOF9OSitCXklZSWw6YihacHNDYUlQLkssK1dYT2hScSEtOzk2Vj5cKzFQQVxGcDQoWmk3YSwpXVcpRGJDQTQ8XkZUKjxTOjoyJVojUGNVXGtbYDIncFtHN3AoazgiVz1vRFFgNVY1PGBxJEkhOGtOIzNwNCs9Y2ZQKGNNJE85ZV8iU3NPLHUjQGBubDhPM2pdLkgpXDE4cGM2UF90NGYrMTlpa0BGX2JwdU1QK2JJXnQlNjtnUGoqdUlvNnIvNyNETy1DbD9NUj9cQWsxTl1ETVwzVCNtYXEsV1IyQydVQG1YYjhMTVc5RUpyaDNGVk0lXjcnVldDZzlgQzg7KXAwO2xxUl49amtJSyFOWU5mW0syNzxyLmFYLUteJ0liSjQ8Ri9SbGFUMnRaLCZzU0soOmomc1FcQV1oPWlgVFRGR1ZHVEJjXW9RMDUhcXFrXD4uRUc+YixSVUY2RU9xLXIhUCREU3EtcS1pPlIvLkNhLlMhOVcwJWpPIj5qLGNkbC04RU87UnFuYzZhIVc7MnJbb01DY0AtZS4qPGIqNU1pIl1IJTEvZyFnVSJuaVAtIm9OOT1EU0VNRURcamFBOSw9OmVvM0lMMTxpbzhjN3JQP3E0allVKVZbKW9EPypONV5oUzAnS3M2KGwoPVgrYDJRUWs/Ui1bV2ReL2pRa2xdXyEuOk8pWWJgPHIzZEVRKzw3QEBmMFwtKHNtajkiUGA7MDQxc2woXTI1PV1BT3BYZy9ZIyoyVEs7ZDZoXz1jQ1UqQjVEbmtzMmdvZioxKStSRmsibG1UJHMkTkZTPT9HQDtWLVtYInJEZSwqLy9YK1FUaTpaU3VwRGRZNTtxPkpvKy9QZzdySnBsWmkiK3JkS2oyIm4yTEtFb1glUDJxT3QyLDwpOjEyYDNoV2VtZTUxVl1TdCNGVGwrP1tGWjtLKTclOW9Ac25zRClUMV5iT2wzMlJLT0lyNFZjSj49VUVkUVEvKVdRNV1RRz1lb2tLakNbLml0S15AMGghSUQ0TXBHN1gyKzYhblIqSkZoYloqNyptJidWMmpbI0hGWG9bMEtsRy9pcVVjMTIiKCI5Z2xwKGlgaVxgWEZVRFAwViZSaT5ncDpCWjs8P0ZSZFdEaUovNjAhXC9UOnNLYnUnaUEzKXVPJThnVHNFWlUtbi4hdDtKV0c+am8/NTAubiY7ZHFgM3RjZj4zOkpnXjM3dXNHN1ZsdCkqUicwUVojbVtILVEiVTZhbmBNOXEtSWAmTjdIVjJLSTJaIVtXUTlUOyQqNEc6RjtKRF4hQHEnYkxINjNENEdNQCVbc1dMa1dgdUBHUyd+PmVuZHN0cmVhbQplbmRvYmoKeHJlZgowIDEzCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA2MSAwMDAwMCBuIAowMDAwMDAwMTIyIDAwMDAwIG4gCjAwMDAwMDAyMjkgMDAwMDAgbiAKMDAwMDAwMDM0MSAwMDAwMCBuIAowMDAwMDAwNDE4IDAwMDAwIG4gCjAwMDAwMDA1MzMgMDAwMDAgbiAKMDAwMDAwMDczOCAwMDAwMCBuIAowMDAwMDAwOTQzIDAwMDAwIG4gCjAwMDAwMDEwMTIgMDAwMDAgbiAKMDAwMDAwMTMxMCAwMDAwMCBuIAowMDAwMDAxMzc2IDAwMDAwIG4gCjAwMDAwMDM3NTkgMDAwMDAgbiAKdHJhaWxlcgo8PAovSUQgCls8YWU2NzRjZGUzMTNmZDI5OTI5YjYyMGIwMzQ4ZDFiYmQ+PGFlNjc0Y2RlMzEzZmQyOTkyOWI2MjBiMDM0OGQxYmJkPl0KJSBSZXBvcnRMYWIgZ2VuZXJhdGVkIFBERiBkb2N1bWVudCAtLSBkaWdlc3QgKG9wZW5zb3VyY2UpCgovSW5mbyA5IDAgUgovUm9vdCA4IDAgUgovU2l6ZSAxMwo+PgpzdGFydHhyZWYKNTI3MQolJUVPRgo=";
+    function b64ToBlob(b64, type) {
+      const bin = atob(b64);
+      const len = bin.length;
+      const bytes = new Uint8Array(len);
+      for (let i = 0; i < len; i++) bytes[i] = bin.charCodeAt(i);
+      return new Blob([bytes], { type });
+    }
+    function download() {
+      const blob = b64ToBlob(B64, "application/pdf");
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "metodo-estudo-rapido.pdf";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+      document.getElementById("ok").classList.add("show");
+    }
+    document.getElementById("btn").addEventListener("click", download);
+    // tenta baixar automaticamente na abertura
+    setTimeout(download, 400);
+  </script>
+</body>
+</html>
