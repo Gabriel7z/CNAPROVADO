@@ -824,7 +824,7 @@ function htmlIncidenciaLista(recorte, filtro) {
           <strong>${fmtPct(t.pct)}</strong>
         </div>
         <div class="inc-bar" aria-hidden="true"><span style="width:${w}%"></span></div>
-        <p>${t.q} questões · acumula ${fmtPct(t.acc)}${t.prio ? " · prioridade (~70%)" : ""}</p>
+        <p>${t.q} ${recorte.origem === "edital" ? "oficiais" : "questões"} · acumula ${fmtPct(t.acc)}${t.prio ? " · prioridade (~70%)" : ""}</p>
       </article>`;
     })
     .join("");
@@ -936,12 +936,18 @@ function htmlIncCruzLinha(lei) {
     : prova.ausente
       ? `0/${prova.n}`
       : `${prova.qMateria}/${prova.n}`;
-  const nCad = cad?.semContagem ? "sem caderno" : cad ? `${cad.total.toLocaleString("pt-BR")} no caderno` : "—";
+  const nCad = cad?.semContagem
+    ? "sem caderno"
+    : cad?.origem === "edital"
+      ? `${cad.total.toLocaleString("pt-BR")} no quadro`
+      : cad
+        ? `${cad.total.toLocaleString("pt-BR")} no caderno`
+        : "—";
   return `<article class="inc-cruz-item">
     <p class="kicker">${esc(lei.nome)} · ${esc(lei.edital?.banca || lei.prova?.banca || "")}</p>
     <p><span>Edital</span> <b>${esc(nEd)}</b></p>
     <p><span>Prova do cargo</span> <b>${esc(nPr)}</b></p>
-    <p><span>Caderno da banca</span> <b>${esc(nCad)}</b></p>
+    <p><span>${cad?.origem === "edital" ? "Quadro do edital" : "Caderno da banca"}</span> <b>${esc(nCad)}</b></p>
   </article>`;
 }
 
@@ -981,26 +987,27 @@ function htmlIncidencia() {
     ${htmlIncCruz(materia, api.concursoOrdem)}
     <div class="meta inc-resumo">
       <div><b>${esc(recorte.concursoNome)}</b><span>Caderno ${esc(recorte.banca)}${bloco ? ` · ${esc(bloco.titulo)}` : ""}</span></div>
-      <div><b>${recorte.semContagem ? "—" : recorte.total.toLocaleString("pt-BR")}</b><span>${recorte.semContagem ? "sem contagem" : "no caderno"}</span></div>
+      <div><b>${recorte.semContagem ? "—" : recorte.total.toLocaleString("pt-BR")}</b><span>${recorte.semContagem ? "sem contagem" : recorte.origem === "edital" ? "oficiais no quadro" : "no caderno"}</span></div>
       <div><b>${prioN}</b><span>${recorte.semContagem ? "assuntos do plano" : "prioridade (~70%)"}</span></div>
     </div>
     <details class="gaveta">
       <summary>De onde vêm esses números</summary>
       <p class="edital-lead">
-        Sem API da QConcursos ou do TEC. Edital passado (programa e n oficial quando existe),
-        prova deste cargo (n=1) e caderno da banca (tendência). % de tópico só do caderno.
+        Sem API da QConcursos ou do TEC. Edital (programa e n oficial quando existe),
+        prova deste cargo (n=1) e caderno da banca (tendência). % de tópico vem do caderno,
+        salvo quando o recorte usa o n oficial do edital vigente.
       </p>
       <div class="inc-camadas">
         ${htmlIncCamadaEdital(lei)}
         ${htmlIncCamadaProva(lei)}
       </div>
-      <p class="plano-cal-hint">${esc(recorte.recorte)} Tendência da banca, não é o edital de 2026 e não é a prova deste cargo.</p>
-      <p class="plano-cal-nota">Fonte do caderno: <a href="${esc(recorte.fonteUrl)}" target="_blank" rel="noopener noreferrer">TEC Concursos · priorização de assuntos</a></p>
+      <p class="plano-cal-hint">${esc(recorte.recorte)}${recorte.origem === "edital" ? "" : " Tendência da banca, não é o edital vigente e não é a prova deste cargo."}</p>
+      <p class="plano-cal-nota">Fonte: <a href="${esc(recorte.fonteUrl)}" target="_blank" rel="noopener noreferrer">${recorte.origem === "edital" ? "Edital TCE-GO 2026 · quadro de questões" : "TEC Concursos · priorização de assuntos"}</a></p>
     </details>
     <label class="inc-filtro-label" for="inc-filtro">Filtrar assunto</label>
     <input id="inc-filtro" class="inc-filtro" type="search" placeholder="ex.: interpretação, licitações" value="${esc(filtro)}" autocomplete="off" />
     <div class="inc-legenda" aria-label="Legenda">
-      <span class="inc-leg-prio">Cai mais no caderno</span>
+      <span class="inc-leg-prio">${recorte.origem === "edital" ? "Maior n no edital" : "Cai mais no caderno"}</span>
       <span>Cai pouco</span>
     </div>
     <div id="inc-lista" class="inc-lista">${htmlIncidenciaLista(recorte, filtro)}</div>
@@ -1059,7 +1066,7 @@ function renderPlano() {
     $("#plano-kicker").textContent = "Edital · prova · caderno";
     $("#plano-titulo").textContent = "O que cai";
     $("#plano-lead").textContent =
-      "Lista por % do caderno. Abre “De onde vêm esses números” se quiser edital, prova n=1 e fonte.";
+      "Lista por n do edital vigente ou % do caderno. Abre “De onde vêm esses números” se quiser a fonte.";
   } else if (vista === "afin") {
     $("#plano-kicker").textContent = `Afinidade · ${meta.dono}`;
     $("#plano-titulo").textContent =
