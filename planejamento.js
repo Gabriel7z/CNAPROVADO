@@ -6,7 +6,7 @@ const EMAIL_GABRIEL = "ggabriel.ferreira.099@gmail.com";
 const CONCURSOS = {
   sedf: { id: "sedf", nome: "SEDF", banca: "Quadrix", cargo: "Gestor TI" },
   pmdf: { id: "pmdf", nome: "PM DF", banca: "Cebraspe", cargo: "área policial" },
-  tcego: { id: "tcego", nome: "TCE-GO", banca: "FCC", cargo: "ACE TI" },
+  tcego: { id: "tcego", nome: "TCE-GO", banca: "FCC", cargo: "Técnico TI" },
 };
 
 const MATERIA_APP = {
@@ -154,7 +154,7 @@ const BLOCOS_PROVA = {
     ],
   },
   tcego: {
-    provaGabriel: "ACE TI · FCC: 60 gerais + 40 específicos (30 de TI).",
+    provaGabriel: "Técnico TI · FCC: 25 gerais (PT 10 + RLM 10 + legislação 5) + 45 específicos (peso 2).",
     provaAmanda: "ACE Controle · FCC: 60 gerais + 40 específicos (controle, auditoria, orçamento).",
     grupos: [
       {
@@ -170,10 +170,10 @@ const BLOCOS_PROVA = {
       },
       {
         id: "especificos",
-        leadGabriel: "30 de TI (peso 2) + auditoria, orçamento e controle. Só TI tem questões no app.",
+        leadGabriel: "45 de TI (peso 2). Maior n: IA (9), desenvolvimento (5), SO/redes/nuvem (5). Só parte tem questões no app.",
         leadAmanda: "Controle, auditoria, orçamento, licitações e previdência. Ainda sem bateria no app.",
         itens: [
-          { id: "ti", nome: "TI (redes, SQL, segurança)", soGabriel: true },
+          { id: "ti", nome: "TI (IA, dev, redes, SQL, segurança)", soGabriel: true },
           { id: "orc", nome: "Orçamento público", semConteudo: true },
           { id: "controle", nome: "Controle externo", semConteudo: true },
           { id: "aud", nome: "Auditoria", semConteudo: true },
@@ -201,7 +201,7 @@ function materiaDoApp(appId) {
 function cargoDoConcurso(id, pessoa) {
   const c = CONCURSOS[id];
   if (!c) return id;
-  if (id === "tcego") return pessoa === "amanda" ? "ACE · Controle Externo" : "ACE · TI";
+  if (id === "tcego") return pessoa === "amanda" ? "ACE · Controle Externo" : "Técnico · TI";
   return c.cargo;
 }
 
@@ -462,10 +462,10 @@ const CICLOS = {
       bloco("Português", "Simulado FCC", "20 itens mistos da semana, sem consulta."),
     ],
     ti: [
-      bloco("TI", "Redes e protocolos", "TCE-GO TI: TCP/IP, OSI, IP, DNS, HTTP. 20 itens."),
-      bloco("TI", "Banco de dados e SQL", "TCE-GO: Q201–300 no app (Bóson aulas 12–13). SELECT, WHERE, ORDER BY, JOIN, PK/FK, GROUP BY. Modela 3 tabelas no papel."),
-      bloco("TI", "Segurança e LGPD", "TCE-GO: Q301–400 no app (CIA + criptografia Bóson). Vale nos 3 no tópico 7; o tópico 8 (hash/PKI) é só TCE-GO."),
-      bloco("TI", "Dev, Git e governança", "HTML/CSS/JS, REST/JSON, Git. COBIT/ITIL só conceito. 15 itens."),
+      bloco("TI", "IA e sistemas agentivos", "TCE-GO 2026: maior n das específicas (9). LLM, prompt, RAG, MCP, alucinação, supervisionado/não/reforço. Não aprofunda modelo."),
+      bloco("TI", "Banco de dados e SQL", "TCE-GO: 4 oficiais + o que já tem no app (Q201–300). SELECT, JOIN, PK/FK, ACID, 1FN–3FN."),
+      bloco("TI", "Segurança e LGPD", "CIA, simétrica/assimétrica, hash, assinatura, OWASP no nome, Zero Trust. LGPD + Marco Civil (guarda de logs)."),
+      bloco("TI", "Dev, nuvem e DevOps", "REST/JSON, Git, Scrum no vocabulário, IaaS/PaaS/SaaS, Docker × K8s, CI/CD. Rede só o raso (portas, TCP/IP)."),
     ],
     redSab: [
       bloco("Redação", "Controle e transparência", "Tema TCE: controle externo e interesse público. Cite um princípio da AP. 20–30 linhas."),
