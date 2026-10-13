@@ -391,6 +391,117 @@ const INCIDENCIA = [
       ["Saúde bucal na ESF", 0],
     ],
   },
+  {
+    id: "cgu-adm",
+    concurso: "cgu",
+    concursoNome: "CGU",
+    materia: "adm",
+    materiaNome: "D.Adm",
+    banca: "Cebraspe",
+    recorte: "P1 do Edital nº 1/2026 AFFC (administração pública). Sem caderno TEC com contagem neste cargo.",
+    fonteUrl: "https://www.cebraspe.org.br/concursos/cgu_26_affc",
+    semContagem: true,
+    topicos: [
+      ["Organização administrativa", 0],
+      ["Administração direta e indireta", 0],
+      ["Agentes públicos", 0],
+      ["Políticas públicas", 0],
+      ["Planejamento e orçamento (PPA, LDO, LOA)", 0],
+    ],
+  },
+  {
+    id: "cgu-const",
+    concurso: "cgu",
+    concursoNome: "CGU",
+    materia: "const",
+    materiaNome: "D.Const",
+    banca: "Cebraspe",
+    recorte: "P1 do Edital nº 1/2026 AFFC (Estado, democracia e direitos). Sem caderno TEC com contagem.",
+    fonteUrl: "https://www.cebraspe.org.br/concursos/cgu_26_affc",
+    semContagem: true,
+    topicos: [
+      ["Princípios fundamentais", 0],
+      ["Direitos e garantias fundamentais", 0],
+      ["Administração Pública na CF", 0],
+      ["Organização dos Poderes", 0],
+      ["Controle interno e TCU (arts. 70 a 74)", 0],
+    ],
+  },
+  {
+    id: "cgu-eticapub",
+    concurso: "cgu",
+    concursoNome: "CGU",
+    materia: "eticapub",
+    materiaNome: "Ética pública",
+    banca: "Cebraspe",
+    recorte: "P1 do Edital nº 1/2026 AFFC. Sem caderno TEC com contagem.",
+    fonteUrl: "https://www.cebraspe.org.br/concursos/cgu_26_affc",
+    semContagem: true,
+    topicos: [
+      ["Fundamentos da ética pública", 0],
+      ["Deveres profissionais e Código CGU", 0],
+      ["Conflito de interesses (Lei 12.813)", 0],
+      ["Impedimento e suspeição (Lei 9.784)", 0],
+    ],
+  },
+  {
+    id: "cgu-controle",
+    concurso: "cgu",
+    concursoNome: "CGU",
+    materia: "controle",
+    materiaNome: "Controle interno",
+    banca: "Cebraspe",
+    recorte: "P2 do Edital nº 1/2026 AFFC. Sem caderno TEC com contagem.",
+    fonteUrl: "https://www.cebraspe.org.br/concursos/cgu_26_affc",
+    semContagem: true,
+    topicos: [
+      ["Governança, riscos e integridade", 0],
+      ["LAI, ouvidoria e participação", 0],
+      ["Controle interno e TCU", 0],
+      ["Dados, evidências e IA responsável", 0],
+    ],
+  },
+  {
+    id: "cgu-aud",
+    concurso: "cgu",
+    concursoNome: "CGU",
+    materia: "aud",
+    materiaNome: "Auditoria",
+    banca: "Cebraspe",
+    recorte: "P2 (fundamentos) do Edital nº 1/2026 AFFC. Sem caderno TEC com contagem.",
+    fonteUrl: "https://www.cebraspe.org.br/concursos/cgu_26_affc",
+    semContagem: true,
+    topicos: [
+      ["Auditoria interna governamental", 0],
+      ["Avaliação, consultoria e apuração", 0],
+      ["Evidência e achado", 0],
+    ],
+  },
+  {
+    id: "cgu-ti",
+    concurso: "cgu",
+    concursoNome: "CGU",
+    materia: "ti",
+    materiaNome: "TI / Informática",
+    banca: "Cebraspe",
+    origem: "edital",
+    manterOrdem: true,
+    recorte:
+      "P3 do Edital nº 1/2026 AFFC (90 específicas, peso 2). Recorte do plano: Infraestrutura de TI + Desenvolvimento de Sistemas. Sem n próprio por tópico. Ciência de dados (cargo 2) entra no fim como extra.",
+    fonteUrl: "https://www.cebraspe.org.br/concursos/cgu_26_affc",
+    semContagem: true,
+    topicos: [
+      ["Redes, SO e plataformas de dados", 0],
+      ["Nuvem, virtualização e automação", 0],
+      ["Cibersegurança, privacidade e continuidade", 0],
+      ["Governança de serviços digitais", 0],
+      ["Engenharia de software e Java", 0],
+      ["Arquitetura, Spring e APIs", 0],
+      ["Banco de dados e SQL", 0],
+      ["DevSecOps e qualidade", 0],
+      ["Inteligência artificial e sistemas agentivos", 0],
+    ],
+  },
 ];
 
 function incidenciaComPct(item) {
@@ -441,40 +552,61 @@ function incidenciaRecorte(concurso, materia) {
   return item ? incidenciaComPct(item) : null;
 }
 
-const CONCURSO_ORDEM = ["sedf", "pmdf", "tcego", "sesodonto"];
-const CONCURSO_NOME = { sedf: "SEDF", pmdf: "PM DF", tcego: "TCE-GO", sesodonto: "SES Odontologia" };
+const CONCURSO_ORDEM = ["sedf", "pmdf", "tcego", "cgu", "sesodonto"];
+const CONCURSO_NOME = { sedf: "SEDF", pmdf: "PM DF", tcego: "TCE-GO", cgu: "CGU", sesodonto: "SES Odontologia" };
 
 const MATERIAS_AFINIDADE = [
   {
     id: "adm",
     nome: "D.Adm",
-    concursos: ["sedf", "pmdf", "tcego", "sesodonto"],
-    nota: "Vale nos planos. SEDF puxa organização e LC 840; SES usa LC 840 na legislação geral; PM DF e TCE-GO puxam licitação e improbidade.",
+    concursos: ["sedf", "pmdf", "tcego", "cgu", "sesodonto"],
+    nota: "Vale nos planos. SEDF puxa organização e LC 840; SES usa LC 840 na legislação geral; PM DF e TCE-GO puxam licitação e improbidade; CGU puxa organização e políticas no P1.",
   },
   {
     id: "const",
     nome: "D.Const",
-    concursos: ["sedf", "pmdf", "tcego", "sesodonto"],
-    nota: "Vale nos planos. SES e SEDF puxam CF e LODF; PM DF pesa art. 5º e 136–144; TCE-GO pesa Legislativo e TCs.",
+    concursos: ["sedf", "pmdf", "tcego", "cgu", "sesodonto"],
+    nota: "Vale nos planos. SES e SEDF puxam CF e LODF; PM DF pesa art. 5º e 136–144; TCE-GO e CGU pesam Poderes e controle (TCs / CGU).",
   },
   {
     id: "pt",
     nome: "Português",
     concursos: ["sedf", "pmdf", "tcego", "sesodonto"],
-    nota: "Vale nos planos. Interpretação e reescrita são o núcleo comum.",
+    nota: "Vale nos planos com objetiva de PT. Interpretação e reescrita são o núcleo comum. Na CGU o português só entra na discursiva.",
   },
   {
     id: "ti",
     nome: "TI",
-    concursos: ["sedf", "pmdf", "tcego"],
+    concursos: ["sedf", "pmdf", "tcego", "cgu"],
     soGabriel: true,
-    nota: "CIA e internet valem nos 3. Windows é SEDF/PM DF. No TCE-GO 2026 (Técnico TI) o n oficial puxa IA, desenvolvimento e redes/nuvem — não o ranking de Analista 2022.",
+    nota: "CIA, redes e SQL valem em TCE-GO e CGU. Windows é SEDF/PM DF. CGU 2026 (AFFC TI) puxa infra/dev (nuvem, Java/Spring, cibersegurança).",
   },
   {
     id: "red",
     nome: "Redação",
-    concursos: ["sedf", "pmdf", "tcego"],
-    nota: "Fim de semana nos planos com discursiva. SES Odontologia (IBFC 2022) não tinha redação.",
+    concursos: ["sedf", "pmdf", "tcego", "cgu"],
+    nota: "Fim de semana nos planos com discursiva. SES Odontologia (IBFC 2022) não tinha redação. CGU é 2 questões (complementares + caso de TI), não dissertação ENEM.",
+  },
+  {
+    id: "eticapub",
+    nome: "Ética pública",
+    concursos: ["cgu"],
+    soGabriel: true,
+    nota: "Só CGU P1. Sem bateria no app.",
+  },
+  {
+    id: "controle",
+    nome: "Controle interno",
+    concursos: ["cgu"],
+    soGabriel: true,
+    nota: "Só CGU P2 (controle interno da União). Não mistura com o controle externo do TCE-GO.",
+  },
+  {
+    id: "aud",
+    nome: "Auditoria",
+    concursos: ["cgu"],
+    soGabriel: true,
+    nota: "Fundamentos de auditoria no P2 da CGU. O cargo 1 (Auditoria) não é o recorte de TI deste plano.",
   },
   {
     id: "sus",
@@ -511,6 +643,19 @@ const AFINIDADE_PLANO = [
     ],
   },
   { concurso: "tcego", materia: "red", topicos: ["Dissertação (tema do concurso)"] },
+  {
+    concurso: "cgu",
+    materia: "ti",
+    topicos: [
+      "Redes, SO e plataformas de dados",
+      "Nuvem, virtualização e automação",
+      "Cibersegurança, privacidade e continuidade",
+      "Banco de dados e SQL",
+      "Engenharia de software e Java",
+      "Inteligência artificial e sistemas agentivos",
+    ],
+  },
+  { concurso: "cgu", materia: "red", topicos: ["Discursiva (complementares + caso de TI)"] },
   { concurso: "sesodonto", materia: "pt", topicos: ["Interpretação de textos", "Ortografia", "Concordância", "Regência"] },
   { concurso: "sesodonto", materia: "adm", topicos: ["LC 840/2011", "Administração Pública na CF", "Ética no serviço público"] },
   { concurso: "sesodonto", materia: "const", topicos: ["Direitos sociais (saúde)", "Administração Pública na CF", "Organização do DF"] },
@@ -568,7 +713,11 @@ const AFINIDADE_ALIAS = [
   [/desenvolvimento de sistemas|java|html|javascript/, "dev"],
   [/sistemas operacionais|linux|deadlock/, "linux"],
   [/organizacao e arquitetura de computadores|arquiteturas paralelas/, "arquitetura"],
+  [/discursiva/, "discursiva"],
   [/dissertacao/, "dissertacao"],
+  [/etica publica|codigo cgu|conflito de interesses/, "etica-pub"],
+  [/lai|ouvidoria|acesso a informacao/, "lai"],
+  [/auditoria interna|avaliacao, consultoria/, "auditoria"],
 ];
 
 const AFINIDADE_ROTULO = {
@@ -622,6 +771,10 @@ const AFINIDADE_ROTULO = {
   linux: "Sistemas operacionais (Linux)",
   arquitetura: "Arquitetura de computadores",
   dissertacao: "Dissertação (tema do concurso)",
+  discursiva: "Discursiva (tema do concurso)",
+  "etica-pub": "Ética pública",
+  lai: "LAI, ouvidoria e acesso à informação",
+  auditoria: "Auditoria interna",
 };
 
 const AFINIDADE_MATERIA_NOME = {
@@ -632,6 +785,9 @@ const AFINIDADE_MATERIA_NOME = {
   red: "Redação",
   sus: "SUS",
   odonto: "Odontologia",
+  eticapub: "Ética pública",
+  controle: "Controle interno",
+  aud: "Auditoria",
 };
 
 function slugTexto(s) {
@@ -696,10 +852,7 @@ function fontesAfinidade() {
 }
 
 function parConcursos(ids) {
-  const nomes = ids.map((id) => CONCURSO_NOME[id] || id);
-  if (nomes.length === 3) return "SEDF · PM DF · TCE-GO";
-  if (nomes.length === 2) return nomes.join(" · ");
-  return nomes[0] || "";
+  return ids.map((id) => CONCURSO_NOME[id] || id).join(" · ");
 }
 
 function pctAfinRank(item, alvo) {
@@ -1218,6 +1371,158 @@ const FONTES_CONCURSO = {
           { materia: "aud", nome: "Técnicas de auditoria", q: 10 },
           { materia: "prev", nome: "Previdência", q: 3 },
         ],
+      },
+    ],
+  },
+  cgu: {
+    concurso: "cgu",
+    nome: "CGU",
+    bancaHistorica: "Cebraspe",
+    edital: {
+      ano: 2026,
+      banca: "Cebraspe",
+      cargo: "Auditor Federal de Finanças e Controle — especialidades de TI (infra e desenvolvimento)",
+      n: 170,
+      tipo: "objetiva C/E",
+      fonte: "Edital nº 1 – CGU – AFFC, de 8 de outubro de 2026 (quadro P1/P2/P3/P4 e Anexo de conteúdos)",
+      fonteUrl: "https://www.cebraspe.org.br/concursos/cgu_26_affc",
+      blocos: [
+        { nome: "P1 · Conhecimentos básicos", q: 40, peso: 1 },
+        { nome: "P2 · Conhecimentos complementares", q: 40, peso: 1 },
+        { nome: "P3 · Conhecimentos específicos", q: 90, peso: 2 },
+      ],
+      discursiva:
+        "P4 · 2 questões: complementares até 30 linhas (30 pts) + situação-problema dos específicos (70 pts)",
+      materias: {
+        pt: {
+          noEdital: false,
+          bloco: "Fora da objetiva. Português entra na correção da discursiva P4.",
+          nota: "Não há prova objetiva de PT. Treino de língua serve a P4.",
+          programa: [],
+          fora: ["Interpretação de textos como disciplina da objetiva"],
+        },
+        adm: {
+          noEdital: true,
+          bloco: "P1 · Básicos (40 itens do bloco, sem n próprio por matéria)",
+          programa: [
+            "Organização administrativa",
+            "Administração direta e indireta",
+            "Agentes públicos",
+            "Políticas públicas",
+            "Planejamento e orçamento (PPA, LDO, LOA)",
+          ],
+          fora: ["Licitações (14.133) como disciplina própria do P1"],
+        },
+        const: {
+          noEdital: true,
+          bloco: "P1 · Básicos (Estado, democracia e direitos — sem n próprio)",
+          programa: [
+            "Princípios fundamentais",
+            "Direitos fundamentais (art. 5º)",
+            "Administração Pública na CF",
+            "Organização dos Poderes",
+            "Controle interno e TCU (arts. 70 a 74)",
+          ],
+          fora: ["Defesa do Estado (arts. 136 a 144)", "Educação na CF"],
+        },
+        eticapub: {
+          noEdital: true,
+          bloco: "P1 · Ética pública e responsabilidade profissional",
+          programa: [
+            "Fundamentos da ética pública",
+            "Deveres profissionais e Código CGU",
+            "Conflito de interesses (Lei 12.813)",
+            "Impedimento e suspeição (Lei 9.784)",
+          ],
+          fora: [],
+        },
+        controle: {
+          noEdital: true,
+          bloco: "P2 · Complementares (40 itens do bloco, sem n próprio)",
+          programa: [
+            "Governança, riscos e integridade",
+            "LAI, ouvidoria e participação",
+            "Controle interno e TCU",
+            "Dados, evidências e IA responsável",
+          ],
+          fora: [],
+        },
+        aud: {
+          noEdital: true,
+          bloco: "P2 · Fundamentos de auditoria governamental",
+          programa: [
+            "Auditoria interna governamental",
+            "Avaliação, consultoria e apuração",
+            "Evidência e achado",
+          ],
+          fora: ["Auditoria de contratações do cargo 1 (não é o recorte de TI)"],
+        },
+        ti: {
+          noEdital: true,
+          bloco: "P3 · Específicos · 90 questões oficiais (peso 2)",
+          nEdital: 90,
+          nota: "Recorte do plano: cargo 3 (infra) + cargo 4 (dev). Ciência de dados (cargo 2) é extra. Auditoria (cargo 1) fica de fora.",
+          programa: [
+            "Redes, SO e plataformas de dados",
+            "Nuvem, virtualização e automação",
+            "Cibersegurança, privacidade e continuidade",
+            "Governança de serviços digitais",
+            "Engenharia de software e Java",
+            "Arquitetura, Spring e APIs",
+            "Banco de dados e SQL",
+            "DevSecOps e qualidade",
+            "Inteligência artificial e sistemas agentivos",
+          ],
+          fora: ["Pacote Office como núcleo da prova", "Windows como disciplina de informática básica"],
+        },
+        red: {
+          noEdital: true,
+          bloco: "P4 · Discursiva (2 questões, 100 pts)",
+          nota: "Complementares até 30 linhas (30 pts) + situação-problema de TI (70 pts). 3h30.",
+          programa: ["Discursiva (complementares + caso de TI)"],
+          fora: ["Dissertação ENEM"],
+        },
+      },
+    },
+    provas: [
+      {
+        id: "affc-ti-2026",
+        cargo: "AFFC · TI",
+        ano: 2026,
+        banca: "Cebraspe",
+        n: 170,
+        classificados: null,
+        fonte: "Edital nº 1/2026 — n oficial por bloco. Prova ainda não aplicada.",
+        fonteUrl: "https://www.cebraspe.org.br/concursos/cgu_26_affc",
+        aviso:
+          "A prova é em 13/12/2026. Este n é o do quadro oficial (40+40+90), não classificação de prova antiga. Específicos (90, peso 2) mandam na nota.",
+        soEdital: true,
+        editalCargo: {
+          cargo: "AFFC — Infraestrutura de TI e Desenvolvimento de Sistemas",
+          n: 170,
+          nPorMateria: { pt: null, const: null, adm: null, ti: 90 },
+          noEdital: { pt: false },
+          blocoPorMateria: {
+            pt: "Fora da objetiva — só na correção da P4",
+            adm: "P1 · Básicos (40 do bloco, sem n próprio)",
+            const: "P1 · Básicos (40 do bloco, sem n próprio)",
+            ti: "P3 · 90 oficiais (peso 2)",
+          },
+          notaPorMateria: {
+            pt: "Não há objetiva de PT. A discursiva cobra registro culto.",
+            adm: "Administração pública no P1, sem n separado.",
+            const: "Estado, democracia e direitos no P1, sem n separado.",
+            ti: "90 específicas. Recorte infra + dev; ciência de dados é extra.",
+          },
+        },
+        disciplinas: [
+          { materia: "bas", nome: "Conhecimentos básicos (P1)", q: 40 },
+          { materia: "comp", nome: "Conhecimentos complementares (P2)", q: 40 },
+          { materia: "ti", nome: "Conhecimentos específicos de TI (P3)", q: 90 },
+        ],
+        agrupa: {
+          ti: ["ti"],
+        },
       },
     ],
   },

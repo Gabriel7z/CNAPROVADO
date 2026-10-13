@@ -7,6 +7,7 @@ const CONCURSOS = {
   sedf: { id: "sedf", nome: "SEDF", banca: "Quadrix", cargo: "Gestor TI" },
   pmdf: { id: "pmdf", nome: "PM DF", banca: "Cebraspe", cargo: "área policial" },
   tcego: { id: "tcego", nome: "TCE-GO", banca: "FCC", cargo: "Técnico TI" },
+  cgu: { id: "cgu", nome: "CGU", banca: "Cebraspe", cargo: "AFFC · TI" },
   sesodonto: {
     id: "sesodonto",
     nome: "SES Odontologia",
@@ -15,8 +16,8 @@ const CONCURSOS = {
   },
 };
 
-const CONCURSOS_ORDEM = ["sedf", "pmdf", "tcego", "sesodonto"];
-const CONCURSOS_GABRIEL = ["sedf", "pmdf", "tcego"];
+const CONCURSOS_ORDEM = ["sedf", "pmdf", "tcego", "cgu", "sesodonto"];
+const CONCURSOS_GABRIEL = ["sedf", "pmdf", "tcego", "cgu"];
 const CONCURSOS_AMANDA = ["sedf", "sesodonto"];
 const CONCURSOS_VELHOS_AMANDA = ["pmdf", "tcego"];
 
@@ -195,6 +196,59 @@ const BLOCOS_PROVA = {
       {
         id: "discursiva",
         lead: "Estudo de caso, não dissertação ENEM.",
+        itens: [{ id: "red", nome: "Redação", soNav: false }],
+      },
+    ],
+  },
+  cgu: {
+    prova:
+      "AFFC Cebraspe 2026: 40 básicos (P1) + 40 complementares (P2) + 90 específicos (P3, peso 2) + discursiva P4 (2 questões).",
+    provaGabriel:
+      "AFFC · TI (infra/dev) · Cebraspe: 40 básicos + 40 complementares + 90 específicos (peso 2) + discursiva (complementares 30 pts + situação-problema de TI 70 pts). Prova 13/12/2026. Inscrições 10/10 a 04/11/2026.",
+    grupos: [
+      {
+        id: "gerais",
+        lead: "P1 — 40 itens C/E (peso 1). Não é PT/D.Adm/D.Const com n próprio: Estado/democracia/direitos, sociedade, ética pública e administração pública. D.Const e D.Adm no app cobrem fatias. Português só na discursiva.",
+        itens: [
+          { id: "const", nome: "D.Const (Estado, democracia e direitos)" },
+          { id: "adm", nome: "D.Adm / Administração pública" },
+          { id: "eticapub", nome: "Ética pública", semConteudo: true },
+        ],
+        extras: [
+          "Ciência política e corrupção como fenômeno",
+          "Sociedade, desigualdades e políticas públicas",
+          "PPA, LDO, LOA (noção)",
+        ],
+      },
+      {
+        id: "complementares",
+        lead: "P2 — 40 itens C/E (peso 1). Controle interno da CGU, auditoria introdutória, governança, LAI/ouvidoria e dados/IA. Ainda sem bateria própria; D.Adm de controle no app ajuda.",
+        itens: [
+          { id: "controle", nome: "Controle interno (CGU)", semConteudo: true },
+          { id: "aud", nome: "Fundamentos de auditoria", semConteudo: true },
+        ],
+        extras: [
+          "Governança, riscos e integridade",
+          "LAI, ouvidoria e participação",
+          "Dados, evidências e IA responsável",
+        ],
+      },
+      {
+        id: "especificos",
+        soGabriel: true,
+        lead: "P3 — 90 itens C/E (peso 2). Recorte do plano: Infraestrutura de TI + Desenvolvimento de Sistemas. Ciência de dados entra como extra (cargo 2). Auditoria (cargo 1) fica de fora.",
+        itens: [{ id: "ti", nome: "TI (redes, nuvem, segurança, Java/SQL)" }],
+        extras: [
+          "Ciência de dados e IA (cargo 2, se for fazer)",
+          "Nuvem, virtualização e IaC",
+          "Cibersegurança e continuidade",
+          "Java, Spring e SQL",
+          "DevSecOps e qualidade",
+        ],
+      },
+      {
+        id: "discursiva",
+        lead: "P4 — 2 questões: complementares até 30 linhas (30 pts) + situação-problema dos específicos de TI (70 pts). 3h30. Português conta na correção.",
         itens: [{ id: "red", nome: "Redação", soNav: false }],
       },
     ],
@@ -541,6 +595,50 @@ const CICLOS = {
       bloco("Redação", "Parágrafo de intervenção", "Conclusão mais concreta. Revisa Const da quinta."),
       bloco("Redação", "Coesão", "Troca 5 conectivos. Revisa os erros da sexta."),
       bloco("Redação", "Fechamento", "Lê os 4 textos TCE. Anki das matérias da semana."),
+    ],
+  },
+  cgu: {
+    adm: [
+      bloco("D.Adm", "Organização administrativa", "CGU/Cebraspe P1. Direta/indireta, desconcentração, agentes. Tópicos 3 a 7 no app (Q101–350). Cruza com ética pública."),
+      bloco("D.Adm", "Atos e processo", "Atos: Thállius Q351–500. Lei 9.784 (impedimento/suspeição) cai na ética e nos complementares. Cebraspe certo/errado."),
+      bloco("D.Adm", "Controle da Administração", "P2 da CGU é controle interno. Cruza com arts. 70–74 da CF (CGU no Executivo; TCU é externo)."),
+      bloco("D.Adm", "Licitações (Lei 14.133)", "Não é núcleo do P1. Ajuda nas específicas de contratação de TI e no controle. Herbert Q501–750."),
+    ],
+    consti: [
+      bloco("D.Const", "Princípios e República", "P1 CGU: fundamentos, objetivos, LIMPE e direitos. Tópicos 1 a 4 no app (Q1–200)."),
+      bloco("D.Const", "Organização dos Poderes", "Democracia e controles recíprocos. Q201–250 no app. Cruza com PM DF e TCE-GO."),
+      bloco("D.Const", "Administração Pública na CF", "Art. 37 e servidores. Cruza com o D.Adm da CGU."),
+      bloco("D.Const", "Controle interno e TCU", "Arts. 70–74: CGU no Executivo, TCU no Congresso. Tópico 6 no app (Q251–300) também vale no TCE-GO."),
+    ],
+    pt: [
+      bloco("Português", "Interpretação Cebraspe", "CGU não tem PT na objetiva. Treina para a discursiva P4: 2 textos + 12 itens certo/errado."),
+      bloco("Português", "Reescrita e equivalência", "Cebraspe: reescrita (~16%). 15 itens. Não inventa sentido."),
+      bloco("Português", "Coesão e pontuação", "Conectivos + vírgula. 15 itens certo/errado."),
+      bloco("Português", "Morfologia e semântica", "Classe da palavra + sentido no texto. 12 itens. Serve a P4."),
+    ],
+    pt2: [
+      bloco("Português", "Concordância Cebraspe", "15 itens. Sujeito oculto e coletivo. Discursiva cobra registro culto."),
+      bloco("Português", "Regência e crase", "15 itens. Marca o verbo que pede preposição."),
+      bloco("Português", "Tipologia e gênero", "Narração vs dissertação. 12 itens. P4 da CGU não é ENEM."),
+      bloco("Português", "Simulado Cebraspe", "20 itens mistos da semana, sem consulta."),
+    ],
+    ti: [
+      bloco("TI", "Redes, OSI e TCP/IP", "CGU infra (P3): OSI, TCP/IP, IPv6. Q101–200 no app (TCE-GO também cobra)."),
+      bloco("TI", "Banco de dados e SQL", "CGU infra/dev: SQL, JOIN, transações. Q201–300 no app."),
+      bloco("TI", "Segurança e criptografia", "CGU: CIA, zero trust, hash, certificado. Q301–400 no app. Cruza com TCE-GO."),
+      bloco("TI", "Nuvem, Java e DevOps", "IaaS/PaaS/SaaS, Docker, Spring/REST, CI/CD. Recorte infra+dev. Sem bateria própria — usa o caderno TCE-GO e o extra do edital."),
+    ],
+    redSab: [
+      bloco("Redação", "Questão de complementares", "CGU P4: até 30 linhas sobre controle interno, LAI ou integridade. 30 pts. Não é dissertação ENEM."),
+      bloco("Redação", "Situação-problema de TI", "Caso de infra ou dev na CGU: evidência, risco, encaminhamento. 70 pts."),
+      bloco("Redação", "Controle e transparência", "LAI + controle interno. Cite um princípio da AP. Até 30 linhas."),
+      bloco("Redação", "Simulado CGU", "40 min, uma das duas peças (complementares OU caso de TI). Depois gramática."),
+    ],
+    redDom: [
+      bloco("Redação", "Reescrita", "Corta 10% do sábado. 20 min de Anki de D.Adm."),
+      bloco("Redação", "Parágrafo de encaminhamento", "No caso de TI: o que a CGU faria com aquela evidência. Revisa Const da quinta."),
+      bloco("Redação", "Coesão", "Troca 5 conectivos. Revisa os erros da sexta."),
+      bloco("Redação", "Fechamento", "Lê os 4 textos CGU. Anki das matérias da semana."),
     ],
   },
   sesodonto: {

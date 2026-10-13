@@ -7,6 +7,7 @@ const AULAS = {
       sedf: "Tópicos 1 a 9 — Organização e atos (14.133 fora do edital SEDF)",
       pmdf: "Tópicos 1 a 11 — Organização, atos e Lei 14.133",
       tcego: "Tópicos 1 a 11 — Organização, atos e Lei 14.133",
+      cgu: "Tópicos 1 a 11 — Organização, atos, controle e 14.133",
       sesodonto: "Tópicos 1 a 9 — Organização e atos (LC 840; 14.133 fora do recorte SES 2022)",
     },
     playlist: {
@@ -48,8 +49,8 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=w4ni5JEEzos",
         de: 201,
         ate: 250,
-        vale: ["sedf", "pmdf", "tcego", "sesodonto"],
-        compat: "Vale nos 3: fundação pública, empresa pública e sociedade de economia mista. Quadrix pesa organização; FCC e Cebraspe cobram o quadro cria × autoriza, capital e forma.",
+        vale: ["sedf", "pmdf", "tcego", "cgu", "sesodonto"],
+        compat: "Vale nos planos: fundação pública, empresa pública e sociedade de economia mista. Quadrix pesa organização; FCC e Cebraspe cobram o quadro cria × autoriza, capital e forma.",
       },
       {
         id: "t6",
@@ -57,8 +58,8 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=rbFGCGr9who",
         de: 251,
         ate: 300,
-        vale: ["sedf", "pmdf", "tcego", "sesodonto"],
-        compat: "Vale nos 3. Pegadinha clássica: órgão não é pessoa. Ministério/Receita = órgão; INSS = autarquia.",
+        vale: ["sedf", "pmdf", "tcego", "cgu", "sesodonto"],
+        compat: "Vale nos planos. Pegadinha clássica: órgão não é pessoa. Ministério/Receita = órgão; INSS = autarquia.",
       },
       {
         id: "t7",
@@ -66,8 +67,8 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=s7EWBxTVpHw",
         de: 301,
         ate: 350,
-        vale: ["sedf", "pmdf", "tcego", "sesodonto"],
-        compat: "Vale nos 3. Quadrix ama o par desconcentração (órgão, mesma pessoa) × descentralização (outra pessoa). TCE cruza com controle.",
+        vale: ["sedf", "pmdf", "tcego", "cgu", "sesodonto"],
+        compat: "Vale nos planos. Quadrix ama o par desconcentração (órgão, mesma pessoa) × descentralização (outra pessoa). TCE e CGU cruzam com controle.",
       },
       {
         id: "t8",
@@ -75,8 +76,8 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=3eT4dV2Hn2s",
         de: 351,
         ate: 425,
-        vale: ["sedf", "pmdf", "tcego", "sesodonto"],
-        compat: "Vale nos 3. Quadrix e Cebraspe amam: nem todo ato da Administração é ato administrativo; mérito só no discricionário.",
+        vale: ["sedf", "pmdf", "tcego", "cgu", "sesodonto"],
+        compat: "Vale nos planos. Quadrix e Cebraspe amam: nem todo ato da Administração é ato administrativo; mérito só no discricionário.",
       },
       {
         id: "t9",
@@ -84,8 +85,8 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=gtYJ9HriH00",
         de: 426,
         ate: 500,
-        vale: ["sedf", "pmdf", "tcego", "sesodonto"],
-        compat: "Vale nos 3. Pegadinha clássica: complexo (vontades no mesmo ato) × composto (ato + aprovação). Aposentadoria = complexo.",
+        vale: ["sedf", "pmdf", "tcego", "cgu", "sesodonto"],
+        compat: "Vale nos planos. Pegadinha clássica: complexo (vontades no mesmo ato) × composto (ato + aprovação). Aposentadoria = complexo.",
       },
       {
         id: "t10",
@@ -93,9 +94,9 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=QPbq4DMOFF4&list=PL70rxKg7qWNWV9bGrCV74SS2-vv38m4sh",
         de: 501,
         ate: 650,
-        concursos: ["pmdf", "tcego"],
-        vale: ["pmdf", "tcego"],
-        compat: "PM DF e TCE-GO. SEDF não cobra 14.133 no edital Quadrix. Parte 1: quem se submete, o que não entra (estatais/13.303), transição da 8.666 e os princípios do art. 5º.",
+        concursos: ["pmdf", "tcego", "cgu"],
+        vale: ["pmdf", "tcego", "cgu"],
+        compat: "PM DF, TCE-GO e CGU (contratação de TI no P3). SEDF não cobra 14.133 no edital Quadrix. Parte 1: quem se submete, o que não entra (estatais/13.303), transição da 8.666 e os princípios do art. 5º.",
         professor: "Herbert Almeida",
       },
       {
@@ -104,9 +105,9 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=QPbq4DMOFF4&list=PL70rxKg7qWNWV9bGrCV74SS2-vv38m4sh&index=2",
         de: 651,
         ate: 750,
-        concursos: ["pmdf", "tcego"],
-        vale: ["pmdf", "tcego"],
-        compat: "PM DF e TCE-GO. Parte 2 (~1h44): art. 11 (objetivos), ciclo de vida, sobrepreço × superfaturamento, agente de contratação, ETP/TR/PCA. Modalidades ficam na parte 3.",
+        concursos: ["pmdf", "tcego", "cgu"],
+        vale: ["pmdf", "tcego", "cgu"],
+        compat: "PM DF, TCE-GO e CGU. Parte 2 (~1h44): art. 11 (objetivos), ciclo de vida, sobrepreço × superfaturamento, agente de contratação, ETP/TR/PCA. Modalidades ficam na parte 3.",
         professor: "Herbert Almeida",
       },
     ],
@@ -158,6 +159,7 @@ const AULAS = {
       sedf: "Tópicos 1 a 4 — Princípios, art. 1º e dignidade",
       pmdf: "Tópicos 1 a 5 — Princípios, art. 1º, dignidade e Poderes",
       tcego: "Tópicos 1 a 6 — Princípios, Poderes, Legislativo e TCs",
+      cgu: "Tópicos 1 a 6 — Princípios, Poderes e controle (CGU/TCU)",
     },
     playlist: {
       titulo: "Curso grátis de Direito Constitucional",
@@ -174,7 +176,7 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=vEZVP-N10lY",
         de: 1,
         ate: 50,
-        compat: "Vale nos 3: princípios e LIMPE caem em qualquer banca.",
+        compat: "Vale nos planos: princípios e LIMPE caem em qualquer banca.",
       },
       {
         id: "art1a",
@@ -182,7 +184,7 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=tgmj0YerDAo",
         de: 51,
         ate: 100,
-        compat: "Vale nos 3: fundamentos da República (art. 1º).",
+        compat: "Vale nos planos: fundamentos da República (art. 1º).",
       },
       {
         id: "art1b",
@@ -190,7 +192,7 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=V2LVrbO7Tmc",
         de: 101,
         ate: 150,
-        compat: "Vale nos 3: fundamentos I a V e democracia.",
+        compat: "Vale nos planos: fundamentos I a V e democracia.",
       },
       {
         id: "dig",
@@ -198,7 +200,7 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=pM5dADX4Atk",
         de: 151,
         ate: 200,
-        compat: "Vale nos 3. Na PM DF cruza com o art. 5º.",
+        compat: "Vale nos planos. Na PM DF cruza com o art. 5º; na CGU, com ética pública.",
       },
       {
         id: "poderes",
@@ -206,9 +208,9 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=q0VLmhjCJas",
         de: 201,
         ate: 250,
-        concursos: ["tcego", "pmdf"],
-        vale: ["tcego", "pmdf"],
-        compat: "TCE-GO pesa Legislativo (arts. 44 a 75). PM DF cobra organização dos Poderes. SEDF não puxa este recorte.",
+        concursos: ["tcego", "pmdf", "cgu"],
+        vale: ["tcego", "pmdf", "cgu"],
+        compat: "TCE-GO pesa Legislativo (arts. 44 a 75). PM DF e CGU cobram organização dos Poderes. SEDF não puxa este recorte.",
       },
       {
         id: "tcs",
@@ -216,9 +218,9 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=yXxnop01Ulc",
         de: 251,
         ate: 300,
-        concursos: ["tcego"],
-        vale: ["tcego"],
-        compat: "Arts. 70–75, TCU e TCE: só TCE-GO. Não entra na SEDF nem na PM DF.",
+        concursos: ["tcego", "cgu"],
+        vale: ["tcego", "cgu"],
+        compat: "Arts. 70–75: TCE-GO (TCs) e CGU (controle interno no Executivo, TCU no Congresso). Não entra na SEDF nem na PM DF.",
       },
     ],
   },
@@ -230,6 +232,7 @@ const AULAS = {
       sedf: "Tópicos 1, 2 e 7 — Windows, internet e CIA",
       pmdf: "Tópicos 1, 2 e 7 — Windows, internet e CIA",
       tcego: "Tópicos 2 a 8 — Segurança, OSI, TCP/IP, SQL e criptografia",
+      cgu: "Tópicos 2 a 8 — Segurança, OSI, TCP/IP, SQL e criptografia",
     },
     playlist: {
       titulo: "Playlist Informática · Emannuelle (SEDF / PM DF)",
@@ -256,7 +259,7 @@ const AULAS = {
         ate: 50,
         concursos: ["sedf", "pmdf"],
         vale: ["sedf", "pmdf"],
-        compat: "SEDF/Quadrix e PM DF. Não cai no TCE-GO TI (cargo de redes/SQL, não Windows).",
+        compat: "SEDF/Quadrix e PM DF. Não cai no TCE-GO TI nem na CGU AFFC (cargos de redes/SQL, não Windows).",
       },
       {
         id: "net",
@@ -264,9 +267,9 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=FwFyQUFokmY",
         de: 51,
         ate: 100,
-        concursos: ["sedf", "pmdf", "tcego"],
-        vale: ["sedf", "pmdf", "tcego", "sesodonto"],
-        compat: "Vale nos 3: navegador, HTTPS, malware, senha, LGPD. No TCE-GO é o básico antes da segurança FCC.",
+        concursos: ["sedf", "pmdf", "tcego", "cgu"],
+        vale: ["sedf", "pmdf", "tcego", "cgu", "sesodonto"],
+        compat: "Vale nos planos: navegador, HTTPS, malware, senha, LGPD. No TCE-GO e na CGU é o básico antes da segurança.",
       },
       {
         id: "osi",
@@ -274,9 +277,9 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=WO1uGJRqrwI",
         de: 101,
         ate: 150,
-        concursos: ["tcego"],
-        vale: ["tcego"],
-        compat: "Só TCE-GO. SEDF e PM DF não cobram modelo OSI.",
+        concursos: ["tcego", "cgu"],
+        vale: ["tcego", "cgu"],
+        compat: "TCE-GO e CGU (infra). SEDF e PM DF não cobram modelo OSI.",
       },
       {
         id: "tcp",
@@ -284,9 +287,9 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=bH29oltn8Cw",
         de: 151,
         ate: 200,
-        concursos: ["tcego"],
-        vale: ["tcego"],
-        compat: "Só TCE-GO (TCP/IP, portas, IPv6). SEDF/PM DF ficam no recorte da aula 2.",
+        concursos: ["tcego", "cgu"],
+        vale: ["tcego", "cgu"],
+        compat: "TCE-GO e CGU (TCP/IP, portas, IPv6). SEDF/PM DF ficam no recorte da aula 2.",
       },
       {
         id: "sqlsel",
@@ -294,9 +297,9 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=5sTFJHOSDvg",
         de: 201,
         ate: 250,
-        concursos: ["tcego"],
-        vale: ["tcego"],
-        compat: "SQL do TCE-GO. SEDF e PM DF não cobram SELECT/JOIN.",
+        concursos: ["tcego", "cgu"],
+        vale: ["tcego", "cgu"],
+        compat: "SQL do TCE-GO e da CGU (infra/dev). SEDF e PM DF não cobram SELECT/JOIN.",
       },
       {
         id: "sqlord",
@@ -304,9 +307,9 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=qAtiTGjxrcA",
         de: 251,
         ate: 300,
-        concursos: ["tcego"],
-        vale: ["tcego"],
-        compat: "SQL do TCE-GO. Não entra na SEDF nem na PM DF.",
+        concursos: ["tcego", "cgu"],
+        vale: ["tcego", "cgu"],
+        compat: "SQL do TCE-GO e da CGU. Não entra na SEDF nem na PM DF.",
       },
       {
         id: "segcia",
@@ -314,9 +317,9 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=cWld3rMD7Wk",
         de: 301,
         ate: 350,
-        concursos: ["sedf", "pmdf", "tcego"],
-        vale: ["sedf", "pmdf", "tcego", "sesodonto"],
-        compat: "Vale nos 3: confidencialidade, integridade, disponibilidade e ameaças. O TCE-GO cobra mais fundo.",
+        concursos: ["sedf", "pmdf", "tcego", "cgu"],
+        vale: ["sedf", "pmdf", "tcego", "cgu", "sesodonto"],
+        compat: "Vale nos planos: confidencialidade, integridade, disponibilidade e ameaças. TCE-GO e CGU cobram mais fundo.",
       },
       {
         id: "segcry",
@@ -324,9 +327,9 @@ const AULAS = {
         url: "https://www.youtube.com/watch?v=UJ6uSV1KREM",
         de: 351,
         ate: 400,
-        concursos: ["tcego"],
-        vale: ["tcego"],
-        compat: "Criptografia, certificado e auditoria: peso de TI no TCE-GO. SEDF/PM DF já viram o básico (HTTPS/senha) na aula 2.",
+        concursos: ["tcego", "cgu"],
+        vale: ["tcego", "cgu"],
+        compat: "Criptografia, certificado e auditoria: peso de TI no TCE-GO e na CGU. SEDF/PM DF já viram o básico (HTTPS/senha) na aula 2.",
       },
     ],
   },
@@ -345,7 +348,7 @@ function aulaDaQuestao(materiaId, qid) {
 }
 
 function listaIdsConcurso(concursos) {
-  const ordem = ["sedf", "pmdf", "tcego", "sesodonto"];
+  const ordem = ["sedf", "pmdf", "tcego", "cgu", "sesodonto"];
   const raw = Array.isArray(concursos) ? concursos : concursos == null || concursos === "" ? [] : [concursos];
   const ids = ordem.filter((id) => raw.some((c) => String(c || "").toLowerCase() === id));
   return ids.length ? ids : ["sedf"];
@@ -387,12 +390,12 @@ function tituloDoConcurso(materiaId, concurso) {
 function valeDaAula(aula) {
   if (aula?.vale?.length) return aula.vale;
   if (aula?.concursos?.length) return aula.concursos;
-  return ["sedf", "pmdf", "tcego", "sesodonto"];
+  return ["sedf", "pmdf", "tcego", "cgu", "sesodonto"];
 }
 
 function concursosDaAula(aula) {
   if (aula?.concursos?.length) return aula.concursos;
-  return ["sedf", "pmdf", "tcego", "sesodonto"];
+  return ["sedf", "pmdf", "tcego", "cgu", "sesodonto"];
 }
 
 function aulasForaDoConcurso(materiaId, concurso) {
