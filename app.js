@@ -676,7 +676,7 @@ function htmlMapaEdital() {
   const aviso =
     planoConcursosAtuais().length > 1
       ? planoIdAtual() === "amanda"
-        ? `<p class="edital-aviso">A mesma matéria muda de bloco. Na SEDF, PT/D.Adm/D.Const são núcleo comum de nível superior. Na SES, o peso está em SUS e odontologia; PT e LC 840 voltam nos gerais.</p>`
+        ? `<p class="edital-aviso">SES odonto é o foco (clínica, SUS, ética). SEDF entra só nos gerais (PT, D.Adm, CF/LODF). Específico de Analista/Monitor fica para depois do edital.</p>`
         : `<p class="edital-aviso">A mesma matéria muda de bloco. TI na SEDF é informática de gerais; no TCE-GO do Gabriel é específico.</p>`
       : "";
   const html = cards
@@ -1079,10 +1079,14 @@ function renderPlano() {
     $("#plano-kicker").textContent = `Mês 1 · ${meta.dono}`;
     $("#plano-titulo").textContent =
       id === "amanda" ? `Plano da Amanda · ${nomes}` : `Plano do Gabriel · ${nomes}`;
+    const periodo =
+      dias.length > 1
+        ? `${dias[0].iso.slice(8)}/${dias[0].iso.slice(5, 7)} a ${dias[dias.length - 1].iso.slice(8)}/${dias[dias.length - 1].iso.slice(5, 7)}/${dias[dias.length - 1].iso.slice(0, 4)}`
+        : "";
     $("#plano-lead").textContent =
       concursos.length === 1
-        ? `${meta.materias}. Hoje embaixo. Método, horas, Gabriel/Amanda e o mapa CG/CE ficam em Ajustar plano. 14/09 a 13/10/2026.`
-        : `${meta.materias}. Cronograma dos ${concursos.length} concursos (${nomes}). Ajustar plano guarda método, horas e o mapa CG/CE. 14/09 a 13/10/2026.`;
+        ? `${meta.materias}. Hoje embaixo. Método, horas e o mapa CG/CE ficam em Ajustar plano. ${periodo}.`
+        : `${meta.materias}. ${concursos.length} concursos (${nomes}). Ajustar plano guarda método, horas e o mapa CG/CE. ${periodo}.`;
   }
   const elMapa = $("#plano-edital");
   if (elMapa) elMapa.innerHTML = htmlMapaEdital();

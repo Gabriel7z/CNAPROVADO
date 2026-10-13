@@ -1,4 +1,5 @@
 const PLANO_INICIO = "2026-09-14";
+const PLANO_INICIO_AMANDA = "2026-10-13";
 const PLANO_DIAS = 30;
 
 const EMAIL_GABRIEL = "ggabriel.ferreira.099@gmail.com";
@@ -76,13 +77,13 @@ const BLOCOS_PROVA = {
   sedf: {
     prova: "Quadrix 2022: 40 básicos + 30 complementares + 50 específicos + dissertação.",
     provaAmanda:
-      "Núcleo comum de nível superior (Quadrix 2022): PT, D.Adm, DF, CF/LODF e dissertação. O específico muda com o cargo — o plano cobre o que se repete em qualquer superior da SEDF.",
+      "Plano B: Analista SEDF (qualquer superior, diploma na posse). Até o edital (previsão nov/2026) estuda SÓ gerais: PT, D.Adm raso, CF/LODF e dissertação curta. Específico do cargo fica para pós-edital.",
     grupos: [
       {
         id: "gerais",
         lead: "Básicos do Gestor. Informática aqui é Windows/Office/Google, não o específico de redes.",
         leadAmanda:
-          "Básicos que costumam se repetir em cargo de nível superior da SEDF. Informática fica de fora deste plano.",
+          "Só gerais, até sair o edital. Português e D.Adm no app. Informática e o específico de Analista/Monitor ficam de fora deste cronograma.",
         itens: [
           { id: "pt", nome: "Português" },
           { id: "ti", nome: "Informática básica", soGabriel: true },
@@ -94,7 +95,7 @@ const BLOCOS_PROVA = {
       {
         id: "complementares",
         lead: "Legislação do Gestor (não é o bloco pedagógico do professor). D.Const no app cobre a fatia da CF.",
-        leadAmanda: "CF e LODF no núcleo comum. Legislação educacional fica de fora: é recorte de magistério, não de qualquer superior.",
+        leadAmanda: "CF (princípios, art. 37) e LODF. Educação na CF e legislação educacional são magistério — não entra agora.",
         itens: [
           { id: "const", nome: "D.Const (educação na CF)", nomeAmanda: "D.Const (CF e LODF)" },
           { id: "legedu", nome: "Legislação educacional", semConteudo: true, soGabriel: true },
@@ -116,8 +117,16 @@ const BLOCOS_PROVA = {
         ],
       },
       {
+        id: "especificos",
+        soAmanda: true,
+        lead: "Não estuda agora. O específico do Analista/Monitor só entra quando o edital sair. Até lá o tempo vai para odontologia e para os gerais da SEDF.",
+        itens: [],
+        extras: ["Específico do cargo — só depois do edital"],
+      },
+      {
         id: "discursiva",
         lead: "Dissertação de atualidades, 20–30 linhas.",
+        leadAmanda: "Dissertação curta de atualidades (geral). Sem tema de pedagogia até o edital.",
         itens: [{ id: "red", nome: "Redação", soNav: false }],
       },
     ],
@@ -201,7 +210,7 @@ const BLOCOS_PROVA = {
   },
   sesodonto: {
     prova:
-      "Pré-edital (previsto para 2027). Recorte da última prova efetiva: SES-DF / IBFC 2022, Cirurgião-dentista — PT, legislação geral, SUS e específicos de odontologia. Sem discursiva naquele edital. Banca do próximo ainda pode mudar.",
+      "Foco principal. Pré-edital (concurso efetivo de dentista ainda sem data). Recorte da SES-DF / IBFC 2022, Cirurgião-dentista: clínica, SUS, ética e gerais de saúde. PT da SEDF também vale aqui.",
     grupos: [
       {
         id: "gerais",
@@ -251,7 +260,7 @@ function cargoDoConcurso(id, pessoa) {
   const c = CONCURSOS[id];
   if (!c) return id;
   if (id === "tcego") return pessoa === "amanda" ? "ACE · Controle Externo" : "Técnico · TI";
-  if (id === "sedf") return pessoa === "amanda" ? "Nível superior" : c.cargo;
+  if (id === "sedf") return pessoa === "amanda" ? "Analista (qualquer superior) · só gerais até o edital" : c.cargo;
   return c.cargo;
 }
 
@@ -332,7 +341,7 @@ const PLANOS = {
   amanda: {
     id: "amanda",
     dono: "Amanda",
-    materias: "D.Adm, D.Const, Português, odontologia, SUS e redação",
+    materias: "Odonto e SUS na frente; SEDF só gerais (PT, D.Adm, CF/LODF). Específico da SEDF depois do edital",
   },
 };
 
@@ -393,8 +402,12 @@ function metaPlano(pessoa, concurso) {
   };
 }
 
-function dataDoPlano(offset) {
-  const d = new Date(`${PLANO_INICIO}T12:00:00`);
+function inicioDoPlano(pessoa) {
+  return normalizarPessoa(pessoa) === "amanda" ? PLANO_INICIO_AMANDA : PLANO_INICIO;
+}
+
+function dataDoPlano(offset, pessoa) {
+  const d = new Date(`${inicioDoPlano(pessoa)}T12:00:00`);
   d.setDate(d.getDate() + offset);
   return d;
 }
@@ -587,7 +600,49 @@ const CICLOS = {
       bloco("Odontologia", "Fechamento", "Passa os específicos da semana e marca o buraco para segunda."),
     ],
   },
+  sedfGeraisAmanda: {
+    pt: [
+      bloco("Português", "SEDF gerais · interpretação", "Só gerais. 2 textos + 12 itens Quadrix. Sem específico de cargo."),
+      bloco("Português", "SEDF gerais · reescrita", "Reescrita e equivalência. 15 itens. Não abre edital de Analista."),
+      bloco("Português", "SEDF gerais · morfologia", "Classe gramatical + sintaxe. 15 itens."),
+      bloco("Português", "SEDF gerais · coesão", "Pronomes, conectivos, vírgula. 12 itens."),
+    ],
+    adm: [
+      bloco("D.Adm", "SEDF gerais · conceito", "Fontes e princípios. Q1–50 no app. Sem licitação pesada."),
+      bloco("D.Adm", "SEDF gerais · organização", "Direta, indireta, desconcentração. Tópicos 3 a 7 no app."),
+      bloco("D.Adm", "SEDF gerais · atos", "Atos administrativos no raso. Q351–500. Sem específico de Monitor/Analista."),
+      bloco("D.Adm", "SEDF gerais · LC 840", "Agentes e LC 840/2011. Controle no essencial."),
+    ],
+    consti: [
+      bloco("D.Const", "SEDF gerais · princípios", "CF arts. 1º a 4º. Não é magistério."),
+      bloco("D.Const", "SEDF gerais · DF e LODF", "Organização do DF e LODF no raso."),
+      bloco("D.Const", "SEDF gerais · art. 37", "LIMPE e servidores. Cruza com D.Adm."),
+      bloco("D.Const", "SEDF gerais · revisão CF", "Relê 1º–4º, 37 e LODF. Educação na CF fica para se o edital pedir."),
+    ],
+    sab: [
+      bloco("Português", "SEDF gerais · sábado", "Gramática da semana + dissertação curta de atualidades (15–20 linhas). Sem tema pedagógico."),
+      bloco("Português", "SEDF gerais · sábado", "Concordância/regência. 15 itens. Se sobrar tempo, 1 parágrafo de atualidades."),
+      bloco("Português", "SEDF gerais · sábado", "Crase e pontuação. 15 itens. Sem específico de cargo."),
+      bloco("Português", "SEDF gerais · sábado", "Simulado raso de gerais (PT + 5 de D.Adm). Sem conteúdo novo de odonto."),
+    ],
+  },
 };
+
+function semanalAmandaFoco(semana) {
+  const s = Math.min(semana, 3);
+  const od = CICLOS.sesodonto;
+  const g = CICLOS.sedfGeraisAmanda;
+  const quinta = [g.pt[s], g.adm[s], g.consti[s], g.adm[s]][s];
+  return {
+    1: od.odonto[s],
+    2: od.sus[s],
+    3: od.saudecol[s],
+    4: quinta,
+    5: od.odonto2[s],
+    6: g.sab[s],
+    0: od.revisao[s],
+  };
+}
 
 function semanalPessoa(pessoa, concurso, semana) {
   const c = CICLOS[normalizarConcurso(concurso, pessoa)] || CICLOS.sedf;
@@ -614,14 +669,15 @@ function semanalPessoa(pessoa, concurso, semana) {
     fazer: "20 itens certo/errado do tema, sem teoria nova. Erro vai para o caderno.",
   };
   if (pessoa === "amanda") {
+    const g = CICLOS.sedfGeraisAmanda;
     return {
-      1: c.adm[s],
-      2: c.pt[s],
-      3: c.consti[s],
-      4: constQ,
-      5: c.pt2[s],
-      6: c.redSab[s],
-      0: c.redDom[s],
+      1: g.adm[s],
+      2: g.pt[s],
+      3: g.consti[s],
+      4: g.adm[s],
+      5: g.pt[s],
+      6: g.sab[s],
+      0: bloco("Português", "SEDF gerais · revisão", "Só erros de PT/D.Adm/CF. Sem específico de cargo. Odonto no plano com os dois concursos marcados."),
     };
   }
   return {
@@ -803,6 +859,10 @@ function anexarRevisoes(dias) {
 
 function fundirBlocosDoDia(pessoa, concursos, semana, weekday) {
   const ids = listaConcursos(concursos, pessoa);
+  if (pessoa === "amanda" && ids.includes("sesodonto") && ids.includes("sedf")) {
+    const item = semanalAmandaFoco(semana)[weekday];
+    return { ...item, concurso: materiaChave(item.materia) === "pt" || materiaChave(item.materia) === "adm" || materiaChave(item.materia) === "const" ? "sedf" : "sesodonto" };
+  }
   const blocos = ids.map((id) => {
     const mapa = semanalPessoa(pessoa, id, semana);
     return { ...mapa[weekday], concurso: id };
@@ -828,7 +888,7 @@ function diasDoPlano(kind, carga, concurso) {
   const concursos = listaConcursos(concurso, pessoa);
   const out = [];
   for (let i = 0; i < PLANO_DIAS; i += 1) {
-    const d = dataDoPlano(i);
+    const d = dataDoPlano(i, pessoa);
     const semana = Math.min(Math.floor(i / 7), 3);
     const bloco = fundirBlocosDoDia(pessoa, concursos, semana, d.getDay());
     const horas = horasDoTurno(d, carga);

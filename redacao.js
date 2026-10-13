@@ -230,7 +230,7 @@ Responda SOMENTE um JSON válido, sem markdown, neste formato:
 Cada array tem de 2 a 6 frases curtas em português do Brasil. Cite trecho curto do texto quando apontar erro.
 Se o texto não for redação (lista, código, lorem), diga isso em errou e esvazie acertou.
 Aplique TODAS as rubricas. Se houver mais de um concurso, o texto precisa pagar os dois formatos — aponte o que vale nos dois e o que só serve em um.`;
-  const usuario = `Pessoa: ${opts?.pessoa === "amanda" ? "Amanda (SEDF nível superior + SES Odontologia)" : "Gabriel"}
+  const usuario = `Pessoa: ${opts?.pessoa === "amanda" ? "Amanda (foco SES Odontologia; SEDF Analista só gerais até o edital)" : "Gabriel"}
 Concursos marcados: ${rotulo}
 Tema: ${opts?.titulo || "sem título"}
 Proposta: ${opts?.proposta || "sem proposta"}
