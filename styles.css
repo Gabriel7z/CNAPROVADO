@@ -1500,6 +1500,23 @@ button:active {
   border-color: color-mix(in srgb, #4d7c0f 46%, var(--line));
 }
 
+.plano-cal-cell.mat-aud,
+.plano-cal-cell.mat-controle {
+  background: color-mix(in srgb, #0f766e 16%, var(--card));
+  border-color: color-mix(in srgb, #0f766e 46%, var(--line));
+}
+
+.plano-cal-cell.mat-orc,
+.plano-cal-cell.mat-fin {
+  background: color-mix(in srgb, #a16207 16%, var(--card));
+  border-color: color-mix(in srgb, #a16207 46%, var(--line));
+}
+
+.plano-cal-cell.mat-lic {
+  background: color-mix(in srgb, #9a3412 16%, var(--card));
+  border-color: color-mix(in srgb, #9a3412 46%, var(--line));
+}
+
 .plano-cal-cell.is-hoje {
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 55%, transparent);
 }
@@ -2223,6 +2240,20 @@ select.inc-filtro {
 
 .plano-legenda .mat-etica {
   background: color-mix(in srgb, #4d7c0f 16%, var(--card));
+}
+
+.plano-legenda .mat-aud,
+.plano-legenda .mat-controle {
+  background: color-mix(in srgb, #0f766e 16%, var(--card));
+}
+
+.plano-legenda .mat-orc,
+.plano-legenda .mat-fin {
+  background: color-mix(in srgb, #a16207 16%, var(--card));
+}
+
+.plano-legenda .mat-lic {
+  background: color-mix(in srgb, #9a3412 16%, var(--card));
 }
 
 .dock {

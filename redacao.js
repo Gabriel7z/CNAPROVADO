@@ -76,7 +76,14 @@ const REDACAO_EXTRAS = [
     titulo: "Situação-problema de TI",
     proposta:
       "CGU P4 (70 pts): caso de infraestrutura ou desenvolvimento na CGU — evidência, risco, encaminhamento. Responda o caso, não um tema genérico.",
-    banca: "CGU",
+    banca: "CGU TI",
+  },
+  {
+    id: "cgu-aud",
+    titulo: "Situação-problema de auditoria",
+    proposta:
+      "CGU P4 (70 pts): caso de auditoria interna — evidência, achado, encaminhamento da CGU. Não é dissertação ENEM.",
+    banca: "CGU Auditoria",
   },
 ];
 
@@ -171,6 +178,24 @@ const REDACAO_RUBRICAS = {
       "Texto só de doutrina sem responder o que a questão pediu.",
     ],
   },
+  cguAud: {
+    id: "cgu-aud",
+    concurso: "CGU",
+    banca: "Cebraspe",
+    cargo: "AFFC · Auditoria",
+    tipo: "2 questões: complementares até 30 linhas (30 pts) + situação-problema de auditoria (70 pts). Não é dissertação ENEM.",
+    criterios: [
+      "Na questão de complementares: ficou no eixo controle interno, LAI, integridade ou auditoria introdutória, em até 30 linhas.",
+      "Na situação-problema: respondeu o caso de auditoria (evidência, achado, risco, encaminhamento da CGU), não um tema genérico.",
+      "Fundamento cabível só quando ajuda (CF arts. 37 e 70–74, LAI, 14.133), sem virar aula de D.Adm.",
+      "Português de prova: registro culto, sem enrolação.",
+    ],
+    evita: [
+      "Dissertação ENEM (“no Brasil, é notório…”).",
+      "Caso de TI, SQL ou redes (isso é do cargo de TI).",
+      "Tema de odontologia ou dissertação de atualidades da SEDF.",
+    ],
+  },
   sesodonto: {
     id: "sesodonto",
     concurso: "SES Odontologia",
@@ -219,7 +244,7 @@ function redacaoRubricasDe(pessoa, concursos) {
       if (id === "sedf") return amanda ? { ...REDACAO_RUBRICAS.sedf, cargo: "Nível superior (discursiva de atualidades)" } : REDACAO_RUBRICAS.sedf;
       if (id === "pmdf") return REDACAO_RUBRICAS.pmdf;
       if (id === "tcego") return amanda ? REDACAO_RUBRICAS.tcegoControle : REDACAO_RUBRICAS.tcegoTi;
-      if (id === "cgu") return REDACAO_RUBRICAS.cgu;
+      if (id === "cgu") return amanda ? REDACAO_RUBRICAS.cguAud : REDACAO_RUBRICAS.cgu;
       if (id === "sesodonto") return REDACAO_RUBRICAS.sesodonto;
       return null;
     })

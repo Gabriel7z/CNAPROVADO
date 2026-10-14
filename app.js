@@ -387,7 +387,7 @@ function planoConcursosAtuais() {
 function concursosPadraoLocal(pessoa) {
   const api = window.CNAPROVADO_PLANOS;
   if (api?.concursosPadrao) return api.concursosPadrao(pessoa);
-  return pessoa === "amanda" ? ["sedf", "sesodonto"] : ["sedf"];
+  return pessoa === "amanda" ? ["cgu"] : ["sedf"];
 }
 
 function planoConcursoAtual() {
@@ -489,6 +489,9 @@ function planoCargaAtual() {
   const email = emailDaConta();
   const mapa = db().planoHorasPorEmail || {};
   const salvo = email ? mapa[email] : db().planoHoras;
+  if (!salvo && planoIdAtual() === "amanda" && planoConcursosAtuais().includes("cgu")) {
+    return api?.normalizarCarga({ dia: 4, fim: 4 }) || { dia: 4, fim: 4 };
+  }
   return api?.normalizarCarga(salvo) || { dia: 2, fim: 2 };
 }
 
@@ -655,6 +658,11 @@ function htmlCalendario(api, dias, hoje) {
     ["odonto", "Odonto"],
     ["sus", "SUS"],
     ["etica", "Ética"],
+    ["aud", "Auditoria"],
+    ["orc", "Orçamento"],
+    ["fin", "Finanças"],
+    ["lic", "Contratações"],
+    ["controle", "Controle"],
   ].filter(([chave]) => dias.some((d) => api.materiaChave(d.materia) === chave));
   const legenda = legendas
     .map(([chave, nome]) => `<span class="mat-${chave}">${nome}</span>`)
@@ -1076,13 +1084,18 @@ function renderPlano() {
         ? `Só ${nomes} marcado. Marca mais um em “Vou estudar” para cruzar. Como ler e o mapa das matérias ficam nas gavetas.`
         : `Marcou ${nomes}. Verde vale em todos; cinza é recorte de um só. Como ler fica na gaveta.`;
   } else {
-    $("#plano-kicker").textContent = `Mês 1 · ${meta.dono}`;
+    const janela = api.janelaDoPlano?.(id, concursos);
+    const periodo =
+      janela?.inicio === "2026-10-14"
+        ? "14/10 a 12/12/2026 (60 dias, prova 13/12). Meta: 200 itens/dia no recorte que pesa."
+        : "14/09 a 13/10/2026.";
+    $("#plano-kicker").textContent = janela?.dias === 60 ? `Sprint 60 dias · ${meta.dono}` : `Mês 1 · ${meta.dono}`;
     $("#plano-titulo").textContent =
       id === "amanda" ? `Plano da Amanda · ${nomes}` : `Plano do Gabriel · ${nomes}`;
     $("#plano-lead").textContent =
       concursos.length === 1
-        ? `${meta.materias}. Hoje embaixo. Método, horas, Gabriel/Amanda e o mapa CG/CE ficam em Ajustar plano. 14/09 a 13/10/2026.`
-        : `${meta.materias}. Cronograma dos ${concursos.length} concursos (${nomes}). Ajustar plano guarda método, horas e o mapa CG/CE. 14/09 a 13/10/2026.`;
+        ? `${meta.materias}. Hoje embaixo. Método, horas, Gabriel/Amanda e o mapa CG/CE ficam em Ajustar plano. ${periodo}`
+        : `${meta.materias}. Cronograma dos ${concursos.length} concursos (${nomes}). Ajustar plano guarda método, horas e o mapa CG/CE. ${periodo}`;
   }
   const elMapa = $("#plano-edital");
   if (elMapa) elMapa.innerHTML = htmlMapaEdital();
@@ -1692,7 +1705,10 @@ function extraRedacaoDoConcurso(banca, concs) {
     if (conc === "sedf") return n.includes("sedf") || n.includes("quadrix");
     if (conc === "pmdf") return n.includes("pmdf") || n.includes("cebraspe");
     if (conc === "tcego") return n.includes("tce") || n.includes("fcc");
-    if (conc === "cgu") return n.includes("cgu") || n.includes("affc");
+    if (conc === "cgu") {
+      if (planoIdAtual() === "amanda") return n.includes("cgu") && !n.includes("ti");
+      return (n.includes("cgu") || n.includes("affc")) && !n.includes("auditoria");
+    }
     if (conc === "sesodonto") return n.includes("ses") || n.includes("odonto") || n.includes("saúde") || n.includes("saude");
     return true;
   });
