@@ -387,7 +387,7 @@ function planoConcursosAtuais() {
 function concursosPadraoLocal(pessoa) {
   const api = window.CNAPROVADO_PLANOS;
   if (api?.concursosPadrao) return api.concursosPadrao(pessoa);
-  return pessoa === "amanda" ? ["sedf", "sesodonto"] : ["sedf"];
+  return pessoa === "amanda" ? ["cgu"] : ["sedf"];
 }
 
 function planoConcursoAtual() {
@@ -489,6 +489,9 @@ function planoCargaAtual() {
   const email = emailDaConta();
   const mapa = db().planoHorasPorEmail || {};
   const salvo = email ? mapa[email] : db().planoHoras;
+  if (!salvo && planoIdAtual() === "amanda" && planoConcursosAtuais().includes("cgu")) {
+    return api?.normalizarCarga({ dia: 4, fim: 4 }) || { dia: 4, fim: 4 };
+  }
   return api?.normalizarCarga(salvo) || { dia: 2, fim: 2 };
 }
 
@@ -655,6 +658,11 @@ function htmlCalendario(api, dias, hoje) {
     ["odonto", "Odonto"],
     ["sus", "SUS"],
     ["etica", "Ética"],
+    ["aud", "Auditoria"],
+    ["orc", "Orçamento"],
+    ["fin", "Finanças"],
+    ["lic", "Contratações"],
+    ["controle", "Controle"],
   ].filter(([chave]) => dias.some((d) => api.materiaChave(d.materia) === chave));
   const legenda = legendas
     .map(([chave, nome]) => `<span class="mat-${chave}">${nome}</span>`)
@@ -1076,17 +1084,18 @@ function renderPlano() {
         ? `Só ${nomes} marcado. Marca mais um em “Vou estudar” para cruzar. Como ler e o mapa das matérias ficam nas gavetas.`
         : `Marcou ${nomes}. Verde vale em todos; cinza é recorte de um só. Como ler fica na gaveta.`;
   } else {
-    $("#plano-kicker").textContent = `Mês 1 · ${meta.dono}`;
+    const janela = api.janelaDoPlano?.(id, concursos);
+    const periodo =
+      janela?.inicio === "2026-10-14"
+        ? "14/10 a 12/12/2026 (60 dias, prova 13/12). Meta: 200 itens/dia no recorte que pesa."
+        : "14/09 a 13/10/2026.";
+    $("#plano-kicker").textContent = janela?.dias === 60 ? `Sprint 60 dias · ${meta.dono}` : `Mês 1 · ${meta.dono}`;
     $("#plano-titulo").textContent =
       id === "amanda" ? `Plano da Amanda · ${nomes}` : `Plano do Gabriel · ${nomes}`;
-    const periodo =
-      dias.length > 1
-        ? `${dias[0].iso.slice(8)}/${dias[0].iso.slice(5, 7)} a ${dias[dias.length - 1].iso.slice(8)}/${dias[dias.length - 1].iso.slice(5, 7)}/${dias[dias.length - 1].iso.slice(0, 4)}`
-        : "";
     $("#plano-lead").textContent =
       concursos.length === 1
-        ? `${meta.materias}. Hoje embaixo. Método, horas e o mapa CG/CE ficam em Ajustar plano. ${periodo}.`
-        : `${meta.materias}. ${concursos.length} concursos (${nomes}). Ajustar plano guarda método, horas e o mapa CG/CE. ${periodo}.`;
+        ? `${meta.materias}. Hoje embaixo. Método, horas, Gabriel/Amanda e o mapa CG/CE ficam em Ajustar plano. ${periodo}`
+        : `${meta.materias}. Cronograma dos ${concursos.length} concursos (${nomes}). Ajustar plano guarda método, horas e o mapa CG/CE. ${periodo}`;
   }
   const elMapa = $("#plano-edital");
   if (elMapa) elMapa.innerHTML = htmlMapaEdital();
@@ -1247,7 +1256,7 @@ function htmlAfinPct(row) {
 
 function htmlAfinChips(concursos, alvo) {
   const api = window.CNAPROVADO_INCIDENCIA;
-  const ordem = (alvo && alvo.length ? alvo : api?.concursoOrdem) || ["sedf", "pmdf", "tcego"];
+  const ordem = (alvo && alvo.length ? alvo : api?.concursoOrdem) || ["sedf", "pmdf", "tcego", "cgu"];
   return ordem
     .map((id) => {
       const on = concursos.includes(id);
@@ -1259,7 +1268,7 @@ function htmlAfinChips(concursos, alvo) {
 
 function htmlAfinAssunto(item, alvo) {
   const api = window.CNAPROVADO_INCIDENCIA;
-  const ordem = (alvo && alvo.length ? alvo : api?.concursoOrdem) || ["sedf", "pmdf", "tcego"];
+  const ordem = (alvo && alvo.length ? alvo : api?.concursoOrdem) || ["sedf", "pmdf", "tcego", "cgu"];
   const nMax = ordem.length;
   const todos = nMax > 1 && item.n === nMax;
   const pcts = ordem
@@ -1303,7 +1312,7 @@ function htmlAfinidade() {
   const materia = db().afinidadeMateria || "todas";
   const filtro = ui.afinidadeFiltro || "";
   const dados = api.afinidade(optsAfinidade(filtro));
-  const nMax = dados.nMax || dados.escolhidos?.length || 3;
+  const nMax = dados.nMax || dados.escolhidos?.length || 1;
   const nomes = nomesConcursosAtual();
   const mats = [
     { id: "todas", nome: "Todas" },
@@ -1332,8 +1341,8 @@ function htmlAfinidade() {
       ? `Você marcou só <b>${esc(nomes)}</b>. Marca mais um concurso em “Vou estudar” para ver o cruzamento e gerar o calendário dos dois.`
       : nMax === 2
         ? `Verde = o mesmo assunto cai nos <b>2</b> que você marcou (${esc(nomes)}): estuda uma vez, vale nos dois. Cinza = recorte de <b>um</b> só. O concurso que ficou de fora não entra nesta lista. Os % são a camada 3 (caderno TEC). Peso da matéria na prova e no edital fica em “O que cai”.`
-        : `Verde = o mesmo assunto cai nos <b>3</b> concursos: estuda uma vez, vale nos três.
-        Amarelo = vale em <b>2</b>. Cinza = recorte de <b>um</b> só. Os % são a camada 3
+        : `Verde = o mesmo assunto cai em <b>todos</b> os que você marcou (${esc(nomes)}): estuda uma vez.
+        Amarelo = vale em <b>alguns</b>. Cinza = recorte de <b>um</b> só. Os % são a camada 3
         (caderno TEC, não é o edital de 2026). “plano” é assunto do calendário
         quando a banca não publicou caderno. Peso da matéria na prova e no edital fica em “O que cai”.`;
   const nMats = dados.materias.filter((m) => m.n > 0).length;
@@ -1365,11 +1374,12 @@ function htmlAfinidade() {
 
 function htmlAfinBlocos(dados) {
   const alvo = dados.escolhidos || planoConcursosAtuais();
-  const nMax = dados.nMax || alvo.length || 3;
+  const nMax = dados.nMax || alvo.length || 1;
   const nomes = window.CNAPROVADO_PLANOS?.nomesConcursos?.(alvo, planoIdAtual()) || nomesConcursosAtual();
   const vazio = dados.assuntos.length
     ? ""
     : `<p class="vazio">Nenhum assunto com esse filtro.</p>`;
+  const parciais = dados.nosParcial || dados.nos2 || [];
   const meta =
     nMax === 1
       ? `<div class="meta inc-resumo" id="afin-meta">
@@ -1381,8 +1391,8 @@ function htmlAfinBlocos(dados) {
       <div><b>${dados.nos1.length}</b><span>só de um</span></div>
     </div>`
         : `<div class="meta inc-resumo" id="afin-meta">
-      <div><b>${dados.nosTodos.length}</b><span>valem nos 3</span></div>
-      <div><b>${(dados.nos2 || dados.nosParcial || []).length}</b><span>valem em 2</span></div>
+      <div><b>${dados.nosTodos.length}</b><span>valem em todos</span></div>
+      <div><b>${parciais.length}</b><span>valem em alguns</span></div>
       <div><b>${dados.nos1.length}</b><span>só de um</span></div>
     </div>`;
   const grupos =
@@ -1391,8 +1401,8 @@ function htmlAfinBlocos(dados) {
       : nMax === 2
         ? `${htmlAfinGrupo("Vale nos 2", `Estuda uma vez. Cai nos dois que você marcou (${nomes}).`, dados.nosTodos, alvo, true)}
     ${htmlAfinGrupo("Só de um concurso", "Não mistura. Estuda quando o plano daquele concurso pedir.", dados.nos1, alvo, false)}`
-        : `${htmlAfinGrupo("Vale nos 3", "Estuda uma vez. Cai na SEDF, na PM DF e no TCE-GO.", dados.nosTodos, alvo, true)}
-    ${htmlAfinGrupo("Vale em 2", "Cai em dois concursos. O terceiro não cobra esse recorte (ou cobra pouco e fora do caderno).", dados.nos2 || dados.nosParcial || [], alvo, false)}
+        : `${htmlAfinGrupo("Vale em todos", `Estuda uma vez. Cai em todos os que você marcou (${nomes}).`, dados.nosTodos, alvo, true)}
+    ${htmlAfinGrupo("Vale em alguns", "Cai em parte dos concursos marcados. Os outros não cobram esse recorte (ou cobram pouco e fora do caderno).", parciais, alvo, false)}
     ${htmlAfinGrupo("Só de um concurso", "Não mistura. Estuda quando o plano daquele concurso pedir.", dados.nos1, alvo, false)}`;
   return `
     ${meta}
@@ -1429,11 +1439,15 @@ function htmlLinkAula(href, texto) {
 
 function htmlAulaCompat(aula) {
   const api = window.CNAPROVADO_INCIDENCIA;
-  const ordem = api?.concursoOrdem || ["sedf", "pmdf", "tcego"];
+  const daPessoa = window.CNAPROVADO_PLANOS?.concursosDaPessoa?.(planoIdAtual()) || ["sedf"];
+  const ordem = (api?.concursoOrdem || daPessoa).filter((id) => daPessoa.includes(id));
   const questoesEm = window.CNAPROVADO_AULAS?.concursosDaAula?.(aula) || ordem;
   const vale = window.CNAPROVADO_AULAS?.valeDaAula?.(aula) || questoesEm;
-  const n = vale.length;
-  const par = n === 3 ? "Vale nos 3" : n === 2 ? "Vale em 2" : "Só de um concurso";
+  const valePessoa = vale.filter((id) => ordem.includes(id));
+  const n = valePessoa.length;
+  const nMax = ordem.length;
+  const par =
+    nMax > 1 && n === nMax ? "Vale em todos" : n === 1 ? "Só de um concurso" : n > 1 ? `Vale em ${n}` : "Fora deste plano";
   const chips = ordem
     .map((id) => {
       const nome = api?.concursoNome?.[id] || id;
@@ -1691,6 +1705,10 @@ function extraRedacaoDoConcurso(banca, concs) {
     if (conc === "sedf") return n.includes("sedf") || n.includes("quadrix");
     if (conc === "pmdf") return n.includes("pmdf") || n.includes("cebraspe");
     if (conc === "tcego") return n.includes("tce") || n.includes("fcc");
+    if (conc === "cgu") {
+      if (planoIdAtual() === "amanda") return n.includes("cgu") && !n.includes("ti");
+      return (n.includes("cgu") || n.includes("affc")) && !n.includes("auditoria");
+    }
     if (conc === "sesodonto") return n.includes("ses") || n.includes("odonto") || n.includes("saúde") || n.includes("saude");
     return true;
   });

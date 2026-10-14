@@ -2374,6 +2374,7 @@ const MATERIAS_BASE = [
   { id: "lic", nome: "Licitações e contratos", sigla: "Licitações", cor: "#d4b45a" },
   { id: "prev", nome: "Previdência", sigla: "Previd.", cor: "#d4b45a" },
   { id: "atual", nome: "Atualidades", sigla: "Atualid.", cor: "#8a7a5a" },
+  { id: "eticapub", nome: "Ética pública", sigla: "Ética púb.", cor: "#d4b45a" },
   { id: "sus", nome: "SUS e legislação de saúde", sigla: "SUS", cor: "#2f9e8f" },
   { id: "odonto", nome: "Odontologia clínica", sigla: "Odonto", cor: "#0ea5a4" },
   { id: "odcollect", nome: "Odontologia em saúde coletiva", sigla: "Odonto. col.", cor: "#0ea5a4" },
