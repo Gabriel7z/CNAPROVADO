@@ -387,7 +387,7 @@ function planoConcursosAtuais() {
 function concursosPadraoLocal(pessoa) {
   const api = window.CNAPROVADO_PLANOS;
   if (api?.concursosPadrao) return api.concursosPadrao(pessoa);
-  return pessoa === "amanda" ? ["cgu"] : ["sedf"];
+  return pessoa === "amanda" ? ["sedf", "sesodonto"] : ["sedf"];
 }
 
 function planoConcursoAtual() {
@@ -489,9 +489,6 @@ function planoCargaAtual() {
   const email = emailDaConta();
   const mapa = db().planoHorasPorEmail || {};
   const salvo = email ? mapa[email] : db().planoHoras;
-  if (!salvo && planoIdAtual() === "amanda" && planoConcursosAtuais().includes("cgu")) {
-    return api?.normalizarCarga({ dia: 4, fim: 4 }) || { dia: 4, fim: 4 };
-  }
   return api?.normalizarCarga(salvo) || { dia: 2, fim: 2 };
 }
 
@@ -1085,11 +1082,8 @@ function renderPlano() {
         : `Marcou ${nomes}. Verde vale em todos; cinza é recorte de um só. Como ler fica na gaveta.`;
   } else {
     const janela = api.janelaDoPlano?.(id, concursos);
-    const periodo =
-      janela?.inicio === "2026-10-14"
-        ? "14/10 a 12/12/2026 (60 dias, prova 13/12). Meta: 200 itens/dia no recorte que pesa."
-        : "14/09 a 13/10/2026.";
-    $("#plano-kicker").textContent = janela?.dias === 60 ? `Sprint 60 dias · ${meta.dono}` : `Mês 1 · ${meta.dono}`;
+    const periodo = janela?.inicio === "2026-10-13" ? "13/10 a 11/11/2026." : "14/09 a 13/10/2026.";
+    $("#plano-kicker").textContent = `Mês 1 · ${meta.dono}`;
     $("#plano-titulo").textContent =
       id === "amanda" ? `Plano da Amanda · ${nomes}` : `Plano do Gabriel · ${nomes}`;
     $("#plano-lead").textContent =
@@ -1705,10 +1699,7 @@ function extraRedacaoDoConcurso(banca, concs) {
     if (conc === "sedf") return n.includes("sedf") || n.includes("quadrix");
     if (conc === "pmdf") return n.includes("pmdf") || n.includes("cebraspe");
     if (conc === "tcego") return n.includes("tce") || n.includes("fcc");
-    if (conc === "cgu") {
-      if (planoIdAtual() === "amanda") return n.includes("cgu") && !n.includes("ti");
-      return (n.includes("cgu") || n.includes("affc")) && !n.includes("auditoria");
-    }
+    if (conc === "cgu") return (n.includes("cgu") || n.includes("affc")) && !n.includes("auditoria");
     if (conc === "sesodonto") return n.includes("ses") || n.includes("odonto") || n.includes("saúde") || n.includes("saude");
     return true;
   });
