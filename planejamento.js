@@ -1,8 +1,6 @@
 const PLANO_INICIO = "2026-09-14";
 const PLANO_INICIO_AMANDA = "2026-10-13";
 const PLANO_DIAS = 30;
-const PLANO_INICIO_AMANDA_CGU = "2026-10-14";
-const PLANO_DIAS_AMANDA_CGU = 60;
 
 const EMAIL_GABRIEL = "ggabriel.ferreira.099@gmail.com";
 
@@ -21,9 +19,8 @@ const CONCURSOS = {
 
 const CONCURSOS_ORDEM = ["sedf", "pmdf", "tcego", "cgu", "sesodonto"];
 const CONCURSOS_GABRIEL = ["sedf", "pmdf", "tcego", "cgu"];
-const CONCURSOS_AMANDA = ["cgu", "sedf", "sesodonto"];
-const CONCURSOS_VELHOS_AMANDA = ["pmdf", "tcego"];
-const CONCURSOS_SPRINT_AMANDA = ["sedf", "sesodonto"];
+const CONCURSOS_AMANDA = ["sedf", "sesodonto"];
+const CONCURSOS_VELHOS_AMANDA = ["pmdf", "tcego", "cgu"];
 
 const MATERIA_APP = {
   adm: "dadm",
@@ -217,14 +214,10 @@ const BLOCOS_PROVA = {
       "AFFC Cebraspe 2026: 40 básicos (P1) + 40 complementares (P2) + 90 específicos (P3, peso 2) + discursiva P4 (2 questões).",
     provaGabriel:
       "AFFC · TI (infra/dev) · Cebraspe: 40 básicos + 40 complementares + 90 específicos (peso 2) + discursiva (complementares 30 pts + situação-problema de TI 70 pts). Prova 13/12/2026. Inscrições 10/10 a 04/11/2026.",
-    provaAmanda:
-      "Sprint 60 dias (14/10 a 12/12) · AFFC Auditoria · Cebraspe. P3 (90, peso 2) manda na nota: auditoria, orçamento, contratações e integridade. P1/P2 só o que a banca realmente cobra (adm, CF, ética, controle, LAI). Sem TI, sem odontologia, sem PT na objetiva. Meta: 200 itens/dia. Prova 13/12/2026.",
     grupos: [
       {
         id: "gerais",
         lead: "P1 — 40 itens C/E (peso 1). Não é PT/D.Adm/D.Const com n próprio: Estado/democracia/direitos, sociedade, ética pública e administração pública. D.Const e D.Adm no app cobrem fatias. Português só na discursiva.",
-        leadAmanda:
-          "P1 — 40 C/E (corte 8). No sprint: Administração pública, CF (princípios, art. 37, poderes, arts. 70–74) e ética (12.813 e 9.784). Sociedade/ciência política ficam de fora — custo de oportunidade contra o P3.",
         itens: [
           { id: "const", nome: "D.Const (Estado, democracia e direitos)" },
           { id: "adm", nome: "D.Adm / Administração pública" },
@@ -235,13 +228,10 @@ const BLOCOS_PROVA = {
           "Sociedade, desigualdades e políticas públicas",
           "PPA, LDO, LOA (noção)",
         ],
-        extrasAmanda: ["PPA, LDO e LOA só na fatia de planejamento do P1 — o orçamento pesado é P3"],
       },
       {
         id: "complementares",
         lead: "P2 — 40 itens C/E (peso 1). Controle interno da CGU, auditoria introdutória, governança, LAI/ouvidoria e dados/IA. Ainda sem bateria própria; D.Adm de controle no app ajuda.",
-        leadAmanda:
-          "P2 — 40 C/E (corte 12, mais duro que o P1). Controle interno × TCU, LAI, fundamentos de auditoria. Dados/IA: o suficiente para não zerar, não é o miolo do cargo 1.",
         itens: [
           { id: "controle", nome: "Controle interno (CGU)", semConteudo: true },
           { id: "aud", nome: "Fundamentos de auditoria", semConteudo: true },
@@ -251,39 +241,23 @@ const BLOCOS_PROVA = {
           "LAI, ouvidoria e participação",
           "Dados, evidências e IA responsável",
         ],
-        extrasAmanda: ["LAI, ouvidoria e integridade — cruza com o P3", "Dados e IA: revisão curta, não 200/dia"],
       },
       {
         id: "especificos",
-        leadGabriel:
+        lead:
           "P3 — 90 itens C/E (peso 2). Recorte do plano: Infraestrutura de TI + Desenvolvimento de Sistemas. Ciência de dados entra como extra (cargo 2). Auditoria (cargo 1) fica de fora.",
-        leadAmanda:
-          "P3 — 90 C/E (peso 2). É o concurso. Recorte do sprint: cargo 1 Auditoria. TI e ciência de dados ficam de fora. Ordem: auditoria governamental, orçamento/contabilidade, contratações, integridade/responsabilização.",
-        itens: [
-          { id: "ti", nome: "TI (redes, nuvem, segurança, Java/SQL)", soGabriel: true },
-          { id: "aud", nome: "Auditoria governamental", soAmanda: true, semConteudo: true },
-          { id: "orc", nome: "Orçamento e contabilidade pública", soAmanda: true, semConteudo: true },
-          { id: "fin", nome: "Finanças públicas", soAmanda: true, semConteudo: true },
-          { id: "lic", nome: "Auditoria de contratações", soAmanda: true, semConteudo: true },
-        ],
-        extrasGabriel: [
+        itens: [{ id: "ti", nome: "TI (redes, nuvem, segurança, Java/SQL)" }],
+        extras: [
           "Ciência de dados e IA (cargo 2, se for fazer)",
           "Nuvem, virtualização e IaC",
           "Cibersegurança e continuidade",
           "Java, Spring e SQL",
           "DevSecOps e qualidade",
         ],
-        extrasAmanda: [
-          "Avaliação, consultoria e apuração",
-          "Integridade, transparência e responsabilização",
-          "Transferências e execução de recursos",
-        ],
       },
       {
         id: "discursiva",
         lead: "P4 — 2 questões: complementares até 30 linhas (30 pts) + situação-problema dos específicos de TI (70 pts). 3h30. Português conta na correção.",
-        leadAmanda:
-          "P4 — 2 questões: complementares até 30 linhas (30 pts) + situação-problema de auditoria (70 pts). 3h30. Português só aqui, não na objetiva.",
         itens: [{ id: "red", nome: "Redação", soNav: false }],
       },
     ],
@@ -341,7 +315,6 @@ function cargoDoConcurso(id, pessoa) {
   if (!c) return id;
   if (id === "tcego") return pessoa === "amanda" ? "ACE · Controle Externo" : "Técnico · TI";
   if (id === "sedf") return pessoa === "amanda" ? "Analista (qualquer superior) · só gerais até o edital" : c.cargo;
-  if (id === "cgu") return pessoa === "amanda" ? "AFFC · Auditoria" : c.cargo;
   return c.cargo;
 }
 
@@ -422,7 +395,7 @@ const PLANOS = {
   amanda: {
     id: "amanda",
     dono: "Amanda",
-    materias: "Sprint CGU 60 dias: auditoria, controle, D.Adm, D.Const, ética e discursiva (meta 200 itens/dia)",
+    materias: "Odonto e SUS na frente; SEDF só gerais (PT, D.Adm, CF/LODF). Específico da SEDF depois do edital",
   },
 };
 
@@ -431,7 +404,7 @@ function concursosDaPessoa(pessoa) {
 }
 
 function concursosPadrao(pessoa) {
-  return normalizarPessoa(pessoa) === "amanda" ? ["cgu"] : ["sedf"];
+  return normalizarPessoa(pessoa) === "amanda" ? CONCURSOS_AMANDA.slice() : ["sedf"];
 }
 
 function listaConcursos(arg, pessoa) {
@@ -442,9 +415,7 @@ function listaConcursos(arg, pessoa) {
   const ids = ordem.filter((id) => lower.includes(id));
   if (p === "amanda") {
     const tinhaVelho = lower.some((c) => CONCURSOS_VELHOS_AMANDA.includes(c));
-    const soSprintAntigo =
-      ids.length && ids.every((id) => CONCURSOS_SPRINT_AMANDA.includes(id)) && !lower.includes("cgu");
-    if (tinhaVelho || soSprintAntigo || !ids.length) return concursosPadrao(p);
+    if (tinhaVelho || !ids.length) return concursosPadrao(p);
   }
   return ids.length ? ids : concursosPadrao(p);
 }
@@ -485,18 +456,8 @@ function metaPlano(pessoa, concurso) {
   };
 }
 
-function janelaDoPlano(pessoa, concursos) {
+function janelaDoPlano(pessoa) {
   const p = normalizarPessoa(pessoa);
-  const ids = listaConcursos(concursos, p);
-  if (p === "amanda" && ids.includes("cgu")) {
-    return {
-      inicio: PLANO_INICIO_AMANDA_CGU,
-      dias: PLANO_DIAS_AMANDA_CGU,
-      semanaMax: 8,
-      prova: "2026-12-13",
-      metaItens: 200,
-    };
-  }
   if (p === "amanda") {
     return { inicio: PLANO_INICIO_AMANDA, dias: PLANO_DIAS, semanaMax: 3, prova: "", metaItens: 0 };
   }
@@ -767,85 +728,6 @@ const CICLOS = {
       bloco("Português", "SEDF gerais · sábado", "Simulado raso de gerais (PT + 5 de D.Adm). Sem conteúdo novo de odonto."),
     ],
   },
-  cguAmanda: {
-    p3aud: [
-      bloco("Auditoria", "Ciclo do trabalho", "P3 CGU. Meta: 200 itens C/E Cebraspe de planejamento, escopo, critério e evidência. Sem consulta no bloco. Erro vai para o caderno."),
-      bloco("Auditoria", "Avaliação e consultoria", "P3. Meta: 200 itens C/E: avaliação × consultoria × apuração. Distinção de papéis da SFC."),
-      bloco("Auditoria", "Testes e amostragem", "P3. Meta: 200 itens C/E: testes de controle, substantivos, amostragem e achado (critério/condição/causa/efeito)."),
-      bloco("Auditoria", "Achado e papéis de trabalho", "P3. Meta: 200 itens C/E: suficiência da evidência, trilha de revisão e recomendação."),
-      bloco("Auditoria", "Auditoria de dados", "P3. Meta: 200 itens C/E: qualidade de dados, rastreabilidade e limite da IA como evidência."),
-      bloco("Auditoria", "Comunicação e monitoramento", "P3. Meta: 200 itens C/E: relatório, plano de ação, benefício e qualidade da atividade."),
-      bloco("Auditoria", "Três linhas e independência", "P3. Meta: 200 itens C/E: independência, objetividade, ceticismo e modelo das três linhas."),
-      bloco("Auditoria", "Simulado de auditoria", "P3. Meta: 200 itens mistos de auditoria governamental, sem teoria nova."),
-      bloco("Auditoria", "Revisão de auditoria", "Semana da prova. Meta: 200 itens só dos erros de auditoria. Sem conteúdo novo."),
-    ],
-    p1: [
-      bloco("D.Adm", "Organização administrativa", "P1 CGU. Meta: 200 itens C/E: direta/indireta, desconcentração, agentes. Fecha a bateria no app e completa no TEC."),
-      bloco("D.Const", "Princípios e art. 37", "P1. Meta: 200 itens C/E: fundamentos, LIMPE e Administração na CF. Q1–200 no app + TEC Cebraspe."),
-      bloco("Ética pública", "Conflito de interesses", "P1. Meta: 200 itens C/E: Lei 12.813 e deveres. 9.784 (impedimento/suspeição) no mesmo bloco."),
-      bloco("D.Const", "Poderes e controle", "P1. Meta: 200 itens C/E: Poderes + arts. 70–74 (CGU no Executivo, TCU no Congresso). Q201–300 no app."),
-      bloco("D.Adm", "Atos e processo", "P1. Meta: 200 itens C/E: atos (Q351–500 no app) + 9.784. Cebraspe certo/errado."),
-      bloco("Ética pública", "Deveres e assédio", "P1. Meta: 200 itens C/E: imparcialidade, assédio, discriminação e código da CGU."),
-      bloco("D.Adm", "Políticas e planejamento", "P1. Meta: 200 itens C/E: problema público, PPA/LDO/LOA no raso (o orçamento pesado é P3)."),
-      bloco("D.Const", "Direitos fundamentais", "P1. Meta: 200 itens C/E art. 5º e devido processo — só o que amarra ética e controle."),
-      bloco("D.Adm", "Revisão de P1", "Semana da prova. Meta: 200 itens mistos de organização, CF e ética. Sem conteúdo novo."),
-    ],
-    p3orc: [
-      bloco("Orçamento", "PPA, LDO e LOA", "P3. Meta: 200 itens C/E de planejamento orçamentário. Cruza com o raso do P1."),
-      bloco("Finanças públicas", "Receita, despesa e LRF", "P3. Meta: 200 itens C/E: empenho, liquidação, pagamento, restos a pagar e responsabilidade fiscal."),
-      bloco("Contabilidade pública", "Balanços e MCASP", "P3. Meta: 200 itens C/E: BP, BF, DVP e leitura de notas para o controle."),
-      bloco("Orçamento", "Execução e créditos", "P3. Meta: 200 itens C/E: créditos, contingenciamento, Conta Única e programação financeira."),
-      bloco("Finanças públicas", "Déficit e dívida", "P3. Meta: 200 itens C/E: resultado primário/nominal, riscos e sustentabilidade."),
-      bloco("Contabilidade pública", "Custos e estatais", "P3. Meta: 200 itens C/E: custos, MIC e leitura societária de estatais no raso."),
-      bloco("Orçamento", "Simulado de AFO", "P3. Meta: 200 itens mistos de orçamento, LRF e contabilidade. Sem teoria nova."),
-      bloco("Finanças públicas", "Federalismo fiscal", "P3. Meta: 200 itens C/E: funções do Estado, tributação e estatais no controle."),
-      bloco("Orçamento", "Revisão de AFO", "Semana da prova. Meta: 200 itens só dos erros de orçamento/contabilidade."),
-    ],
-    p2: [
-      bloco("Controle interno", "CGU × TCU", "P2. Meta: 200 itens C/E: controle interno, externo e social. Corte do P2 é 12/40 — não zera."),
-      bloco("Auditoria", "Fundamentos P2", "P2. Meta: 200 itens C/E: avaliação, consultoria, apuração e ciclo do trabalho (versão introdutória)."),
-      bloco("Controle interno", "LAI e ouvidoria", "P2. Meta: 200 itens C/E: transparência ativa/passiva, LAI × LGPD e ouvidoria."),
-      bloco("Controle interno", "Governança e riscos", "P2. Meta: 200 itens C/E: governança, risco, controle e integridade pública/privada."),
-      bloco("Controle interno", "Responsabilização", "P2. Meta: 200 itens C/E: PAD, PAR, leniência e distinção achado × imputação — introdutório."),
-      bloco("Controle interno", "Evidências e IA", "P2. Meta: 200 itens C/E: dado × evidência, viés e uso responsável de IA. Não aprofunda modelo."),
-      bloco("Controle interno", "Simulado de P2", "P2. Meta: 200 itens mistos de controle, LAI e fundamentos de auditoria."),
-      bloco("Controle interno", "Integração da CGU", "P2. Meta: 200 itens C/E: ouvidoria como insumo de risco, correição e compartilhamento lícito."),
-      bloco("Controle interno", "Revisão de P2", "Semana da prova. Meta: 200 itens só dos erros de P2. Sem conteúdo novo."),
-    ],
-    p3int: [
-      bloco("Licitações", "Auditoria de contratações", "P3. Meta: 200 itens C/E: 14.133 no ângulo de auditoria (ETP, TR, direcionamento, sobrepreço). Q501–750 no app + TEC."),
-      bloco("Auditoria", "Integridade e LAI aplicadas", "P3. Meta: 200 itens C/E: programa de integridade, LAI aplicada ao controle e proteção do denunciante."),
-      bloco("Licitações", "Execução contratual", "P3. Meta: 200 itens C/E: medição, fiscalização, reequilíbrio e evidência de quantidade/preço."),
-      bloco("Auditoria", "Responsabilização aplicada", "P3. Meta: 200 itens C/E: admissibilidade, prova, PAD/PAR e acordo de leniência no caso concreto."),
-      bloco("Licitações", "Transferências e parcerias", "P3. Meta: 200 itens C/E: convênio, plano de trabalho, prestação de contas e dano."),
-      bloco("Auditoria", "Transparência e dados abertos", "P3. Meta: 200 itens C/E: Portal da Transparência, dados abertos e risco de reidentificação."),
-      bloco("Licitações", "Simulado de contratações", "P3. Meta: 200 itens mistos de 14.133 e auditoria de contratos. Sem teoria nova."),
-      bloco("Auditoria", "Simulado de integridade", "P3. Meta: 200 itens mistos de integridade, LAI e responsabilização."),
-      bloco("Licitações", "Revisão de contratações", "Semana da prova. Meta: 200 itens só dos erros de contratações/integridade."),
-    ],
-    redSab: [
-      bloco("Redação", "Complementares (30 pts)", "P4. Até 30 linhas: controle interno, LAI ou integridade. 40 min. Depois 150 itens dos erros da semana para fechar a meta."),
-      bloco("Redação", "Caso de auditoria (70 pts)", "P4. Situação-problema: evidência, achado, encaminhamento da CGU. Não é dissertação ENEM. Depois 150 itens de P3."),
-      bloco("Redação", "Complementares — LAI", "P4. Até 30 linhas: acesso à informação no Executivo. Cite LAI ou art. 37. Depois 150 itens de P2."),
-      bloco("Redação", "Caso — contratação", "P4. Caso de auditoria de licitação: risco, evidência, o que a CGU faria. Depois 150 itens de 14.133."),
-      bloco("Redação", "Complementares — controle", "P4. Até 30 linhas: CGU × TCU. Depois 150 itens de arts. 70–74."),
-      bloco("Redação", "Caso — orçamento", "P4. Caso de execução orçamentária irregular. Depois 150 itens de AFO."),
-      bloco("Redação", "Duas peças (treino)", "P4. 1 complementares (30 linhas) + início do caso de auditoria. Se não caber, o caso fica no domingo. Depois 150 itens de erro."),
-      bloco("Redação", "Simulado P4", "P4. 3h30 no relógio: as duas questões. Gramática no fim. Meta de 200 itens fica para o domingo."),
-      bloco("Redação", "Releitura P4", "Véspera. Relê os 8 textos. Não escreve peça nova. 200 itens só de erro da objetiva."),
-    ],
-    sim: [
-      bloco("Auditoria", "Simulado P3", "Domingo. Meta: 200 itens mistos de auditoria (P3). Sem consulta. Só revisa o erro."),
-      bloco("D.Adm", "Simulado P1", "Domingo. Meta: 200 itens mistos de P1 (adm + CF + ética). Sem consulta."),
-      bloco("Controle interno", "Simulado P2", "Domingo. Meta: 200 itens mistos de P2. Corte mental: 12/40."),
-      bloco("Auditoria", "Simulado P1+P2+P3", "Domingo. 170 oficiais (40+40+90) + 30 de erro = 200. Sem consulta."),
-      bloco("Orçamento", "Simulado AFO + auditoria", "Domingo. Meta: 200 itens mistos P3 orçamento e auditoria."),
-      bloco("Licitações", "Simulado contratos + integridade", "Domingo. Meta: 200 itens mistos P3 contratações e integridade."),
-      bloco("Auditoria", "Simulado geral", "Domingo. Meta: 200 itens mistos do recorte inteiro. Sem teoria nova."),
-      bloco("Auditoria", "Simulado de prova", "Domingo. 170 oficiais no ritmo Cebraspe + 30 de erro. Cronometra P1/P2/P3."),
-      bloco("Auditoria", "Fechamento", "Último domingo antes da prova. 200 itens só de erro. Sem matéria nova. Prova amanhã (13/12)."),
-    ],
-  },
 };
 
 function semanalAmandaFoco(semana) {
@@ -865,19 +747,6 @@ function semanalAmandaFoco(semana) {
 }
 
 function semanalPessoa(pessoa, concurso, semana) {
-  if (pessoa === "amanda" && concurso === "cgu") {
-    const c = CICLOS.cguAmanda;
-    const s = Math.min(semana, (c.p3aud.length || 1) - 1);
-    return {
-      1: c.p3aud[s],
-      2: c.p1[s],
-      3: c.p3orc[s],
-      4: c.p2[s],
-      5: c.p3int[s],
-      6: c.redSab[s],
-      0: c.sim[s],
-    };
-  }
   const c = CICLOS[normalizarConcurso(concurso, pessoa)] || CICLOS.sedf;
   const s = Math.min(semana, 3);
   if (pessoa === "amanda" && concurso === "sesodonto") {
@@ -1095,7 +964,7 @@ function anexarRevisoes(dias) {
 
 function fundirBlocosDoDia(pessoa, concursos, semana, weekday) {
   const ids = listaConcursos(concursos, pessoa);
-  if (pessoa === "amanda" && ids.includes("sesodonto") && ids.includes("sedf") && !ids.includes("cgu")) {
+  if (pessoa === "amanda" && ids.includes("sesodonto") && ids.includes("sedf")) {
     const item = semanalAmandaFoco(semana)[weekday];
     return { ...item, concurso: materiaChave(item.materia) === "pt" || materiaChave(item.materia) === "adm" || materiaChave(item.materia) === "const" ? "sedf" : "sesodonto" };
   }

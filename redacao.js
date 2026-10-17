@@ -244,7 +244,7 @@ function redacaoRubricasDe(pessoa, concursos) {
       if (id === "sedf") return amanda ? { ...REDACAO_RUBRICAS.sedf, cargo: "Nível superior (discursiva de atualidades)" } : REDACAO_RUBRICAS.sedf;
       if (id === "pmdf") return REDACAO_RUBRICAS.pmdf;
       if (id === "tcego") return amanda ? REDACAO_RUBRICAS.tcegoControle : REDACAO_RUBRICAS.tcegoTi;
-      if (id === "cgu") return amanda ? REDACAO_RUBRICAS.cguAud : REDACAO_RUBRICAS.cgu;
+      if (id === "cgu") return REDACAO_RUBRICAS.cgu;
       if (id === "sesodonto") return REDACAO_RUBRICAS.sesodonto;
       return null;
     })

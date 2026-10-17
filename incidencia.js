@@ -480,54 +480,6 @@ const INCIDENCIA = [
     ],
   },
   {
-    id: "cgu-orc",
-    concurso: "cgu",
-    concursoNome: "CGU",
-    materia: "orc",
-    materiaNome: "Orçamento",
-    banca: "Cebraspe",
-    recorte: "P3 do Edital nº 1/2026 AFFC Auditoria. Sem caderno TEC com contagem neste cargo.",
-    fonteUrl: "https://www.cebraspe.org.br/concursos/cgu_26_affc",
-    semContagem: true,
-    topicos: [
-      ["PPA, LDO e LOA", 0],
-      ["Execução orçamentária", 0],
-      ["LRF e responsabilidade fiscal", 0],
-    ],
-  },
-  {
-    id: "cgu-fin",
-    concurso: "cgu",
-    concursoNome: "CGU",
-    materia: "fin",
-    materiaNome: "Finanças públicas",
-    banca: "Cebraspe",
-    recorte: "P3 do Edital nº 1/2026 AFFC Auditoria. Sem caderno TEC com contagem.",
-    fonteUrl: "https://www.cebraspe.org.br/concursos/cgu_26_affc",
-    semContagem: true,
-    topicos: [
-      ["Funções do Estado", 0],
-      ["Receita e despesa", 0],
-      ["Déficit e dívida", 0],
-    ],
-  },
-  {
-    id: "cgu-lic",
-    concurso: "cgu",
-    concursoNome: "CGU",
-    materia: "lic",
-    materiaNome: "Contratações",
-    banca: "Cebraspe",
-    recorte: "P3 do Edital nº 1/2026 AFFC Auditoria (14.133 no ângulo de controle). Sem caderno TEC com contagem.",
-    fonteUrl: "https://www.cebraspe.org.br/concursos/cgu_26_affc",
-    semContagem: true,
-    topicos: [
-      ["Auditoria de contratações", 0],
-      ["Lei 14.133 no controle", 0],
-      ["Transferências e parcerias", 0],
-    ],
-  },
-  {
     id: "cgu-ti",
     concurso: "cgu",
     concursoNome: "CGU",
@@ -653,28 +605,7 @@ const MATERIAS_AFINIDADE = [
     id: "aud",
     nome: "Auditoria",
     concursos: ["cgu"],
-    nota: "P2 fundamentos para os dois recortes. No sprint da Amanda (cargo 1) o P3 de auditoria é o miolo da prova.",
-  },
-  {
-    id: "orc",
-    nome: "Orçamento",
-    concursos: ["cgu"],
-    soAmanda: true,
-    nota: "P3 da AFFC Auditoria. Não cai no recorte de TI do Gabriel.",
-  },
-  {
-    id: "fin",
-    nome: "Finanças públicas",
-    concursos: ["cgu"],
-    soAmanda: true,
-    nota: "P3 da AFFC Auditoria.",
-  },
-  {
-    id: "lic",
-    nome: "Contratações",
-    concursos: ["cgu"],
-    soAmanda: true,
-    nota: "P3 da AFFC Auditoria: 14.133 no ângulo de auditoria, não o edital inteiro de licitações.",
+    nota: "P2 da CGU (fundamentos de auditoria). No recorte de TI do Gabriel não é o P3.",
   },
   {
     id: "sus",
@@ -733,21 +664,6 @@ const AFINIDADE_PLANO = [
       "Evidência e achado",
       "Testes e amostragem",
     ],
-  },
-  {
-    concurso: "cgu",
-    materia: "orc",
-    topicos: ["PPA, LDO e LOA", "Execução orçamentária", "LRF e responsabilidade fiscal"],
-  },
-  {
-    concurso: "cgu",
-    materia: "fin",
-    topicos: ["Funções do Estado", "Receita e despesa", "Déficit e dívida"],
-  },
-  {
-    concurso: "cgu",
-    materia: "lic",
-    topicos: ["Auditoria de contratações", "Lei 14.133 no controle", "Transferências e parcerias"],
   },
   { concurso: "sesodonto", materia: "pt", topicos: ["Interpretação de textos", "Ortografia", "Concordância", "Regência"] },
   { concurso: "sesodonto", materia: "adm", topicos: ["LC 840/2011", "Administração Pública na CF", "Ética no serviço público"] },
@@ -1578,37 +1494,6 @@ const FONTES_CONCURSO = {
           programa: ["Discursiva (complementares + caso da especialidade)"],
           fora: ["Dissertação ENEM"],
         },
-        aud: {
-          noEdital: true,
-          bloco: "P2 fundamentos + P3 (cargo 1) · 90 específicas no cargo Auditoria",
-          nEdital: 90,
-          nota: "No cargo 1 as 90 específicas são auditoria, orçamento, contratações e integridade. O n 90 é do bloco, sem fatia oficial por matéria.",
-          programa: [
-            "Auditoria interna governamental",
-            "Avaliação, consultoria e apuração",
-            "Evidência e achado",
-            "Testes e amostragem",
-          ],
-          fora: ["Auditoria de sistemas como núcleo de TI"],
-        },
-        orc: {
-          noEdital: true,
-          bloco: "P3 · Auditoria (fatia de orçamento/contabilidade, sem n próprio)",
-          programa: ["PPA, LDO e LOA", "Execução orçamentária", "LRF e responsabilidade fiscal"],
-          fora: [],
-        },
-        fin: {
-          noEdital: true,
-          bloco: "P3 · Auditoria (fatia de finanças, sem n próprio)",
-          programa: ["Funções do Estado", "Receita e despesa", "Déficit e dívida"],
-          fora: [],
-        },
-        lic: {
-          noEdital: true,
-          bloco: "P3 · Auditoria de contratações (sem n próprio)",
-          programa: ["Auditoria de contratações", "Lei 14.133 no controle", "Transferências e parcerias"],
-          fora: [],
-        },
       },
     },
     provas: [
@@ -1649,48 +1534,6 @@ const FONTES_CONCURSO = {
         ],
         agrupa: {
           ti: ["ti"],
-        },
-      },
-      {
-        id: "affc-auditoria-2026",
-        cargo: "AFFC · Auditoria",
-        ano: 2026,
-        banca: "Cebraspe",
-        n: 170,
-        classificados: null,
-        fonte: "Edital nº 1/2026 — n oficial por bloco. Prova ainda não aplicada.",
-        fonteUrl: "https://www.cebraspe.org.br/concursos/cgu_26_affc",
-        aviso:
-          "Sprint da Amanda (cargo 1). A prova é em 13/12/2026. P3 (90, peso 2) manda. Sem n oficial por matéria dentro do P3 — a ordem do plano é análise de peso, não quadro da banca.",
-        soEdital: true,
-        editalCargo: {
-          cargo: "AFFC — especialidade Auditoria",
-          n: 170,
-          nPorMateria: { pt: null, const: null, adm: null, ti: null, aud: 90 },
-          noEdital: { pt: false, ti: false },
-          blocoPorMateria: {
-            pt: "Fora da objetiva — só na correção da P4",
-            adm: "P1 · Básicos (40 do bloco, sem n próprio)",
-            const: "P1 · Básicos (40 do bloco, sem n próprio)",
-            ti: "Fora do cargo 1",
-            aud: "P3 · 90 oficiais (peso 2)",
-            orc: "P3 · fatia sem n próprio",
-            fin: "P3 · fatia sem n próprio",
-            lic: "P3 · fatia sem n próprio",
-          },
-          notaPorMateria: {
-            pt: "Não há objetiva de PT.",
-            ti: "TI é especialidade à parte. Fora deste sprint.",
-            aud: "90 específicas. Miolo: auditoria governamental, AFO, contratações, integridade.",
-          },
-        },
-        disciplinas: [
-          { materia: "bas", nome: "Conhecimentos básicos (P1)", q: 40 },
-          { materia: "comp", nome: "Conhecimentos complementares (P2)", q: 40 },
-          { materia: "aud", nome: "Conhecimentos específicos de auditoria (P3)", q: 90 },
-        ],
-        agrupa: {
-          aud: ["aud"],
         },
       },
     ],
@@ -1804,7 +1647,6 @@ function provaPrincipal(concurso, opts) {
     return f.provas.find((p) => p.id === "tecnico-ti-2026") || f.provas[0];
   }
   if (concurso === "cgu") {
-    if (pessoa === "amanda") return f.provas.find((p) => p.id === "affc-auditoria-2026") || f.provas[0];
     return f.provas.find((p) => p.id === "affc-ti-2026") || f.provas[0];
   }
   return f.provas[0];
